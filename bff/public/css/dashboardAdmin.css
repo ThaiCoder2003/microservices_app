@@ -1,14 +1,3 @@
-/* Reset cơ bản */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Segoe UI", sans-serif;
-}
-body {
-  background: #f5f7fa;
-}
-
 /* Bố cục 2 cột */
 .container-admin {
   display: flex;
@@ -52,18 +41,18 @@ body {
   max-width: 480px;
 }
 
-label {
+.label-pane {
   display: block;
   margin: 16px 0 6px;
   font-weight: 600;
 }
-input {
+.input-pane {
   width: 100%;
   padding: 10px 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-.btn-primary {
+.btn-admin {
   margin-top: 24px;
   padding: 10px 16px;
   background: #3498db;
@@ -76,7 +65,14 @@ input {
 .btn-primary:hover {
   background: #2980b9;
 }
-
+.sidebarList {
+  padding: 0;
+  margin: 0;
+}
+.paneList {
+  padding: 0;
+  margin: 0;
+}
 .paneItem {
   display: flex;
   padding: 10px 0;
