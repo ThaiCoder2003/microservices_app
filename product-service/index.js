@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3002;
+const port = 4002;
 
 app.use(express.json());
 
@@ -21,6 +21,10 @@ app.get('/products', (req, res) => {
   res.json(products);
 });
 
-app.listen(port, () => {
-  console.log(`Product Service running on port ${port}`);
-});
+try {
+  app.listen(port, () => {
+    console.log(`BFF running on port ${port}`);
+  });
+} catch (err) {
+  console.error('❌ Server failed to start:', err);
+}

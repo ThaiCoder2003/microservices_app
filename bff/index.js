@@ -3,19 +3,23 @@ const axios = require('axios');
 const path = require('path');
 const app = express();
 const cookieParser = require('cookie-parser');
-const port = 3000;
+const expressLayouts = require('express-ejs-layouts');
+const port = 4000;
 const auth = require('./middleware/auth');
 
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+app.use(expressLayouts);
+app.set('layout', 'layouts/layout');
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const USER_SERVICE = 'http://localhost:3001';
-const PRODUCT_SERVICE = 'http://localhost:3002';
-
+const USER_SERVICE = 'http://localhost:4001';
+const PRODUCT_SERVICE = 'http://localhost:4002';
 
 app.get('/', (req, res) => {
   res.render('index', { title: 'Home' });
@@ -75,7 +79,6 @@ app.post('/api/users', auth, async (req, res) => {
   }
 });
 
-
 app.get('/register', (req, res) => {
   res.render('register', { title: 'Register' });
 });
@@ -89,7 +92,6 @@ app.post('/register', async (req, res) => {
     res.render('register', { title: 'Register', message: 'Registration failed' });
   }
 });
-
 
 app.post('/api/register', async (req, res) => {
   try {
