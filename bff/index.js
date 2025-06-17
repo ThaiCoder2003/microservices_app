@@ -35,7 +35,7 @@ app.post('/login', async (req, res) => {
     const token = response.data.token;
 
     res.cookie('token', token, { httpOnly: true });
-    res.redirect('/');
+    res.redirect('/admin');
   } catch (err) {
     console.error(err);
     res.render('login', { title: 'Login', message: 'Invalid credentials' });
@@ -81,7 +81,7 @@ app.post('/api/users', auth, async (req, res) => {
 
 app.get('/register', (req, res) => {
   res.render('register', { title: 'Register' });
-});
+}); 
 
 app.post('/register', async (req, res) => {
   try {
@@ -111,13 +111,24 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-app.get('/products', async (req, res) => {
-  try {
-    const response = await axios.get(`${PRODUCT_SERVICE}/products`);
-    res.render('products', { title: 'Products', products: response.data });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to get products' });
-  }
+app.get('/admin', auth, async (req, res) => {
+
+    const product_response = await axios.get(`${PRODUCT_SERVICE}/products`);
+    let products = [];
+    if (product_response) {
+        products = product_response.data;
+    }
+    const user_response = await axios.get(`${USER_SERVICE}/users`);
+    let users = [];
+    if (user_response) {
+        users = user_response.data;
+    }
+
+    let username = 'Admin';
+    if (req.user && req.user.username) {
+        username = req.user.username;
+    }
+    res.render('dashboardAdmin', { title: 'Products', products: products, users: users, username: username });  
 });
 
 app.get('/api/products', async (req, res) => {
@@ -155,7 +166,7 @@ app.post('/products', async (req, res) => {
   try {
     const response = await axios.post(`${PRODUCT_SERVICE}/products`, req.body);
     
-    res.redirect('/products');
+    res.redirect('/admin');
   } catch (err) {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to add product' });
   }
