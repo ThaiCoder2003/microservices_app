@@ -15,7 +15,6 @@ app.post('/register', (req, res) => {
     return res.status(400).json({ message: 'User already exists' });
   }
 
-  const hashedPassword = bcrypt.hashSync(password, 10);
   users.push({ id: nextId++, username: username, password: hashedPassword, name: name });
   res.status(201).json({ message: 'User registered successfully' });
 });
@@ -28,7 +27,7 @@ app.post('/login', (req, res) => {
     return res.status(401).json({ message: 'Invalid credentials' });
   }
 
-  const isPasswordCorrect = bcrypt.compareSync(password, user.password);
+  const isPasswordCorrect = password === user.password; // ✅ compare password with stored password
   if (!isPasswordCorrect) {
     return res.status(401).json({ message: 'Invalid credentials' });
   }
