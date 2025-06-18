@@ -6,7 +6,7 @@ const port = 4001;
 
 app.use(express.json());
 
-let users = [];
+let users = [ { id: 1, username: 'admin', password: 'admin123', name: 'Admin User', role: 'Admin' } ];
 let nextId = 1;
 
 app.post('/register', (req, res) => {
@@ -15,7 +15,7 @@ app.post('/register', (req, res) => {
     return res.status(400).json({ message: 'User already exists' });
   }
 
-  users.push({ id: nextId++, username: username, password: hashedPassword, name: name });
+  users.push({ id: nextId++, username: username, password: hashedPassword, name: name, role: 'User' });
   res.status(201).json({ message: 'User registered successfully' });
 });
 

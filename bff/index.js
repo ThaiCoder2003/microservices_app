@@ -35,7 +35,14 @@ app.post('/login', async (req, res) => {
     const token = response.data.token;
 
     res.cookie('token', token, { httpOnly: true });
-    res.redirect('/admin');
+    if (response.data.user.role === 'Admin') {
+      req.user = response.data.user;
+      return res.redirect('/admin');
+    }
+    else {
+      req.user = response.data.user;
+      return res.redirect('/profile');
+    }
   } catch (err) {
     console.error(err);
     res.render('login', { title: 'Login', message: 'Invalid credentials' });
