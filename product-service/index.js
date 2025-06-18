@@ -20,10 +20,6 @@ app.get('/products', (req, res) => {
   res.json(products);
 });
 
-try {
-  app.listen(port, () => {
-    console.log(`roduct service running on port ${port}`);
-  });
-} catch (err) {
-  console.error('❌ Server failed to start:', err);
-}
+app.listen(port, () => {
+  console.log(`Product service running on port ${port}`);
+});

@@ -1,7 +1,18 @@
+# product-service/Dockerfile
 FROM node:20
+
+# Thiết lập thư mục làm việc
 WORKDIR /app
+
+# Copy package.json & package-lock.json (nếu có), rồi cài dependencies
 COPY package*.json ./
 RUN npm install
+
+# Copy toàn bộ code vào container
 COPY . .
+
+# Khai báo port service lắng nghe
 EXPOSE 4002
+
+# Lệnh khởi động service
 CMD ["node", "index.js"]

@@ -1,19 +1,18 @@
 services:
   user-service:
     build: ./user-service
-    # không cần 'ports' vì chỉ BFF gọi nội bộ
-    # EXPOSE 4001 đã có trong Dockerfile
+    # ❌ KHÔNG cần khai báo ports
+    # Dockerfile phải có: EXPOSE 4001
 
   product-service:
     build: ./product-service
-    # bỏ hoặc đổi sang host port khác nếu thật sự cần
-    # ports:
-    #   - "5002:4002"
+    # ❌ KHÔNG cần khai báo ports
+    # Dockerfile phải có: EXPOSE 4002
 
   bff:
     build: ./bff
     ports:
-      - "4000:4000"
+      - "4000:4000" # chỉ mở port cho BFF
     depends_on:
       - user-service
       - product-service
