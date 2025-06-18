@@ -19,8 +19,16 @@ app.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-  users.push({ id: nextId++, username: username, password: hashedPassword, name: name });
-  res.status(201).json({ message: 'User registered successfully' });
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    users.push({ id: nextId++, username, password: hashedPassword, name });
+    res.status(201).json({ message: 'User registered successfully' });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Registration failed' });
+  }
 });
 
 // Đăng nhập
