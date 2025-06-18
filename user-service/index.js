@@ -7,7 +7,7 @@ const port = 4001;
 
 app.use(express.json());
 
-let users = [ { id: 1, username: 'admin', password: 'admin123', name: 'Admin User', role: 'Admin' } ];
+let users = [ { id: 1, username: 'admin@example.com', password: 'admin123', name: 'Admin User', role: 'Admin' } ];
 let nextId = 1;
 
 // Đăng ký
