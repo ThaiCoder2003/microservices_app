@@ -6,7 +6,10 @@
   background-color: #f0f0f0;
   font-family: Arial, sans-serif;
 }
+.tag-index {
+  color: rgb(0, 0, 238);
 
+}
 .center-box {
   text-align: center;
   background-color: white;
