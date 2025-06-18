@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 const cookieParser = require('cookie-parser');
 const expressLayouts = require('express-ejs-layouts');
-const port = 4000;
+const port = 5000;
 const auth = require('./middleware/auth');
 
 app.use(cookieParser());
@@ -18,8 +18,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const USER_SERVICE = 'http://localhost:4001';
-const PRODUCT_SERVICE = 'http://localhost:4002';
+const USER_SERVICE = 'http://user-service::5001';
+const PRODUCT_SERVICE = 'http://product-service:5002';
 
 app.get('/', (req, res) => {
   res.render('index', { title: 'Home' });

@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 
 # Khai báo port service lắng nghe
-EXPOSE 4002
+EXPOSE 5002
 
 # Lệnh khởi động service
 CMD ["node", "index.js"]

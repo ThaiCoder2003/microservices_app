@@ -3,7 +3,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const app = express();
-const port = 4001;
+const port = 5001;
 
 app.use(express.json());
 
