@@ -22,7 +22,7 @@ app.get('/products', (req, res) => {
 
 try {
   app.listen(port, () => {
-    console.log(`BFF running on port ${port}`);
+    console.log(`roduct service running on port ${port}`);
   });
 } catch (err) {
   console.error('❌ Server failed to start:', err);

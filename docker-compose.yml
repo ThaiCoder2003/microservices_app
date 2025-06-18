@@ -1,14 +1,14 @@
-version: '3.8'
 services:
   user-service:
     build: ./user-service
-    ports:
-      - "4001:4001"
-  
+    # không cần 'ports' vì chỉ BFF gọi nội bộ
+    # EXPOSE 4001 đã có trong Dockerfile
+
   product-service:
     build: ./product-service
-    ports:
-      - "4002:4002"
+    # bỏ hoặc đổi sang host port khác nếu thật sự cần
+    # ports:
+    #   - "5002:4002"
 
   bff:
     build: ./bff
