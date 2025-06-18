@@ -18,8 +18,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const USER_SERVICE = 'http://localhost:4001';
-const PRODUCT_SERVICE = 'http://localhost:4002';
+const USER_SERVICE = 'http://user-service:4001';
+const PRODUCT_SERVICE = 'http://product-service:4002';
 
 app.get('/', (req, res) => {
   res.render('index', { title: 'Home' });

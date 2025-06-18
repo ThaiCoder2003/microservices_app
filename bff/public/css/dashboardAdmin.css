@@ -1,11 +1,10 @@
 /* Bố cục 2 cột */
-*{
-  padding: 0;
-  margin: 0;
-}
+
 .container-admin {
   display: flex;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 /* ----- Sidebar ----- */
