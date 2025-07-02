@@ -23,6 +23,9 @@
                 <label for="name" class="label-pane">Product Name:</label>
                 <input type="text" name="name" class="input-pane" placeholder="Product Name" required>
 
+                <label for="name" class="label-pane">Product Price:</label>
+                <input type="number" name="price" class="input-pane" placeholder="Product Price" required>
+
                 <label for="name" class="label-pane">Stock Count:</label>
                 <input type="number" name="stock" class="input-pane" placeholder="Stock Count" required>
                 <button type="submit" class="btn-primary btn-admin">Add Product</button>
@@ -41,7 +44,9 @@
                                 <div>
                                     <span class="pane-info">ID: #<%= product.id %></span>
                                     <span class="pane-info">Name: <%= product.name %></span>
+                                    <span class="pane-info">Price: $<%= product.price.toFixed(2) %>đ</span>
                                     <span class="pane-info">Stock: <%= product.stock %></span>
+                                    <span class="pane-info">Created At: <%= product.createdAt.toLocaleString() %></span>
                                 </div>
                                 <span class="pane-delete">Delete</span>
                             </div>

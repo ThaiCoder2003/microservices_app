@@ -1,5 +1,21 @@
 {
+  "name": "microservices_app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm-run-all --parallel user product bff",
+    "user": "cd user-service && npm start",
+    "product": "cd product-service && npm start",
+    "bff": "cd bff && npm start"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "child-process": "^1.0.2"
+    "child-process": "^1.0.2",
+    "dotenv": "^16.6.0"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
   }
 }

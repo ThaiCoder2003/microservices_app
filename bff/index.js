@@ -79,7 +79,7 @@ app.post('/api/users', auth, async (req, res) => {
   }
 });
 
-app.get('/register', (req, res) => {
+app.get('/register', async (req, res) => {
   res.render('register', { title: 'Register' });
 }); 
 

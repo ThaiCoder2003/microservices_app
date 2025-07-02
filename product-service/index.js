@@ -1,25 +1,16 @@
+require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const app = express();
-const port = 5002;
+const port = process.env.PORT || 3002;
 
-app.use(express.json());
+const connectDB = require('./config/db'); // Assuming you have a db.js file for MongoDB connection
+const productRoutes =  require('./routes/productRoutes'); // Assuming you have a productController.js file
 
-let products = [];
-let nextId = 1;
+connectDB(); // Connect to MongoDB
+app.use(express.json()); 
 
-app.post('/products', (req, res) => {
-  const { id, name, stock } = req.body;
-  if (products.find(p => p.id === id)) {
-    return res.status(400).json({ message: 'Product ID already exists' });
-  }
-  products.push({ id, name, stock });
-  res.status(201).json({ message: 'Product added' });
-});
-
-app.get('/products', (req, res) => {
-  res.json(products);
-});
-
+app.use('/', productRoutes); // Register product routes
+// Lấy danh sách user
 app.listen(port, () => {
-  console.log(`Product service running on port ${port}`);
+  console.log(`User Service running on port ${port}`);
 });
