@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const USER_SERVICE = 'http://user-service::5001';
+const USER_SERVICE = 'http://user-service:5001';
 const PRODUCT_SERVICE = 'http://product-service:5002';
 
 app.get('/', (req, res) => {
@@ -38,7 +38,10 @@ app.post('/login', async (req, res) => {
     res.redirect('/admin');
   } catch (err) {
     console.error(err);
-    res.render('login', { title: 'Login', message: 'Invalid credentials' });
+
+    // If login fails, render the login page with an error message
+    const message = err.response?.data?.error || 'Login failed';
+    res.render('login', { title: 'Login', message });
   }
 });
 
@@ -68,6 +71,18 @@ app.get('/profile', auth, async (req, res) => {
   }
 });
 
+app.put('/update', auth, async (req, res) => {
+  try {
+    const response = await axios.put(`${USER_SERVICE}/update`, req.body, {
+      headers: { Authorization: `Bearer ${req.cookies.token}` }
+    });
+    res.redirect('/profile');
+  } catch (err) {
+    console.error(err);
+    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Internal error' });
+  }
+}); 
+
 app.post('/api/users', auth, async (req, res) => {
   try {
     const response = await axios.get(`${USER_SERVICE}/users`, {
@@ -85,11 +100,16 @@ app.get('/register', async (req, res) => {
 
 app.post('/register', async (req, res) => {
   try {
-    const response = await axios.post(`${USER_SERVICE}/register`, req.body);
-    res.redirect('/login');
+    await axios.post(`${USER_SERVICE}/register`, req.body);
+    
+    return res.redirect('/login');
+    
+    // If not 201, treat it as failure
   } catch (err) {
     console.error(err);
-    res.render('register', { title: 'Register', message: 'Registration failed' });
+
+    const message = err.response?.data?.error || 'Registration failed';
+    res.render('register', { title: 'Register', message });
   }
 });
 
@@ -112,7 +132,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.get('/admin', auth, async (req, res) => {
-
+  try {
     const product_response = await axios.get(`${PRODUCT_SERVICE}/products`);
     let products = [];
     if (product_response) {
@@ -129,6 +149,11 @@ app.get('/admin', auth, async (req, res) => {
         username = req.user.username;
     }
     res.render('dashboardAdmin', { title: 'Products', products: products, users: users, username: username });  
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).send('Error fetching data');
+  }
 });
 
 app.get('/api/products', async (req, res) => {
@@ -169,6 +194,33 @@ app.post('/products', async (req, res) => {
     res.redirect('/admin');
   } catch (err) {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to add product' });
+  }
+});
+
+app.put('/products/:id', async (req, res) => {
+  try {
+    const response = await axios.put(`${PRODUCT_SERVICE}/products/${req.params.id}`, req.body);
+    res.redirect('/admin');
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to update product' });
+  }
+});
+
+app.get('/products/:id', async (req, res) => {
+  try {
+    const response = await axios.get(`${PRODUCT_SERVICE}/products/${req.params.id}`);
+    res.render('productDetail', { title: 'Product Detail', product: response.data });
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to get product' });
+  }
+});
+
+app.delete('/products/:id', async (req, res) => {
+  try {
+    const response = await axios.delete(`${PRODUCT_SERVICE}/products/${req.params.id}`);
+    res.redirect('/admin');
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to delete product' });
   }
 });
 
