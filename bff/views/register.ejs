@@ -2,8 +2,8 @@
   <div class="center-box-register">
     <h3 class="register-header">REGISTER</h3>
     <% if (message) { %>
-      <div class="alert alert-danger" role="alert">
-        <%= message %>
+      <div style="background-color: #f44336; color: white; padding: 12px; margin-bottom: 16px; border-radius: 6px;">
+        <strong>⚠️ Error:</strong> <%= message %>
       </div>
     <% } %>
     <form method="POST" action="/register" class="form-register">
@@ -15,6 +15,9 @@
       <br><br>
       <label for="password">Password:</label>
       <input type="password" name="password" id="password" required>
+      <br><br>
+      <label for="password">Confirm Password:</label>
+      <input type="password" name="confirmPassword" id="confirmPassword" required>
       <br><br>
       <button type="submit" class="btn-primary">Register</button>
     </form>

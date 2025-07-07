@@ -1,5 +1,5 @@
 const getAllProducts = require('../usecases/getAllProducts');
-const getProductById = require('../usecases/getProductById');
+const getSingleProduct = require('../usecases/getSingleProduct');
 const createProduct = require('../usecases/createProduct');
 const updateProduct = require('../usecases/updateProduct');
 const searchProducts = require('../usecases/searchProducts');
@@ -18,7 +18,7 @@ module.exports = {
     get: async (req, res) => {
         const { id } = req.params;
         try {
-            const product = await getProductById(id);
+            const product = await getSingleProduct(id);
             res.status(200).json(product);
         } catch (err) {
             console.error(err);
