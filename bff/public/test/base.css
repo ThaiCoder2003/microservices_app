@@ -1,0 +1,22 @@
+html,
+body {
+  background-color: #000;
+  font-family: 'Segoe UI', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.layout1 {
+   display: flex;
+  flex-direction: column;
+  height: 100%; 
+}
