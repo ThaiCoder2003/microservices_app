@@ -1,10 +1,11 @@
+require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const axios = require('axios');
 const path = require('path');
 const app = express();
 const cookieParser = require('cookie-parser');
 const expressLayouts = require('express-ejs-layouts');
-const port = 5000;
+const port = process.env.PORT || 5000;
 const auth = require('./middleware/auth');
 
 app.use(cookieParser());
@@ -95,7 +96,7 @@ app.post('/api/users', auth, async (req, res) => {
 });
 
 app.get('/register', async (req, res) => {
-  res.render('register', { title: 'Register' });
+  res.render('register', { title: 'Register', message: null}); 
 }); 
 
 app.post('/register', async (req, res) => {

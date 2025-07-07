@@ -9,3 +9,5 @@ router.post('/register', userController.register); // Route to register a new us
 router.post('/login', userController.login); // Route to login a user
 router.put('/update', userController.update); // Route to update user profile
 // Route to register a new use
+
+module.exports = router;

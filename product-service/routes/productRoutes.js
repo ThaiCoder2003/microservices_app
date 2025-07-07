@@ -9,3 +9,5 @@ router.post('/products', productController.create); // Route to create a new pro
 router.put('/products/:id', productController.update); // Route to update a product
 router.delete('/products/:id', productController.delete); // Route to delete a product
 router.get('/products/search', productController.search); // Route to search products
+
+module.exports = router;

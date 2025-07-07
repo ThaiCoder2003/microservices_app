@@ -1,6 +1,11 @@
 <div class="container">
   <div class="center-box-login">
     <h3 class="log_in-header">LOG IN</h3>
+    <% if (message) { %>
+      <div class="alert alert-danger" role="alert">
+        <%= message %>
+      </div>
+    <% } %>
     <form method="POST" action="/login" class="form-login">
       <label for="email">Email:</label>
       <input type="email" name="email" id="email" required>
