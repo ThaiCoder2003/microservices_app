@@ -436,18 +436,20 @@
   cursor: pointer;
 }
 /* List nhạc */
-.container-box-component--header--list--product {
+.container-box-component--header--list {
   display: flex;
   gap: 20px;
   list-style: none;
   padding: 0;
   margin: 0;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-behavior: smooth;
 }
-.container-box-component--header--lis--productt::-webkit-scrollbar {
+.container-box-component--header--list::-webkit-scrollbar {
   display: none;
 }
-.container-box-component--header--item--product {
+.container-box-component--header--item {
   width: 180px;
   background-color: #181818;
   border-radius: 8px;
@@ -458,11 +460,11 @@
   position: relative;
 }
 
-.container-box-component--header--item--product:hover {
+.container-box-component--header--item:hover {
   background-color: #282828;
 }
 
-.song-thumbnail--product {
+.song-thumbnail {
   position: relative;
   width: 100%;
   aspect-ratio: 1/1;
@@ -470,7 +472,7 @@
   border-radius: 6px;
 }
 
-.container-box-component--header--item--img--product {
+.container-box-component--header--item--img {
   width: 100%;
   height: 100%;
   object-fit: cover;
