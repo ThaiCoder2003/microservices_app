@@ -7,12 +7,13 @@
                 <span class="header-left_icon-homepage">
                     <i class="fa-solid fa-house"></i>
                 </span>
-                <div class="header-left_search">
-                    <!-- Hoi chat gpt xem cái khung search này template như nào-->
+                <form class="header-left_search" action="/search" method="GET">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Bạn muốn phát nội dung gì?">
-                    <i class="fa-solid fa-folder-open"></i>
-                </div>
+                    <input type="text" name="q" placeholder="Nội dung bạn muốn tìm kiếm?" required>
+                    <button type="submit" style="background:none;border:none;padding:0;">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </button>
+                </form>
                 <div class="header-left_search--history">
                     <div class="header-left_search--history-header">Các tìm kiếm gần đây</div>
                     <div class="header-left_search--history-item">
@@ -39,6 +40,10 @@
                         <li class="header-right_menu--item">Liên hệ</li>
                         <li class="header-right_menu--item">Tải xuống</li>
                     </ul>
+                    <div class="header-right_menu_download">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span class="header-right_menu_download--text">Đăng nhập cho Admin</span>
+                    </div>
                 </div>
                 <% if (user) { %>
                     <div class="header-right_User">
@@ -71,7 +76,6 @@
                         <a href="/login" class="header-right_login--signIn">Đăng nhập</a>
                     </div>
                 <% } %>
-            </div>
         </div>
         <div class="container">
             <!-- size 1/4-->
@@ -79,14 +83,14 @@
 
                 <div class="container-sidebar_box4">
                     <ul class="container-sidebar_box4-playlist">
-                        <li class="container-sidebar_box4-playlist--item">
+                        <li class="container-sidebar_box4-playlist--item selected">
                             <div class="container-sidebar_box4-playlist-info">
-                                <div class="container-sidebar_box4-playlist-title">Homepage</div>
+                                <a href="/" class="container-sidebar_box4-playlist-title" style="text-decoration: none; color: inherit;">Homepage</a>
                             </div>
                         </li>
-                        <li class="container-sidebar_box4-playlist--item  selected">
+                        <li class="container-sidebar_box4-playlist--item">
                             <div class="container-sidebar_box4-playlist-info">
-                                <div class="container-sidebar_box4-playlist-title">Product</div>
+                                <a href="/products" class="container-sidebar_box4-playlist-title" style="text-decoration: none; color: inherit;">Product</a>
                             </div>
                         </li>
                     </ul>
@@ -94,72 +98,46 @@
             </div>
             <!-- size 3/4 -->
             <div class="container-box-content">
+                <%
+                    const categoryTranslations = {
+                        coffee: 'Cà phê',
+                        tea: 'Trà',
+                        snack: 'Đồ ăn vặt',
+                        other: 'Khác'
+                    };
+                %>
                 <!-- Những bài hát thịnh hành -->
-                <div class="container-box-component">
-                    <div class="container-box-component--header">
-                        <div class="container-box-component--header--div">
-                            <span class="container-box-component--header--text">Cà phê</span>    
-                        </div>
-                        <ul class="container-box-component--header--list--product">
-
-                                <li class="container-box-component--header--item--product">
-                                    <div class="song-thumbnail--product">
-                                        <img src="imgSong.jpg" alt=""
-                                            class="container-box-component--header--item--img--product" />
-                                        <span class="container-box-component--header--item--icon-play--product">
-                                            <i class="fa-solid fa-cart-shopping"></i>
-                                        </span>
+                <% for (const [category, products] of Object.entries(categorizedProducts)) { %>
+                    <% if (products.length) { %>
+                        <div class="container-box-component">
+                        <div class="container-box-component--header">
+                            <div class="container-box-component--header--div">
+                            <span class="container-box-component--header--text">Sản phẩm <%= category %></span>
+                            <span class="container-box-component--header--showAll">Hiện tất cả</span>
+                            </div>
+                            <div class="slider-container">
+                            <button class="container-box-component--header--list--btn-left">&#10094;</button>
+                            <ul class="container-box-component--header--list">
+                                <% products.forEach(product => { %>
+                                <li class="container-box-component--header--item">
+                                    <div class="song-thumbnail">
+                                    <img src="<%= product.image || 'default.jpg' %>" alt="<%= product.name %>"
+                                        class="container-box-component--header--item--img" />
+                                    <span class="container-box-component--header--item--icon-play">
+                                        <i class="fa-solid fa-cart-shopping"></i>
+                                    </span>
                                     </div>
-                                    <span class="container-box-component--header--item--nameSong--product">Cà phê</span>
-                                    <span class="container-box-component--header--item--artist--product">Cost: 10$</span>
+                                    <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
+                                    <span class="container-box-component--header--item--artist">Cost: <%= product.price %>$</span>
                                 </li>
+                                <% }) %>
                             </ul>
-                    </div>
-                </div>
-                <!-- Những bài hát thịnh hành -->
-                <div class="container-box-component">
-                    <div class="container-box-component--header">
-                        <div class="container-box-component--header--div">
-                            <span class="container-box-component--header--text">Nước ép</span>    
+                            <button class="container-box-component--header--list--btn-right">&#10095;</button>
+                            </div>
                         </div>
-                        <ul class="container-box-component--header--list--product">
-
-                                <li class="container-box-component--header--item--product">
-                                    <div class="song-thumbnail--product">
-                                        <img src="imgSong.jpg" alt=""
-                                            class="container-box-component--header--item--img--product" />
-                                        <span class="container-box-component--header--item--icon-play--product">
-                                            <i class="fa-solid fa-cart-shopping"></i>
-                                        </span>
-                                    </div>
-                                    <span class="container-box-component--header--item--nameSong--product">Nước ép</span>
-                                    <span class="container-box-component--header--item--artist--product">Cost: 10$</span>
-                                </li>
-                            </ul>
-                    </div>
-                </div>
-                <!-- Những bài hát thịnh hành -->
-                <div class="container-box-component">
-                    <div class="container-box-component--header">
-                        <div class="container-box-component--header--div">
-                            <span class="container-box-component--header--text">Bánh ngọt</span>    
                         </div>
-                        <ul class="container-box-component--header--list--product">
-
-                                <li class="container-box-component--header--item--product">
-                                    <div class="song-thumbnail--product">
-                                        <img src="imgSong.jpg" alt=""
-                                            class="container-box-component--header--item--img--product" />
-                                        <span class="container-box-component--header--item--icon-play--product">
-                                            <i class="fa-solid fa-cart-shopping"></i>
-                                        </span>
-                                    </div>
-                                    <span class="container-box-component--header--item--nameSong--product">Bánh ngọt</span>
-                                    <span class="container-box-component--header--item--artist--product">Cost: 10$</span>
-                                </li>
-                            </ul>
-                    </div>
-                </div>
+                    <% } %>
+                <% } %>
                 <!-- Footer -->
                 <div class="container-box-footer">
                     <div class="box--list">

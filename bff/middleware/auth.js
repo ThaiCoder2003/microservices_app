@@ -1,21 +1,22 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'your_jwt_secret';
+require('dotenv').config(); // Ensure you have dotenv to load environment variables
 
-function requireAuth(req, res, next) {
+module.exports = (req, res, next) => {
   const token = req.cookies.token;
-
   if (!token) {
-    return res.redirect('/login'); // or res.status(401).send('Unauthorized');
+    res.locals.user = null;
+    return next();
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded.user; // optionally store user info in req
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Make sure JWT_SECRET is in your .env
+    req.user = decoded;
+    res.locals.user = decoded; // This makes `user` available in EJS
     next();
   } catch (err) {
+    console.error('Invalid token:', err);
     res.clearCookie('token');
-    return res.redirect('/login');
+    res.locals.user = null;
+    next();
   }
-}
-
-module.exports = requireAuth;
+};

@@ -3,7 +3,7 @@ const loginUser = require('../usecases/loginUser');
 const getAllUsers = require('../usecases/getAllUsers');
 const getProfile = require('../usecases/getProfile');
 const updateUser = require('../usecases/updateUser');
-
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 module.exports = {

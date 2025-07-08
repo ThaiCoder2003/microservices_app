@@ -67,6 +67,21 @@ module.exports = {
             console.error(err);
             res.status(404).json({ error: 'Product not found or failed to delete' });
         }
+    },
+
+    getByCategory: async (req, res) => {
+        const categories = ['coffee', 'tea', 'snack', 'other'];
+        try {
+            const results = {};
+            for (const category of categories) {
+            const products = await getAllProducts(category);
+            results[category] = products || [];
+            }
+            res.status(200).json(results);
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Failed to retrieve products by categories' });
+        }
     }
 }
 

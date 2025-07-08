@@ -22,8 +22,10 @@ app.use(express.json());
 const USER_SERVICE = 'http://localhost:5001';
 const PRODUCT_SERVICE = 'http://localhost:5002';
 
-app.get('/', (req, res) => {
-  res.render('index', { title: 'Home' });
+app.get('/', async (req, res) => {
+  const response = await axios.get(`${PRODUCT_SERVICE}/products/category`);
+  const [coffeeProducts, teaProducts, snackProducts, otherProducts] = response.data;
+  res.render('homepage', { title: 'Home', coffee: coffeeProducts, tea: teaProducts, snack: snackProducts, other: otherProducts });
 });
 
 app.get('/login', (req, res) => {
@@ -195,6 +197,19 @@ app.post('/products', async (req, res) => {
     res.redirect('/admin');
   } catch (err) {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to add product' });
+  }
+});
+
+app.get('/search', async (req, res) => {
+  const query = req.query.q;
+  try {
+    const response = await axios.get(`${PRODUCT_SERVICE}/search`, { params: { query }
+    });
+    res.render('searchPage', { title: 'Search Results', products: response.data,
+      query: query });
+  } catch (err) {
+    console.error(err);
+    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to search products' });
   }
 });
 

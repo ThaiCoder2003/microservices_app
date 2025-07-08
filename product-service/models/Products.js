@@ -22,6 +22,15 @@ const ProductSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    category: {
+        type: String,
+        enum: ['coffee', 'tea', 'snack', 'other'],
+        default: 'other',
+        required: true,
+    },
+    description: {
+        type: String,
+    },
 });
 
 module.exports = mongoose.model('Product', ProductSchema);
