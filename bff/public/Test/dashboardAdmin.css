@@ -1,0 +1,200 @@
+/* Bố cục 2 cột */
+
+.container-admin {
+  display: flex;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* ----- Sidebar ----- */
+.sidebar {
+  min-width: 220px;
+  background: #2c3e50;
+  color: #ecf0f1;
+  padding: 20px 0;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
+}
+
+.sidebarList {
+  list-style: none;
+}
+.sidebarItem {
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sidebarItem:hover,
+.sidebarItem.active {
+  background: #34495e;
+}
+
+/* ----- Content ----- */
+.content {
+  flex: 1;
+  padding: 32px;
+}
+.admin-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+.admin-box {
+  max-width: 480px;
+}
+
+.label-pane {
+  display: block;
+  margin: 16px 0 6px;
+  font-weight: 600;
+}
+.input-pane {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.btn-admin {
+  margin-top: 24px;
+  padding: 10px 16px;
+  background: #3498db;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  background: #2980b9;
+}
+.sidebarList {
+  padding: 0;
+  margin: 0;
+}
+.paneList {
+  padding: 0;
+  margin: 0;
+}
+.paneItem {
+  display: flex;
+  padding: 10px 0;
+  align-items: center;
+  border-bottom: 2px dashed #000;
+}
+.pane-delete {
+  color: red;
+  cursor: pointer;
+}
+.pane-delete:hover {
+  color: rgba(255, 0, 0, 0.474);
+}
+.Number {
+  margin-right: 30px;
+}
+.pane-info {
+  margin-right: 10px;
+  display: block;
+}
+.pane-boxcontent {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* ----- Ẩn/hiện các pane ----- */
+.pane {
+  display: none;
+}
+.pane.active {
+  display: flex; /* pane nào được active mới hiển thị */
+  flex-direction: column;
+}
+/* Căn giữa nội dung trong pane logout */
+#pane-logout {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Tiêu đề chính */
+#pane-logout h1 {
+  margin-bottom: 24px;
+  font-size: 28px;
+  color: #2c3e50;
+}
+
+/* Nhóm nút */
+#pane-logout .button {
+  display: flex;
+  gap: 20px;
+}
+
+/* Nút Yes và No */
+#pane-logout .button button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+/* Nút Yes – màu xanh */
+#pane-logout .button button:first-child {
+  background-color: #27ae60;
+  color: #fff;
+}
+#pane-logout .button button:first-child:hover {
+  background-color: #1e8449;
+}
+
+/* Nút No – màu xám */
+#pane-logout .button button:last-child {
+  background-color: #bdc3c7;
+  color: #2c3e50;
+}
+#pane-logout .button button:last-child:hover {
+  background-color: #95a5a6;
+}
+
+/* ---- Nút chính của form ---- */
+.btn-primary {
+  background: linear-gradient(135deg, #7f5af0 0%, #8644ff 100%);
+  color: #fff;
+
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  border: none;
+  border-radius: 8px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+}
+/* Hover: nâng nhẹ & đổ bóng đậm hơn */
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Active (khi bấm giữ): hạ xuống lại */
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Disabled: xám & vô hiệu */
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

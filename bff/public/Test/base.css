@@ -1,0 +1,28 @@
+@font-face {
+  font-family: "GothamBook";
+  src: url("assets/font/Gotham-XLight.otf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.microservice-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #000;
+  font-family: "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+.microservice-layout1 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #000;
+  font-family: "Segoe UI", sans-serif;
+  overflow: hidden;
+}

@@ -1,0 +1,10 @@
+.container-detail {
+    display: flex;
+}
+.container-box-content-detail {
+    flex: 1;
+}
+.container-box-component--header--text:hover {
+    text-decoration: none;
+    cursor: text;
+}
