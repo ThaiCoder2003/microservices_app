@@ -8,7 +8,12 @@ const expressLayouts = require('express-ejs-layouts');
 const port = process.env.PORT || 5000;
 const auth = require('./middleware/auth');
 
+const multer = require('multer');
+
+// Configure where and how to store uploaded files
+
 app.use(cookieParser());
+app.use(auth); // Use auth middleware to check for user authentication
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -19,26 +24,65 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'public/images')); // Ensure it saves inside /public/images
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + path.extname(file.originalname);
+    cb(null, uniqueSuffix);
+  }
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith('image/')) {
+      return cb(new Error('Only image files are allowed'), false);
+    }
+    cb(null, true);
+  },
+  limits: {
+    fileSize: 2 * 1024 * 1024 // 2MB
+  }
+});
+
 const USER_SERVICE = 'http://localhost:5001';
 const PRODUCT_SERVICE = 'http://localhost:5002';
 
 app.get('/', async (req, res) => {
   const response = await axios.get(`${PRODUCT_SERVICE}/products/category`);
-  const [coffeeProducts, teaProducts, snackProducts, otherProducts] = response.data;
-  res.render('homepage', { title: 'Home', coffee: coffeeProducts, tea: teaProducts, snack: snackProducts, other: otherProducts });
+  const { coffee = [], tea = [], snack = [], other = [] } = response.data || {};
+  res.render('homepage', {
+    title: 'Home',
+    coffee: coffee || [],
+    tea: tea || [],
+    snack: snack || [],
+    other: other || [],
+  });
 });
 
 app.get('/login', (req, res) => {
+  if (req.cookies.token) {
+    // If user is already logged in, redirect to homepage
+    return res.redirect('/');
+  }
+
   res.render('login', { title: 'Login' , message: null });
 });
 
 app.post('/login', async (req, res) => {
+  if (req.cookies.token) {
+    // If user is already logged in, redirect to homepage
+    return res.redirect('/');
+  }
+
   try {
     const response = await axios.post(`${USER_SERVICE}/login`, req.body);
     const token = response.data.token;
 
     res.cookie('token', token, { httpOnly: true });
-    res.redirect('/admin');
+    res.redirect('/');
   } catch (err) {
     console.error(err);
 
@@ -48,16 +92,12 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post('/api/login', async (req, res) => {
-  try {
-    const response = await axios.post(`${USER_SERVICE}/login`, req.body);
-    res.json(response.data);
-  } catch (err) {
-    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Internal error' });
-  }
-});
-
 app.post('/logout', (req, res) => {
+  if (!req.cookies.token) {
+    // If user is not logged in, redirect to login page
+    return res.redirect('/login');
+  }
+
   res.clearCookie('token');
   res.redirect('/login');
 });
@@ -159,40 +199,21 @@ app.get('/admin', auth, async (req, res) => {
   }
 });
 
-app.get('/api/products', async (req, res) => {
-  console.log("✅ Đã gọi BFF route /api/products");
-  try {
-    const response = await axios.get(`${PRODUCT_SERVICE}/products`);
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to get products' });
-  }
-});
 
-app.post('/api/products', async (req, res) => {
-  console.log("✅ Đã gọi BFF route /api/products");
+app.post('/products', upload.single('image'), async (req, res) => {
   try {
-    const response = await axios.post(`${PRODUCT_SERVICE}/products`, req.body);
-    
-    res.json(response.data);
-  } catch (err) {
-    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to add product' });
-  }
-});
+    const { id, name, price, stock, description, category } = req.body;
+    const image = req.file.filename; 
+    const response = await axios.post(`${PRODUCT_SERVICE}/products`, {
+      id: id,
+      name: name,
+      price: price,
+      stock: stock,
+      description: description,
+      category: category,
+      image: image
+    });
 
-app.get('/api/users', async (req, res) => {
-  console.log("✅ Đã gọi BFF route /api/users");
-  try {
-    const response = await axios.get(`${USER_SERVICE}/users`);
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to get users' });
-  }
-});
-
-app.post('/products', async (req, res) => {
-  try {
-    const response = await axios.post(`${PRODUCT_SERVICE}/products`, req.body);
     
     res.redirect('/admin');
   } catch (err) {
@@ -205,7 +226,7 @@ app.get('/search', async (req, res) => {
   try {
     const response = await axios.get(`${PRODUCT_SERVICE}/search`, { params: { query }
     });
-    res.render('searchPage', { title: 'Search Results', products: response.data,
+    res.render('searchpage', { title: 'Search Results', products: response.data,
       query: query });
   } catch (err) {
     console.error(err);
@@ -225,7 +246,7 @@ app.put('/products/:id', async (req, res) => {
 app.get('/products/:id', async (req, res) => {
   try {
     const response = await axios.get(`${PRODUCT_SERVICE}/products/${req.params.id}`);
-    res.render('productDetail', { title: 'Product Detail', product: response.data });
+    res.render('productpage', { title: 'Product Detail', product: response.data });
   } catch (err) {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to get product' });
   }

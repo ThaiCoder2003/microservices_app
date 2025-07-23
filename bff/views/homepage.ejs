@@ -38,7 +38,6 @@
                     <ul class="header-right_menu--list">
                         <li class="header-right_menu--item">Thông tin</li>
                         <li class="header-right_menu--item">Liên hệ</li>
-                        <li class="header-right_menu--item">Tải xuống</li>
                     </ul>
                     <div class="header-right_menu_download">
                         <i class="fa-solid fa-right-to-bracket"></i>
@@ -58,16 +57,10 @@
                             <div class="dropdown-item">
                                 Hỗ trợ <i class="fa-solid fa-up-right-from-square icon"></i>
                             </div>
-                            <div class="dropdown-item">
-                                Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item">
-                                Cài đặt
-                            </div>
                             <div class="dropdown-divider"></div>
-                            <div class="dropdown-item logout">
-                                Đăng xuất
-                            </div>
+                            <form action="/logout" method="POST" style="display: inline;" id="logoutForm">
+                                <button type="submit" class="dropdown-item logout">Đăng xuất</button>
+                            </form>
                         </div>
                     </div>
                 <% } else { %>
@@ -98,45 +91,142 @@
             </div>
             <!-- size 3/4 -->
             <div class="container-box-content">
-                <%
-                    const categoryTranslations = {
-                        coffee: 'Cà phê',
-                        tea: 'Trà',
-                        snack: 'Đồ ăn vặt',
-                        other: 'Khác'
-                    };
-                %>
-                <!-- Những bài hát thịnh hành -->
-                <% for (const [category, products] of Object.entries(categorizedProducts)) { %>
-                    <% if (products.length) { %>
-                        <div class="container-box-component">
+                <div class="container-box-component">
+                    <div class="container-box-component--header">
+                        <div class="container-box-component--header--div">
+                            <span class="container-box-component--header--text">Sản phẩm coffee</span>
+                            <span class="container-box-component--header--showAll">Hiện tất cả</span>
+                        </div>
+                       <% if (coffee.length) { %>
+
+                            <div class="slider-container">
+                                <button class="container-box-component--header--list--btn-left">&#10094;</button>
+                                <ul class="container-box-component--header--list">
+                                    <% coffee.forEach(product => { %>
+                                        <li class="container-box-component--header--item">
+                                            <a href="/products/<%= product.id %>" class="product-link">
+                                                <div class="song-thumbnail">
+                                                    <img src="/images/<%= product.image %>" alt="<%= product.name %>"
+                                                        class="container-box-component--header--item--img" />
+                                                    <span class="container-box-component--header--item--icon-play">
+                                                        <i class="fa-solid fa-cart-shopping"></i>
+                                                    </span>
+                                                </div>
+                                                <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
+                                                <span class="container-box-component--header--item--artist">Giá: <%= product.price %>đ</span>
+                                            </a>
+                                        </li>       
+                                    <% }) %>
+                                </ul>
+                                <button class="container-box-component--header--list--btn-right">&#10095;</button>
+                            </div>
+
+                        <% } else { %>
+                            <span class="container-box-component--header--text">Không có sản phẩm cà phê nào</span>   
+                        <% } %>
+                    </div>
+                </div>
+                <div class="container-box-component">
+                    <div class="container-box-component--header">
+                        <div class="container-box-component--header--div">
+                            <span class="container-box-component--header--text">Sản phẩm Trà</span>
+                            <span class="container-box-component--header--showAll">Hiện tất cả</span>
+                        </div>
+                        <% if (tea.length) { %>
+
+                            <div class="slider-container">
+                                <button class="container-box-component--header--list--btn-left">&#10094;</button>
+                                <ul class="container-box-component--header--list">
+                                    <% tea.forEach(product => { %>
+                                        <li class="container-box-component--header--item">
+                                            <a href="/products/<%= product.id %>" class="product-link">
+                                                <div class="song-thumbnail">
+                                                    <img src="/images/<%= product.image %>" alt="<%= product.name %>"
+                                                        class="container-box-component--header--item--img" />
+                                                    <span class="container-box-component--header--item--icon-play">
+                                                        <i class="fa-solid fa-cart-shopping"></i>
+                                                    </span>
+                                                </div>
+                                                <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
+                                                <span class="container-box-component--header--item--artist">Giá: <%= product.price %>đ</span>
+                                            </a>
+                                        </li>       
+                                    <% }) %>
+                                </ul>
+                                <button class="container-box-component--header--list--btn-right">&#10095;</button>
+                            </div>
+                        <% } else { %>
+                            <span class="container-box-component--header--text">Không có sản phẩm trà nào</span>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="container-box-component">
+                    <div class="container-box-component--header">
+                        <div class="container-box-component--header--div">
+                            <span class="container-box-component--header--text">Sản phẩm ăn vặt</span>
+                            <span class="container-box-component--header--showAll">Hiện tất cả</span>
+                        </div>
+                        <% if (snack.length) { %>
+                            <div class="slider-container">
+                                <button class="container-box-component--header--list--btn-left">&#10094;</button>
+                                <ul class="container-box-component--header--list">
+                                    <% snack.forEach(product => { %>
+                                        <li class="container-box-component--header--item">
+                                            <a href="/products/<%= product.id %>" class="product-link">
+                                                <div class="song-thumbnail">
+                                                    <img src="/images/<%= product.image %>" alt="<%= product.name %>"
+                                                        class="container-box-component--header--item--img" />
+                                                    <span class="container-box-component--header--item--icon-play">
+                                                        <i class="fa-solid fa-cart-shopping"></i>
+                                                    </span>
+                                                </div>
+                                                <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
+                                                <span class="container-box-component--header--item--artist">Giá: <%= product.price %>đ</span>
+                                            </a>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                                <button class="container-box-component--header--list--btn-right">&#10095;</button>
+                            </div>
+                <% } else { %>
+                        <span class="container-box-component--header--text">Không có sản phẩm ăn vặt nào</span>
+                <% } %>
+                <% if (other.length) { %>
+                    <div class="container-box-component">
                         <div class="container-box-component--header">
                             <div class="container-box-component--header--div">
-                            <span class="container-box-component--header--text">Sản phẩm <%= category %></span>
-                            <span class="container-box-component--header--showAll">Hiện tất cả</span>
+                                <span class="container-box-component--header--text">Sản phẩm khác</span>
+                                <span class="container-box-component--header--showAll">Hiện tất cả</span>
                             </div>
                             <div class="slider-container">
-                            <button class="container-box-component--header--list--btn-left">&#10094;</button>
-                            <ul class="container-box-component--header--list">
-                                <% products.forEach(product => { %>
-                                <li class="container-box-component--header--item">
-                                    <div class="song-thumbnail">
-                                    <img src="<%= product.image || 'default.jpg' %>" alt="<%= product.name %>"
-                                        class="container-box-component--header--item--img" />
-                                    <span class="container-box-component--header--item--icon-play">
-                                        <i class="fa-solid fa-cart-shopping"></i>
-                                    </span>
-                                    </div>
-                                    <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
-                                    <span class="container-box-component--header--item--artist">Cost: <%= product.price %>$</span>
-                                </li>
-                                <% }) %>
-                            </ul>
-                            <button class="container-box-component--header--list--btn-right">&#10095;</button>
+                                <button class="container-box-component--header--list--btn-left">&#10094;</button>
+                                <ul class="container-box-component--header--list">
+                                    <% other.forEach(product => { %>
+                                        <li class="container-box-component--header--item">
+                                            <a href="/products/<%= product.id %>" class="product-link">
+                                                <div class="song-thumbnail">
+                                                    <img src="/images/<%= product.image %>" alt="<%= product.name %>"
+                                                        class="container-box-component--header--item--img" />
+                                                    <span class="container-box-component--header--item--icon-play">
+                                                        <i class="fa-solid fa-cart-shopping"></i>
+                                                    </span>
+                                                </div>
+                                                <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
+                                                <span class="container-box-component--header--item--artist">Giá: <%= product.price %>đ</span>
+                                            </a>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                                <button class="container-box-component--header--list--btn-right">&#10095;</button>
                             </div>
                         </div>
+                    </div>
+                <% } else { %>
+                    <div class="container-box-component">
+                        <div class="container-box-component--header">
+                            <span class="container-box-component--header--text">Không có sản phẩm khác nào</span>
                         </div>
-                    <% } %>
+                    </div>
                 <% } %>
                 <!-- Footer -->
                 <div class="container-box-footer">

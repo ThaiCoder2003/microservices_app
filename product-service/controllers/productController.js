@@ -4,6 +4,7 @@ const createProduct = require('../usecases/createProduct');
 const updateProduct = require('../usecases/updateProduct');
 const searchProducts = require('../usecases/searchProducts');
 const deleteProduct = require('../usecases/deleteProduct');
+const getProductsByCategory = require('../usecases/getCategory');
 
 module.exports = {
     list: async (req, res) => {
@@ -28,7 +29,9 @@ module.exports = {
 
     create: async (req, res) => {
         try {
-            const product = await createProduct(req.body);
+            const { id, name, price, description, category, image, origin } = req.body;
+
+            const product = await createProduct(id, name, price, description, category, image, origin);
             res.status(201).json(product);
         } catch (err) {
             console.error(err);
@@ -39,7 +42,16 @@ module.exports = {
     update: async (req, res) => {
         const { id } = req.params;
         try {
-            const updatedProduct = await updateProduct(id, req.body);
+            var data = {};
+            if (req.body.name) data.name = req.body.name;
+            if (req.body.price) data.price = req.body.price;
+            if (req.body.origin) data.origin = req.body.origin;
+            if (req.body.description) data.description = req.body.description;
+            if (req.body.image) data.image = req.body.image;
+            if (req.body.category) data.category = req.body.category;
+            if (req.body.stock) data.stock = req.body.stock;
+
+            const updatedProduct = await updateProduct(id, data);
             res.status(200).json(updatedProduct);
         } catch (err) {
             console.error(err);
@@ -70,12 +82,18 @@ module.exports = {
     },
 
     getByCategory: async (req, res) => {
-        const categories = ['coffee', 'tea', 'snack', 'other'];
+        const categories = {
+            coffee: 'Cà phê',
+            tea: 'Trà',
+            snack: 'Đồ ăn vặt',
+            other: 'Khác'
+        };
+
         try {
             const results = {};
-            for (const category of categories) {
-            const products = await getAllProducts(category);
-            results[category] = products || [];
+            for (const key in categories) {
+                const products = await getProductsByCategory(categories[key]);
+                results[key] = products || [];
             }
             res.status(200).json(results);
         } catch (err) {

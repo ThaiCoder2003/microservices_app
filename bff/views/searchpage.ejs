@@ -40,30 +40,34 @@
                         <li class="header-right_menu--item">Tải xuống</li>
                     </ul>
                 </div>
-                <div class="header-right_User">
-                    <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
-                    <div class="header-right_User-box--avatar" id="avatarBtn">
-                        <span class="header-right_User--avatar">N</span>
+                <% if (user) { %>
+                    <div class="header-right_User">
+                        <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
+                        <div class="header-right_User-box--avatar" id="avatarBtn">
+                            <span class="header-right_User--avatar">N</span>
+                        </div>
+                        <div class="dropdown-menu" id="dropdownMenu">
+                            <div class="dropdown-item selected">
+                                Hồ sơ
+                            </div>
+                            <div class="dropdown-item">
+                                Hỗ trợ <i class="fa-solid fa-up-right-from-square icon"></i>
+                            </div>
+                            <div class="dropdown-item">
+                                Cài đặt
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <form action="/logout" method="POST" style="display: inline;" id="logoutForm">
+                                <button type="submit" class="dropdown-item logout">Đăng xuất</button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <div class="dropdown-item selected">
-                            Hồ sơ
-                        </div>
-                        <div class="dropdown-item">
-                            Hỗ trợ <i class="fa-solid fa-up-right-from-square icon"></i>
-                        </div>
-                        <div class="dropdown-item">
-                            Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
-                        </div>
-                        <div class="dropdown-item">
-                            Cài đặt
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-item logout">
-                            Đăng xuất
-                        </div>
+                <% } else { %>
+                    <div class="header-right_login">
+                        <a href="/register" class="header-right_login--signUp">Đăng ký</a>
+                        <a href="/login" class="header-right_login--signIn">Đăng nhập</a>
                     </div>
-                </div>
+                <% } %>
             </div>
         </div>
         <div class="container">
@@ -73,22 +77,25 @@
                 <div class="container-box-component">
                     <div class="container-box-component--header">
                         <div class="container-box-component--header--div">
-                            <span class="container-box-component--header--text">Tìm kiếm cho "sản phẩm"</span>    
+                            <span class="container-box-component--header--text">Tìm kiếm cho <%= query %></span>    
                         </div>
                         <ul class="container-box-component--header--list--product">
-
-                                <li class="container-box-component--header--item--product">
-                                    <div class="song-thumbnail--product">
-                                        <img src="imgSong.jpg" alt=""
-                                            class="container-box-component--header--item--img--product" />
-                                        <span class="container-box-component--header--item--icon-play--product">
-                                            <i class="fa-solid fa-cart-shopping"></i>
-                                        </span>
-                                    </div>
-                                    <span class="container-box-component--header--item--nameSong--product">Cà phê</span>
-                                    <span class="container-box-component--header--item--artist--product">Cost: 10$</span>
-                                </li>
-                            </ul>
+                        <% products.forEach(function(product) { %>
+                            <li class="container-box-component--header--item--product">
+                                <a href="/products/<%= product.id %>" class="song-thumbnail--product" style="text-decoration: none; color: inherit;"></a>
+                                    <img src="/images/<%= product.image %>" alt=""
+                                        class="container-box-component--header--item--img--product" />
+                                    <span class="container-box-component--header--item--icon-play--product">
+                                        <i class="fa-solid fa-cart-shopping"></i>
+                                    </span>
+                                </a>
+                                <a href="/products/<%= product.id %>" style="text-decoration: none; color: inherit;">
+                                    <span class="container-box-component--header--item--nameSong--product"><%= product.name %></span>
+                                </a>
+                                <span class="container-box-component--header--item--artist--product">Cost: <%= product.price %>$</span>
+                            </li>
+                        <% }); %>
+                        </ul>
                     </div>
                 </div>
 

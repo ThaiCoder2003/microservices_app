@@ -4,14 +4,17 @@ module.exports = async (id) => {
     try {
         const product = await productRepository.findById(id);
         if (!product) {
-            throw new Error('Product not found');
+            return null; // Return null if product not found
         }
         return {
             id: product.id,
             name: product.name,
             price: product.price,
-            stock: product.stock,
-            createdAt: product.createdAt,
+            origin: product.origin,
+            description: product.description,
+            image: product.image,
+            category: product.category,
+            updatedAt: product.updatedAt,
         };
     } catch (err) {
         console.error(err);

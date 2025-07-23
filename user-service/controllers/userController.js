@@ -24,7 +24,7 @@ module.exports = {
             // Generate JWT token
             const token = jwt.sign(
                 { id: user.id, email: user.email },
-                process.env.JWT_SECRET || 'your_jwt_secret',
+                process.env.JWT_SECRET,
             );        
             res.status(200).json({ id: user.id, email: user.email, token });
         } catch (err) {
@@ -50,7 +50,7 @@ module.exports = {
                 return res.status(401).json({ error: 'Missing token' });
 
             const token = authHeader.replace('Bearer ', '');
-            jwt.verify(token, 'your_jwt_secret', async (err, decoded) => {
+            jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
                 if (err) return res.status(401).json({ error: 'Invalid token' });
                 const userId = decoded.id;
                 const user = await getProfile(userId);

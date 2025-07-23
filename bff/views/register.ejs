@@ -1,26 +1,26 @@
 <div class="container">
   <div class="center-box-register">
-    <h3 class="register-header">REGISTER</h3>
+    <h3 class="register-header">ĐĂNG KÝ</h3>
     <% if (message) { %>
       <div style="background-color: #f44336; color: white; padding: 12px; margin-bottom: 16px; border-radius: 6px;">
-        <strong>⚠️ Error:</strong> <%= message %>
+        <strong>⚠️ Lỗi:</strong> <%= message %>
       </div>
     <% } %>
     <form method="POST" action="/register" class="form-register">
-      <label for="name">Name:</label>
+      <label for="name">Tên:</label>
       <input type="text" name="name" id="name" required>
       <br><br>
       <label for="email">Email:</label>
       <input type="email" name="email" id="email" required>
       <br><br>
-      <label for="password">Password:</label>
+      <label for="password">Mật khẩu:</label>
       <input type="password" name="password" id="password" required>
       <br><br>
-      <label for="password">Confirm Password:</label>
+      <label for="password">Xác nhận mật khẩu:</label>
       <input type="password" name="confirmPassword" id="confirmPassword" required>
       <br><br>
-      <button type="submit" class="btn-primary">Register</button>
+      <button type="submit" class="btn-primary">Đăng ký</button>
     </form>
-    <p>Already have an account? <a href="/login" class="Register_here tag-index">Login here</a>.</p>
+    <p>Đã có tài khoản? <a href="/login" class="Register_here tag-index">Đăng nhập</a>.</p>
   </div>
 </div>

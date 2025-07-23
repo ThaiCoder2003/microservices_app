@@ -14,9 +14,9 @@ const ProductSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    stock: {
+    origin: {
         type: Number,
-        default: 0,
+        default: 'Việt Nam',
     },
     createdAt: {
         type: Date,
@@ -24,8 +24,12 @@ const ProductSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['coffee', 'tea', 'snack', 'other'],
-        default: 'other',
+        enum: ['Cà phê', 'Trà', 'Đồ ăn vặt', 'Khác'],
+        default: 'Khác',
+        required: true,
+    },
+    image: {
+        type: String,
         required: true,
     },
     description: {

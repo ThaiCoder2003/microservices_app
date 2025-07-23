@@ -10,7 +10,10 @@ module.exports = async (id, updateData) => {
             id: updatedProduct.id,
             name: updatedProduct.name,
             price: updatedProduct.price,
-            stock: updatedProduct.stock,
+            origin: updatedProduct.origin,
+            description: updatedProduct.description,
+            image: updatedProduct.image,    
+            category: updatedProduct.category,
             createdAt: updatedProduct.createdAt,
         };
     } catch (err) {

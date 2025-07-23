@@ -7,12 +7,13 @@
                 <span class="header-left_icon-homepage">
                     <i class="fa-solid fa-house"></i>
                 </span>
-                <div class="header-left_search">
-                    <!-- Hoi chat gpt xem cái khung search này template như nào-->
+                <form class="header-left_search" action="/search" method="GET">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Bạn muốn phát nội dung gì?">
-                    <i class="fa-solid fa-folder-open"></i>
-                </div>
+                    <input type="text" name="q" placeholder="Nội dung bạn muốn tìm kiếm?" required>
+                    <button type="submit" style="background:none;border:none;padding:0;">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </button>
+                </form>
                 <div class="header-left_search--history">
                     <div class="header-left_search--history-header">Các tìm kiếm gần đây</div>
                     <div class="header-left_search--history-item">
@@ -37,7 +38,6 @@
                     <ul class="header-right_menu--list">
                         <li class="header-right_menu--item">Thông tin</li>
                         <li class="header-right_menu--item">Liên hệ</li>
-                        <li class="header-right_menu--item">Tải xuống</li>
                     </ul>
                 </div>
                 <% if (user) { %>
@@ -54,15 +54,12 @@
                                 Hỗ trợ <i class="fa-solid fa-up-right-from-square icon"></i>
                             </div>
                             <div class="dropdown-item">
-                                Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item">
                                 Cài đặt
                             </div>
                             <div class="dropdown-divider"></div>
-                            <div class="dropdown-item logout">
-                                Đăng xuất
-                            </div>
+                            <form action="/logout" method="POST" style="display: inline;" id="logoutForm">
+                                <button type="submit" class="dropdown-item logout">Đăng xuất</button>
+                            </form>
                         </div>
                     </div>
                 <% } else { %>
@@ -80,14 +77,14 @@
                 <div class="container-sidebar_box4">
                     <ul class="container-sidebar_box4-playlist">
                         <li class="container-sidebar_box4-playlist--item">
-                            <div class="container-sidebar_box4-playlist-info">
+                            <a href="/" class="container-sidebar_box4-playlist-info">
                                 <div class="container-sidebar_box4-playlist-title">Homepage</div>
-                            </div>
+                            </a>
                         </li>
-                        <li class="container-sidebar_box4-playlist--item  selected">
-                            <div class="container-sidebar_box4-playlist-info">
+                        <li class="container-sidebar_box4-playlist--item selected">
+                            <a href="/products" class="container-sidebar_box4-playlist-info">
                                 <div class="container-sidebar_box4-playlist-title">Product</div>
-                            </div>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -96,68 +93,63 @@
             <div class="container-box-content">
                 <!-- Những bài hát thịnh hành -->
                 <div class="container-box-component">
-                    <div class="container-box-component--header">
-                        <div class="container-box-component--header--div">
-                            <span class="container-box-component--header--text">Cà phê</span>    
-                        </div>
-                        <ul class="container-box-component--header--list--product">
-
+                    <% if (product) { %>
+                        <div class="container-box-component--header">
+                            <div class="container-box-component--header--div">
+                                <span class="container-box-component--header--text"><%= product.name %></span>    
+                            </div>
+                            <ul class="container-box-component--header--list--product">
                                 <li class="container-box-component--header--item--product">
                                     <div class="song-thumbnail--product">
-                                        <img src="imgSong.jpg" alt=""
+                                        <img src="/images/<%= product.image %>" alt="<%= product.name %>"
                                             class="container-box-component--header--item--img--product" />
                                         <span class="container-box-component--header--item--icon-play--product">
                                             <i class="fa-solid fa-cart-shopping"></i>
                                         </span>
                                     </div>
-                                    <span class="container-box-component--header--item--nameSong--product">Cà phê</span>
-                                    <span class="container-box-component--header--item--artist--product">Cost: 10$</span>
+                                    <span class="container-box-component--header--item--nameSong--product"><%= product.name %></span>
+                                    <span class="container-box-component--header--item--artist--product">Giá: <%= product.price %>$</span>
+                                    <div class="container-box-component--header--item--info--product">
+                                        <span>Mô tả: <%= product.description %></span><br>
+                                        <span>Danh mục: <%= product.category %></span><br>
+                                        <span>Xuất xứ: <%= product.origin %></span>
+                                    </div>
                                 </li>
                             </ul>
-                    </div>
+                        </div>
+                    <% } %>
                 </div>
-                <!-- Những bài hát thịnh hành -->
+                <!-- Bạn cũng có thể thích -->
                 <div class="container-box-component">
                     <div class="container-box-component--header">
                         <div class="container-box-component--header--div">
-                            <span class="container-box-component--header--text">Nước ép</span>    
+                            <span class="container-box-component--header--text">Bạn cũng có thể thích...</span>
                         </div>
-                        <ul class="container-box-component--header--list--product">
-
-                                <li class="container-box-component--header--item--product">
-                                    <div class="song-thumbnail--product">
-                                        <img src="imgSong.jpg" alt=""
-                                            class="container-box-component--header--item--img--product" />
-                                        <span class="container-box-component--header--item--icon-play--product">
-                                            <i class="fa-solid fa-cart-shopping"></i>
-                                        </span>
-                                    </div>
-                                    <span class="container-box-component--header--item--nameSong--product">Nước ép</span>
-                                    <span class="container-box-component--header--item--artist--product">Cost: 10$</span>
-                                </li>
-                            </ul>
-                    </div>
-                </div>
-                <!-- Những bài hát thịnh hành -->
-                <div class="container-box-component">
-                    <div class="container-box-component--header">
-                        <div class="container-box-component--header--div">
-                            <span class="container-box-component--header--text">Bánh ngọt</span>    
-                        </div>
-                        <ul class="container-box-component--header--list--product">
-
-                                <li class="container-box-component--header--item--product">
-                                    <div class="song-thumbnail--product">
-                                        <img src="imgSong.jpg" alt=""
-                                            class="container-box-component--header--item--img--product" />
-                                        <span class="container-box-component--header--item--icon-play--product">
-                                            <i class="fa-solid fa-cart-shopping"></i>
-                                        </span>
-                                    </div>
-                                    <span class="container-box-component--header--item--nameSong--product">Bánh ngọt</span>
-                                    <span class="container-box-component--header--item--artist--product">Cost: 10$</span>
-                                </li>
-                            </ul>
+                        <% if (products.length) { %>
+                            <div class="slider-container">
+                                <button class="container-box-component--header--list--btn-left">&#10094;</button>
+                                <ul class="container-box-component--header--list">
+                                    <% products.forEach(product => { %>
+                                        <li class="container-box-component--header--item">
+                                            <a href="/products/<%= product._id %>" class="product-link">
+                                                <div class="song-thumbnail">
+                                                    <img src="/images/<%= product.image %>" alt="<%= product.name %>"
+                                                        class="container-box-component--header--item--img" />
+                                                    <span class="container-box-component--header--item--icon-play">
+                                                        <i class="fa-solid fa-cart-shopping"></i>
+                                                    </span>
+                                                </div>
+                                                <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
+                                                <span class="container-box-component--header--item--artist">Cost: <%= product.price %>$</span>
+                                            </a>
+                                        </li>       
+                                    <% }) %>
+                                </ul>
+                                <button class="container-box-component--header--list--btn-right">&#10095;</button>
+                            </div>
+                        <% } else { %>
+                            <span class="container-box-component--header--text">No products available</span>
+                        <% } %>
                     </div>
                 </div>
                 <!-- Footer -->
