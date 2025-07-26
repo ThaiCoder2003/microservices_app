@@ -14,8 +14,8 @@ const ProductSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    stock: {
-        type: Number,
+    origin: {
+        type: String,
         default: 0,
     },
     createdAt: {
@@ -24,8 +24,8 @@ const ProductSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['coffee', 'tea', 'snack', 'other'],
-        default: 'other',
+        enum: ['Cà phê', 'Trà', 'Bánh ngọt', 'Nước ép'],
+        default: 'Cà phê',
         required: true,
     },
     description: {

@@ -20,6 +20,7 @@ module.exports = async ({ email, password }) => {
             id: user._id,
             name: user.name,
             email: user.email,
+            role: user.role,
         };
     } catch (err) {
         console.error(err);

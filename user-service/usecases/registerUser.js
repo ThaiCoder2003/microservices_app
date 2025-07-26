@@ -7,7 +7,7 @@ module.exports = async ({ name, email, password, confirmPassword }) => {
             throw new Error('All fields are required');
         }
 
-        const existingUser = await  userRepository.findByEmail(email);
+        const existingUser = await userRepository.findByEmail(email);
         if (existingUser) {
             throw new Error('Email already exists');
         }

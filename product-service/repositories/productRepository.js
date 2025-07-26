@@ -2,7 +2,7 @@ const { get } = require('mongoose');
 const Product = require('../models/Products');
 
 module.exports = {
-    findById: (id) => Product.find({id: id}),
+    findById: (id) => Product.findOne({id: id}),
     findAll: () => Product.find(),
     create: (data) => new Product(data).save(),
     updateById: (id, updateData) => Product.findOneAndUpdate({id: id}, updateData, { new: true }),

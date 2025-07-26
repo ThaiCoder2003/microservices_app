@@ -1,4 +1,5 @@
 const userRepository = require('../repositories/userRepository');
+const checkUser = require('../utils/checkUser')
 
 function formatDate(dateObj) {
   const date = new Date(dateObj);
@@ -14,10 +15,7 @@ module.exports = async (userId) => {
             throw new Error('User ID is required');
         }
 
-        const user = await userRepository.findById(userId);
-        if (!user) {
-            throw new Error('User not found');
-        }
+        const user = await checkUser(id);
 
         return {
             id: user._id,
@@ -25,6 +23,10 @@ module.exports = async (userId) => {
             email: user.email,
             createdAt: user.createdAt,
             updatedAt: formatDate(user.updatedAt),
+            profilePicture: user.profilePicture,
+            birthday: user.birthday,
+            address: user.address,
+            phone: user.phone
         };
     } catch (err) {
         console.error(err);

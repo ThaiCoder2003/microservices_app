@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 const userServices = require('../../infrastructure/services/userServices')
-
+require('dotenv').config();
 const getCart = require('../../usecases/cart/getCart');
 const addToCart = require('../../usecases/cart/addToCart');
 const removeFromCart = require('../../usecases/cart/deleteFromCart');
-const purchase = require('../../usecases/cart/purchase');
+const emptyCart = require('../../usecases/cart/emptyCart');
 
 module.exports = {
     get: async (req, res) => {
@@ -19,6 +19,7 @@ module.exports = {
             if (!user) {
                 return res.status(401).json({ error: 'Unauthorized' });
             }
+            
         
             const cart = await getCart(user.id);
             res.status(200).json(cart);
@@ -76,7 +77,7 @@ module.exports = {
                 return res.status(400).json({ error: 'You must provide a product ID to remove from the cart' });
             }
 
-            const cart = await getCart(user.id);
+            const cart = await getCart(decodedUserID);
             if (!cart) {
                 return res.status(404).json({ error: 'Cart not found' });
             }
@@ -88,7 +89,7 @@ module.exports = {
             }
 
             // Item exists, proceed to remove it
-            const updatedCart = await removeFromCart(user.id, productId);
+            const updatedCart = await removeFromCart(decodedUserID, productId);
             res.status(200).json({
                 message: 'Product removed from cart successfully',
                 cart: updatedCart
@@ -100,7 +101,7 @@ module.exports = {
         }
     },
 
-    purchase: async (req, res) => {
+    empty: async (req, res) => {
         try {
             const authToken = req.headers.authorization;
             if (!authToken) {
@@ -115,17 +116,11 @@ module.exports = {
                 return res.status(401).json({ error: 'Unauthorized' });
             }
 
-            // Ensure the user has a cart and items to purchase
-            const cart = await getCart(user.id);
-            if (!cart || cart.items.length === 0) {
-                return res.status(400).json({ error: 'Cart is empty' });
-            }
-
             // Proceed with the purchase
-            const purchaseResult = await purchase(user.id);
-            res.status(200).json(purchaseResult);
+            const emptyResult = await emptyCart(user.id);
+            res.status(200).json(emptyResult);
         } catch (error) {
-            console.error('Error during purchase:', error);
+            console.error('Error during emptying:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }

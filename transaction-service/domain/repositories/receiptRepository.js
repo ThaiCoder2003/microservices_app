@@ -1,4 +1,4 @@
-const ReceiptEvent = require('../models/ReceiptEventModule');
+const ReceiptEvent = require('../../infrastructure/models/ReceiptEventModule');
 
 module.exports = {
     createEvent: (eventData) => new ReceiptEvent(eventData).save(),

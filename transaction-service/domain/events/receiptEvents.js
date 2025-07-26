@@ -2,7 +2,7 @@ const ReceiptEventTypes = {
     PURCHASE_COMPLETED: 'PurchaseCompleted',
 };
 
-function createReceiptEvent(type, userId, payload) {
+function createReceiptEvent(type, userId, payload, timestamp) {
   if (!Object.values(CartEventTypes).includes(type)) {
     throw new Error(`Invalid Cart Event Type: ${type}`);
   }
@@ -11,7 +11,7 @@ function createReceiptEvent(type, userId, payload) {
     userId,
     type,
     payload,
-    timestamp: new Date()
+    timestamp
   };
 }
 

@@ -1,4 +1,5 @@
 const userRepository = require('../repositories/userRepository');
+const checkUser = require('../utils/checkUser')
 module.exports = async ({ userId, email, name, profilePicture, address, phone }) => {
     try {
         const data = {};
@@ -10,10 +11,7 @@ module.exports = async ({ userId, email, name, profilePicture, address, phone })
             throw new Error('At least one field must be provided for update');
         }
 
-        const user = await userRepository.findById(userId);
-        if (!user) {
-            throw new Error('User not found');
-        }
+        const user = await checkUser(userId);
 
         if (name) {
             data.name = name;
@@ -42,7 +40,6 @@ module.exports = async ({ userId, email, name, profilePicture, address, phone })
             profilePicture: user.profilePicture,
             address: user.address,
             phone: user.phone,
-            createdAt: user.createdAt,
             updatedAt: Date.now(),
         };
     } catch (err) {

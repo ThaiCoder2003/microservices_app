@@ -8,6 +8,7 @@ router.get('/users', userController.list); // Route to get all users
 router.post('/register', userController.register); // Route to register a new user
 router.post('/login', userController.login); // Route to login a user
 router.put('/update', userController.update); // Route to update user profile
+router.delete('/users/:id', userController.delete);
 // Route to register a new use
 
 module.exports = router;

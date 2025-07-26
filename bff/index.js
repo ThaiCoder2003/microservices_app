@@ -6,7 +6,34 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const expressLayouts = require('express-ejs-layouts');
 const port = process.env.PORT || 5000;
+
 const auth = require('./middleware/auth');
+const requireAdmin = require('./middleware/requireAdmin')
+
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'public/images')); // Ensure it saves inside /public/images
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + path.extname(file.originalname);
+    cb(null, uniqueSuffix);
+  }
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith('image/')) {
+      return cb(new Error('Only image files are allowed'), false);
+    }
+    cb(null, true);
+  },
+  limits: {
+    fileSize: 2 * 1024 * 1024 // 2MB
+  }
+});
 
 app.use(cookieParser());
 app.set('view engine', 'ejs');
@@ -22,23 +49,37 @@ app.use(express.json());
 const USER_SERVICE = 'http://localhost:5001';
 const PRODUCT_SERVICE = 'http://localhost:5002';
 
-app.get('/', async (req, res) => {
+app.get('/', auth(false), async (req, res) => {
   const response = await axios.get(`${PRODUCT_SERVICE}/products/category`);
-  const [coffeeProducts, teaProducts, snackProducts, otherProducts] = response.data;
-  res.render('homepage', { title: 'Home', coffee: coffeeProducts, tea: teaProducts, snack: snackProducts, other: otherProducts });
+  const { coffee = [], tea = [], juice = [], dessert = [] } = response.data || {};
+  res.render('homepage', {
+    title: 'Home',
+    coffee: coffee || [],
+    tea: tea || [],
+    juice: juice || [],
+    dessert: dessert || [],
+  });
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', auth(false), (req, res) => {
+  if (req.user) {
+    // If user is already logged in, redirect to homepage
+    return res.redirect('/');
+  }
   res.render('login', { title: 'Login' , message: null });
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login', auth(false), async (req, res) => {
   try {
+    if (req.user) {
+    // If user is already logged in, redirect to homepage
+      return res.redirect('/');
+    }
     const response = await axios.post(`${USER_SERVICE}/login`, req.body);
     const token = response.data.token;
 
     res.cookie('token', token, { httpOnly: true });
-    res.redirect('/admin');
+    res.redirect('/');
   } catch (err) {
     console.error(err);
 
@@ -48,21 +89,17 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post('/api/login', async (req, res) => {
-  try {
-    const response = await axios.post(`${USER_SERVICE}/login`, req.body);
-    res.json(response.data);
-  } catch (err) {
-    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Internal error' });
-  }
-});
 
 app.post('/logout', (req, res) => {
+  if (!req.cookies.token) {
+    // If user is not logged in, redirect to login page
+    return res.redirect('/');
+  }
   res.clearCookie('token');
   res.redirect('/login');
 });
 
-app.get('/profile', auth, async (req, res) => {
+app.get('/profile', auth(true), async (req, res) => {
   try {
     const response = await axios.get(`${USER_SERVICE}/profile`, {
       headers: { Authorization: `Bearer ${req.cookies.token}` }
@@ -74,7 +111,7 @@ app.get('/profile', auth, async (req, res) => {
   }
 });
 
-app.put('/update', auth, async (req, res) => {
+app.put('/update', auth(true), async (req, res) => {
   try {
     const response = await axios.put(`${USER_SERVICE}/update`, req.body, {
       headers: { Authorization: `Bearer ${req.cookies.token}` }
@@ -86,16 +123,24 @@ app.put('/update', auth, async (req, res) => {
   }
 }); 
 
-app.post('/api/users', auth, async (req, res) => {
-  try {
-    const response = await axios.get(`${USER_SERVICE}/users`, {
+app.delete('/delete/:id', auth(true), requireAdmin, async (req, res) => {
+  try{
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ error: 'Missing token' });
+    }
+    const response = await axios.delete(`${USER_SERVICE}/users/${req.params.id}`, {
       headers: { Authorization: `Bearer ${req.cookies.token}` }
-    });
-    res.json(response.data);
-  } catch (err) {
+    })
+
+    return res.json({ message: 'User deleted' });
+  }
+  catch (err) {
+    console.error(err);
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Internal error' });
   }
-});
+})
+
 
 app.get('/register', async (req, res) => {
   res.render('register', { title: 'Register', message: null}); 
@@ -113,24 +158,6 @@ app.post('/register', async (req, res) => {
 
     const message = err.response?.data?.error || 'Registration failed';
     res.render('register', { title: 'Register', message });
-  }
-});
-
-app.post('/api/register', async (req, res) => {
-  try {
-    const response = await axios.post(`${USER_SERVICE}/register`, req.body);
-    res.json(response.data);
-  } catch (err) {
-    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Internal error' });
-  }
-});
-
-app.post('/api/login', async (req, res) => {
-  try {
-    const response = await axios.post(`${USER_SERVICE}/login`, req.body);
-    res.json(response.data);
-  } catch (err) {
-    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Internal error' });
   }
 });
 
@@ -159,40 +186,19 @@ app.get('/admin', auth, async (req, res) => {
   }
 });
 
-app.get('/api/products', async (req, res) => {
-  console.log("✅ Đã gọi BFF route /api/products");
+app.post('/products',  upload.single('image'), async (req, res) => {
   try {
-    const response = await axios.get(`${PRODUCT_SERVICE}/products`);
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to get products' });
-  }
-});
-
-app.post('/api/products', async (req, res) => {
-  console.log("✅ Đã gọi BFF route /api/products");
-  try {
-    const response = await axios.post(`${PRODUCT_SERVICE}/products`, req.body);
-    
-    res.json(response.data);
-  } catch (err) {
-    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to add product' });
-  }
-});
-
-app.get('/api/users', async (req, res) => {
-  console.log("✅ Đã gọi BFF route /api/users");
-  try {
-    const response = await axios.get(`${USER_SERVICE}/users`);
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to get users' });
-  }
-});
-
-app.post('/products', async (req, res) => {
-  try {
-    const response = await axios.post(`${PRODUCT_SERVICE}/products`, req.body);
+        const { id, name, price, description, origin, category } = req.body;
+    const image = req.file.filename; 
+    const response = await axios.post(`${PRODUCT_SERVICE}/products`, {
+      id: id,
+      name: name,
+      price: price,
+      origin: origin,
+      description: description,
+      category: category,
+      image: image
+    });
     
     res.redirect('/admin');
   } catch (err) {
@@ -225,7 +231,7 @@ app.put('/products/:id', async (req, res) => {
 app.get('/products/:id', async (req, res) => {
   try {
     const response = await axios.get(`${PRODUCT_SERVICE}/products/${req.params.id}`);
-    res.render('productDetail', { title: 'Product Detail', product: response.data });
+    res.render('productdetail', { title: 'Product Detail', product: response.data });
   } catch (err) {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to get product' });
   }
@@ -234,7 +240,7 @@ app.get('/products/:id', async (req, res) => {
 app.delete('/products/:id', async (req, res) => {
   try {
     const response = await axios.delete(`${PRODUCT_SERVICE}/products/${req.params.id}`);
-    res.redirect('/admin');
+    return res.json({ message: 'Product deleted' });
   } catch (err) {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to delete product' });
   }

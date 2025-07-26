@@ -1,68 +1,80 @@
 <div class="container-admin">
     <div class="sidebar">
         <ul class="sidebarList">
-            <li class="sidebarItem" data-target="pane-add">Add new product</li>
-            <li class="sidebarItem" data-target="pane-products">Product list</li>
-            <li class="sidebarItem" data-target="pane-users">User list</li>
-            <li class="sidebarItem" data-target="pane-logout">Log out</li>
+            <li class="sidebarItem" data-target="pane-add">Thêm sản phẩm mới</li>
+            <li class="sidebarItem" data-target="pane-products">Danh sách sản phẩm</li>
+            <li class="sidebarItem" data-target="pane-users">Danh sách người dùng</li>
+            <li class="sidebarItem" data-target="pane-logout">Đăng xuất</li>
         </ul>
     </div>
     <div class="content">
         <div class="admin-header">
-            <span>Hello <%= username %></span>
+            <span>Xin chào <%= username %></span>
         </div>
         <!-- Pane 1 -->
         <section id="pane-add" class="pane active">
             <!-- giữ nguyên form Add New Product của bạn -->
-            <h1>Add New Product</h1>
+            <h1>Thêm sản phẩm mới</h1>
 
             <form action="/products" method="POST">
-                <label for="name" class="label-pane">Product ID:</label>
+                <label for="name" class="label-pane">ID sản phẩm:</label>
                 <input type="text" name="id" class="input-pane" placeholder="Product ID" required>
 
-                <label for="name" class="label-pane">Product Name:</label>
+                <label for="name" class="label-pane">Tên sản phẩm</label>:</label>
                 <input type="text" name="name" class="input-pane" placeholder="Product Name" required>
 
-                <label for="name" class="label-pane">Product Price:</label>
+                <label for="name" class="label-pane">Giá:</label>
                 <input type="number" name="price" class="input-pane" placeholder="Product Price" required>
 
-                <label for="name" class="label-pane">Stock Count:</label>
-                <input type="number" name="stock" class="input-pane" placeholder="Stock Count" required>
+                <label for="name" class="label-pane">Xuất xứ:</label>
+                <input type="text" name="origin" class="input-pane" placeholder="Xuất xứ">
 
-                <label for="category" class="label-pane">Category:</label>
+                <label for="image" class="label-pane">Mô tả:</label>
+                <textarea name="description" class="input-pane" placeholder="Mô tả sản phẩm"></textarea>
+
+                <label for="image" class="label-pane">Ảnh sản phẩm:</label>
+                <input type="file" name="image" class="input-pane" accept="image/*" required>
+
+                <label for="category" class="label-pane">Loại:</label>
                 <select name="category" class="input-pane" required>
-                    <option value="coffee">Coffee</option>
-                    <option value="tea">Tea</option>
-                    <option value="snack">Snack</option>
-                    <option value="other">Other</option>
+                    <option value="Cà phê">Cà phê</option>
+                    <option value="Trà">Trà</option>
+                    <option value="Bánh ngọt">Đồ ăn vặt</option>
+                    <option value="Nước ép">Khác</option>
                 </select>
-                <button type="submit" class="btn-primary btn-admin">Add Product</button>
+                <button type="submit" class="btn-primary btn-admin">Thêm sản phẩm</button>
             </form>
         </section>
 
         <!-- Pane 2 -->
         <section id="pane-products" class="pane">
-            <h1>Product list</h1>
+            <h1>Sản phẩm</h1>
             <ul class="paneList">
                 <% if (products && products.length > 0) { %>
                     <% products.forEach(function(product, index) { %>
-                        <li class="paneItem">
+                        <li id="product-<% product.id %>" class="paneItem">
                             <span class="Number"><%= (index + 1).toString().padStart(2, '0') %></span>
                             <div class="pane-boxcontent">
                                 <div>
-                                    <span class="pane-info">ID: #<%= product.id %></span>
-                                    <span class="pane-info">Name: <%= product.name %></span>
-                                    <span class="pane-info">Price: $<%= product.price.toFixed(2) %>đ</span>
-                                    <span class="pane-info">Stock: <%= product.stock %></span>
-                                    <span class="pane-info">Created At: <%= product.createdAt.toLocaleString() %></span>
+                                    <img src="<%= product.image %>" alt="Ảnh sản phẩm" class="pane-product-image" style="width:60px;height:60px;object-fit:cover;margin-right:10px;">
                                 </div>
-                                <span class="pane-delete">Delete</span>
+                                <div>
+                                    <span class="pane-info">Mã SP: #<%= product.id %></span>
+                                    <span class="pane-info">Tên: <%= product.name %></span>
+                                    <span class="pane-info">Giá: <%= product.price %>đ</span>
+                                    <span class="pane-info">Xuất xứ: <%= product.origin %></span>
+                                    <span class="pane-info">Loại: <% product.category %>
+                                    <span class="pane-info">Ngày cập nhật: <%= product.updatedAt %></span>
+                                    <span class="pane-info">Mô tả: <%= product.description %></span>
+                                </div>
+                                <span class="pane-delete product-delete" data-id="<% product.id %>">Xóa</span>
+
                             </div>
                         </li>
                     <% }); %>
                 <% } else { %>
                     <li class="paneItem">
-                        <span class="pane-info">No products found.</span>
+                        <span class="pane-info">Không tìm thấy sản phẩm nào.</span>
                     </li>
                 <% } %>
             </ul>
@@ -70,25 +82,25 @@
 
         <!-- Pane 3 -->
         <section id="pane-users" class="pane">
-            <h1>User list</h1>
+            <h1>Danh sách người dùng</h1>
             <ul class="paneList">
                 <% if (users && users.length > 0) { %>
                     <% users.forEach(function(user, index) { %>
-                        <li class="paneItem">
+                        <li id="user-<%= user.id %>" class="paneItem">
                             <span class="Number"><%= (index + 1).toString().padStart(2, '0') %></span>
                             <div class="pane-boxcontent">
                                 <div>
                                     <span class="pane-info">Email: <%= user.email %></span>
-                                    <span class="pane-info">Name: <%= user.name %></span>
-                                    <span class="pane-info">Created At: <%= user.createdAt %></span>
+                                    <span class="pane-info">Tên: <%= user.name %></span>
+                                    <span class="pane-info">Ngày tạo: <%= user.createdAt %></span>
                                 </div>
-                                <span class="pane-delete">Delete</span>
+                                <span class="pane-delete delete-user" data-id="<%= user.id %>">Xóa</span>
                             </div>
                         </li>
                     <% }); %>
                 <% } else { %>
                     <li class="paneItem">
-                        <span class="pane-info">No users found.</span>
+                       <span class="pane-info">Không tìm thấy người dùng nào.</span>
                     </li>
                 <% } %>
             </ul>
@@ -104,3 +116,63 @@
         </section>
     </div>
 </div>
+<script>
+    document.querySelectorAll('.delete-product').forEach(button => {
+        button.addEventListener('click', async (e) => {
+        const productId = button.dataset.id;
+
+        const confirmed = confirm('Bạn có chắc muốn xóa sản phẩm này?');
+        if (!confirmed) return;
+
+        try {
+            const res = await fetch(`/products/${productId}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json'
+            }
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                alert(`Error: ${error.error}`);
+                return;
+            }
+
+            document.getElementById(`product-${productId}`).remove();
+        } catch (err) {
+            console.error(err);
+            alert('Đã có lỗi xảy ra! Xin thử lại sau~');
+        }
+        });
+    })
+    
+
+    document.querySelectorAll('.delete-user').forEach(button => {
+    button.addEventListener('click', async (e) => {
+      const userId = button.dataset.id;
+
+      const confirmed = confirm('Bạn có chắc muốn xóa người dùng này?');
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(`/delete/${userId}`, {
+          method: 'DELETE',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (!res.ok) {
+          const error = await res.json();
+          alert(`Error: ${error.error}`);
+          return;
+        }
+
+        document.getElementById(`user-${userId}`).remove();
+      } catch (err) {
+        console.error(err);
+        alert('Đã có lỗi xảy ra! Xin thử lại sau~');
+      }
+    });
+  });
+</script>

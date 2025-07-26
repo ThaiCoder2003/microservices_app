@@ -5,12 +5,26 @@ module.exports = async function GetCart(userId) {
     try {
         // Fetch all cart events for the user
         const events = await cartRepository.getEventsByUser(userId);
+        if (!events || events.length === 0 ){
+            return {
+                userId,
+                items: [],
+                totalPrice: 0
+            }
+        }
         
         // Get product details for each event
         const cart = new Cart(userId);
         cart.applyEvents(events);
 
-        const snapshot = cart.getAll();
+        const snapshot = cart.getAll()
+        if (snapshot.items.length === 0){
+            return {
+                userId,
+                items: [],
+                totalPrice: 0
+            }
+        }
 
         const items = await Promise.all(snapshot.items.map(async (item) => {
             const product = await productService.getProductById(item.productId);
@@ -18,19 +32,17 @@ module.exports = async function GetCart(userId) {
                 id: product.id,
                 name: product.name,
                 price: product.price,
+                image: product.image,
                 quantity: item.quantity,
                 totalPrice: product.price * item.quantity
             }
         }));
-
-        cart.totalPrice = items.reduce((total, item) => total + item.totalPrice, 0);
-
+        const totalPrice = items.reduce((total, item) => total + item.totalPrice, 0);
         // Return the cart details
         return {
-            userId: cart.userId,
-            items: cart.items,
-            totalPrice: cart.totalPrice,
-            events: cart.events
+            userId,
+            items,
+            totalPrice,
         };
     } catch (err) {
         console.error(err);
