@@ -6,11 +6,14 @@ const { CartEventTypes, createCartEvent } = cartEvents;
 module.exports = async function AddToCart(userId, productId, quantity) {
     try {
         // Create a new cart event
-        const cartEvent = createCartEvent(CartEventTypes.ITEM_ADDED, {
-            userId,
-            productId,
-            quantity
-        });
+        const cartEvent = createCartEvent(
+            CartEventTypes.ITEM_ADDED, 
+            userId, 
+            {
+                productId,
+                quantity
+            }
+        );
         
         // Save the event to the database
         const savedEvent = await cartRepository.createEvent(cartEvent);

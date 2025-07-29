@@ -14,7 +14,7 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, 'public/images')); // Ensure it saves inside /public/images
+    cb(null, path.join(__dirname, 'public/assets/images')); // Ensure it saves inside /public/images
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + path.extname(file.originalname);
@@ -48,9 +48,11 @@ app.use(express.json());
 
 const USER_SERVICE = 'http://localhost:5001';
 const PRODUCT_SERVICE = 'http://localhost:5002';
+const TRANSACTION_SERVICE = 'http://localhost:5003';
 
 app.get('/', auth(false), async (req, res) => {
-  const response = await axios.get(`${PRODUCT_SERVICE}/products/category`);
+  try {
+  const response = await axios.get(`${PRODUCT_SERVICE}/category`);
   const { coffee = [], tea = [], juice = [], dessert = [] } = response.data || {};
   res.render('homepage', {
     title: 'Home',
@@ -59,6 +61,10 @@ app.get('/', auth(false), async (req, res) => {
     juice: juice || [],
     dessert: dessert || [],
   });
+  } catch (err) {
+  console.error('EJS render error:', err);
+  res.status(500).send('Template render failed.');
+}
 });
 
 app.get('/login', auth(false), (req, res) => {
@@ -91,7 +97,7 @@ app.post('/login', auth(false), async (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-  if (!req.cookies.token) {
+  if (!req.user) {
     // If user is not logged in, redirect to login page
     return res.redirect('/');
   }
@@ -161,7 +167,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
-app.get('/admin', auth, async (req, res) => {
+app.get('/admin', auth(true), requireAdmin, async (req, res) => {
   try {
     const product_response = await axios.get(`${PRODUCT_SERVICE}/products`);
     let products = [];
@@ -186,9 +192,9 @@ app.get('/admin', auth, async (req, res) => {
   }
 });
 
-app.post('/products',  upload.single('image'), async (req, res) => {
+app.post('/products', auth(true), requireAdmin, upload.single('image'), async (req, res) => {
   try {
-        const { id, name, price, description, origin, category } = req.body;
+    const { id, name, price, description, origin, category } = req.body;
     const image = req.file.filename; 
     const response = await axios.post(`${PRODUCT_SERVICE}/products`, {
       id: id,
@@ -206,7 +212,7 @@ app.post('/products',  upload.single('image'), async (req, res) => {
   }
 });
 
-app.get('/search', async (req, res) => {
+app.get('/search', auth(false), async (req, res) => {
   const query = req.query.q;
   try {
     const response = await axios.get(`${PRODUCT_SERVICE}/search`, { params: { query }
@@ -219,7 +225,7 @@ app.get('/search', async (req, res) => {
   }
 });
 
-app.put('/products/:id', async (req, res) => {
+app.put('/products/:id', auth(true), requireAdmin, async (req, res) => {
   try {
     const response = await axios.put(`${PRODUCT_SERVICE}/products/${req.params.id}`, req.body);
     res.redirect('/admin');
@@ -245,6 +251,65 @@ app.delete('/products/:id', async (req, res) => {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to delete product' });
   }
 });
+
+app.get('/cart', auth(true), async (req, res) => {
+  try {
+      const response = await axios.get(`${TRANSACTION_SERVICE}/cart`, {
+        headers: { Authorization: `Bearer ${req.cookies.token}` }
+      });
+
+      const { items, totalPrice } = response.data;
+      return res.render('cartpage', { title: 'Cart', items, totalPrice })
+  }
+  catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to get cart' });
+  }
+})
+
+app.post('/cart/add', auth(true), async (req, res) => {
+  try {
+    const { productId, quantity } = req.body;
+    await axios.post(`${TRANSACTION_SERVICE}/cart/add`, {
+      headers: { Authorization: `Bearer ${req.cookies.token}`, body: {
+        productId,
+        quantity
+      }}
+    });
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to add to cart' });
+  }
+})
+
+app.delete('cart/delete/:productId', auth(true), async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    await axios.delete(`${TRANSACTION_SERVICE}/cart/delete/${productId}`, {
+      headers: { Authorization: `Bearer ${req.cookies.token}` },
+    })
+
+    res.status(200).json('Remove Successful!');
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to delete product from cart' });
+  }
+})
+
+app.post('/purchase', auth(true), async (req, res) => {
+  try {
+    await axios.post(`${TRANSACTION_SERVICE}/receipt`, {
+      headers: { Authorization: `Bearer ${req.cookies.token}` },
+    })
+      
+    await axios.delete(`${TRANSACTION_SERVICE}/cart/empty`, {
+      headers: { Authorization: `Bearer ${req.cookies.token}` },
+    })
+
+    res.status(200).json('Remove Successful!');
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to purchase' });
+  }
+})
 
 app.listen(port, () => {
   console.log(`BFF running on port ${port}`);

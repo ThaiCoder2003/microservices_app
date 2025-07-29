@@ -1,6 +1,6 @@
 const productRepository = require('../repositories/productRepository');
 
-module.exports = async (id, name, price, stock ) => {
+module.exports = async (id, name, price, image, description, origin, category ) => {
     try {
         if (!id || !name || !price) {
             throw new Error('Missing required fields: id, name, or price');
@@ -10,8 +10,11 @@ module.exports = async (id, name, price, stock ) => {
             id,
             name,
             price,
-            stock: stock || 0, // Default stock to 0 if not provided
+            image, // Default image
             createdAt: new Date(),
+            description,
+            origin,
+            category
         };
         await productRepository.create(data);
         return { message: 'Product created successfully' };

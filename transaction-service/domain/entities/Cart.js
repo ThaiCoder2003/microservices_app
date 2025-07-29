@@ -13,12 +13,12 @@ class Cart {
     apply(event) {
         switch (event.type) {
             case 'CartItemAdded': {
-                const existingItem = this.items.find(item => item.id === event.payload.id);
+                const existingItem = this.items.find(item => item.productId === event.payload.productId);
                 if (existingItem) {
                     existingItem.quantity += event.payload.quantity;
                 } else {
                     this.items.push({
-                        id: event.payload.id,
+                        productId: event.payload.productId,
                         quantity: event.payload.quantity
                     });
                 }
@@ -26,10 +26,7 @@ class Cart {
                 break;
             }
             case 'CartItemRemoved': {
-                const itemIndex = this.items.findIndex(item => item.id === event.payload.id);
-                if (itemIndex !== -1) {
-                    this.items.splice(itemIndex, 1);
-                }
+                this.items = this.items.filter(item => item.productId !== event.payload.productId);
                 break;
             }
             case 'CartCleared': {
@@ -44,6 +41,14 @@ class Cart {
             userId: this.userId,
             items: this.items,
         };
+    }
+
+    getTotalQuantity() {
+        return this.items.reduce((sum, item) => sum + item.quantity, 0);
+    }
+
+    isEmpty() {
+        return this.items.length === 0;
     }
 }
 

@@ -26,16 +26,9 @@ module.exports = async function GetCart(userId) {
             }
         }
 
-        const items = await Promise.all(snapshot.items.map(async (item) => {
-            const product = await productService.getProductById(item.productId);
-            return{
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                image: product.image,
-                quantity: item.quantity,
-                totalPrice: product.price * item.quantity
-            }
+        const items = await Promise.all(snapshot.items.map(async ({ productId, quantity }) => {
+            const product = await productService.getProductById(productId);
+            return mapCartItemToDTO(product, quantity);
         }));
         const totalPrice = items.reduce((total, item) => total + item.totalPrice, 0);
         // Return the cart details
@@ -48,4 +41,15 @@ module.exports = async function GetCart(userId) {
         console.error(err);
         throw new Error('Failed to retrieve cart');
     }
+}
+
+function mapCartItemToDTO(product, quantity) {
+    return {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        quantity,
+        totalPrice: product.price * quantity,
+    };
 }

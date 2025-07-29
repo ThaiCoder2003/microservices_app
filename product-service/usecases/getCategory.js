@@ -10,10 +10,8 @@ module.exports = async (category) => {
             id: product.id,
             name: product.name,
             price: product.price,
-            stock: product.stock,
+            image: product.image,
             createdAt: product.createdAt,
-            category: product.category,
-            description: product.description
         }));
     } catch (err) {
         console.error(err);

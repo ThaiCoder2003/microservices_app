@@ -123,22 +123,30 @@
                         </div>
                         <div class="product-detail-container">
                             <div class="product-image-section">
-                                <img src="/images/<%= product.image %>" alt="<%= product.name %>" class="product-image" />
+                                <img src="/assets/images/products/<%= product.image %>" alt="<%= product.name %>" class="product-image" />
                             </div>
 
                             <div class="product-info-section">
                                 <h1 class="product-title"><%= product.name %></h1>
                                 <p class="product-price"><%= product.price %>Đ</p>
                                 
+                                
+                                <div class="product-description">
+                                    <p><%= product.description %></p>
+                                </div>
+
+                                <p class="product-origin">
+                                    <%= product.origin %>
+                                </p>
                                 <div class="product-actions">
-                                    <button class="add-to-cart-button">
+                                    <label for="quantity">Số lượng:</label>
+                                    <input type="number" id="quantity" min="1" value="1" />
+                                    
+                                    <button class="add-to-cart-button" onclick="addToCart('<%= product.id %>')">
                                         <i class="fa-solid fa-cart-shopping"></i> Thêm vào giỏ
                                     </button>
                                 </div>
 
-                                <div class="product-description">
-                                    <p><%= product.description %></p>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -223,3 +231,34 @@
         </div>
     </div>
 </div>
+<script>
+    async function addToCart(productId) {
+        const quantity = parseInt(document.getElementById('quantity').value);
+
+        if (quantity <= 0) {
+            alert('Số lượng phải lớn hơn 0');
+            return;
+        }
+
+        try {
+            const res = await fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productId, quantity })
+            });
+
+            if (res.ok) {
+                alert('Đã thêm vào giỏ hàng!');
+                window.location.href = '/cart';
+            } else {
+                const data = await response.json();
+                alert(data.error || 'Có lỗi xảy ra khi thêm vào giỏ hàng!');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+        }
+    }
+</script>

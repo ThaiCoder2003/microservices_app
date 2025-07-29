@@ -10,7 +10,7 @@
                 <div class="header-left_search">
                     <!-- Hoi chat gpt xem cái khung search này template như nào-->
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Nội dung bạn muốn tìm kiếm?">
+                    <input id="searchInput" type="text" placeholder="Nội dung bạn muốn tìm kiếm?">
                     <i class="fa-solid fa-folder-open"></i>
                 </div>
                 <div class="header-left_search--history">
@@ -86,11 +86,11 @@
                         </div>
                     </div>
                     <div class="header-right_login">
-                        <a class="header-right_login--signUp" href="/login">Đăng ký</a>
-                        <a class="header-right_login--signIn" href="/register"">Đăng nhập</a>
+                        <a class="header-right_login--signUp" href="/register">Đăng ký</a>
+                        <a class="header-right_login--signIn" href="/login">Đăng nhập</a>
                     </div>
                 </div>
-            <% }
+            <% } %>
         </div>
         <div class="container">
             <!-- size 1/4-->
@@ -130,7 +130,7 @@
                                             <li class="container-box-component--header--item">
                                                 <div class="song-thumbnail">
                                                     <a href="/products/<%= product.id %>">
-                                                        <img src="/images/<%= product.image %>" alt="<%= product.name %>"
+                                                        <img src="/assets/images/products/<%= product.image %>" alt="<%= product.name %>"
                                                             class="container-box-component--header--item--img" />
                                                     </a>
                                                     <a href="/products/<%= product.id %>">
@@ -140,13 +140,13 @@
                                                     </a>
                                                 </div>
                                                 <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
-                                                <span class="container-box-component--header--item--artist"><%= product.price $>Đ</span>
+                                                <span class="container-box-component--header--item--artist"><%= product.price %>Đ</span>
                                             </li>
                                         <% }) %>
                                     </ul>
                                     <button class="container-box-component--header--list--btn-right">&#10095;</button>
                                 <% } else { %>
-                                    <span class="container-box-component--header--text">Không có sản phẩm cà phê nào</span>   
+                                    <span class="container-box-component--header--no-item">Không có sản phẩm cà phê nào</span>   
                                 <% } %>
                             </div>
                         </div>
@@ -166,7 +166,7 @@
                                             <li class="container-box-component--header--item">
                                                 <div class="song-thumbnail">
                                                     <a href="/products/<%= product.id %>">
-                                                        <img src="/images/<%= product.image %>" alt="<%= product.name %>"
+                                                        <img src="/assets/images/products/<%= product.image %>" alt="<%= product.name %>"
                                                             class="container-box-component--header--item--img" />
                                                     </a>
                                                     <a href="/products/<%= product.id %>">
@@ -176,7 +176,7 @@
                                                     </a>
                                                 </div>
                                                 <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
-                                                <span class="container-box-component--header--item--artist"><%= product.price $>Đ</span>
+                                                <span class="container-box-component--header--item--artist"><%= product.price %>Đ</span>
                                             </li>
                                         <% }) %>
                                     </ul>
@@ -203,7 +203,7 @@
                                             <li class="container-box-component--header--item">
                                                 <div class="song-thumbnail">
                                                     <a href="/products/<%= product.id %>">
-                                                        <img src="/images/<%= product.image %>" alt="<%= product.name %>"
+                                                        <img src="/assets/images/products/<%= product.image %>" alt="<%= product.name %>"
                                                             class="container-box-component--header--item--img" />
                                                     </a>
                                                     <a href="/products/<%= product.id %>">
@@ -213,13 +213,13 @@
                                                     </a>
                                                 </div>
                                                 <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
-                                                <span class="container-box-component--header--item--artist"><%= product.price $>Đ</span>
+                                                <span class="container-box-component--header--item--artist"><%= product.price %>Đ</span>
                                             </li>
                                         <% }) %>
                                     </ul>
                                     <button class="container-box-component--header--list--btn-right">&#10095;</button>
                                 <% } else { %>
-                                    <span class="container-box-component--header--text">Không có sản phẩm trà nào</span>   
+                                    <span class="container-box-component--header--no-item">Không có sản phẩm trà nào</span>   
                                 <% } %>
                             </div>
                         </div>
@@ -232,15 +232,15 @@
                                 <span class="container-box-component--header--showAll">Hiện tất cả</span>
                             </div>
                             <div class="slider-container">
-                                <% if (desserts.length) { %>
+                                <% if (dessert.length) { %>
                                     <button class="container-box-component--header--list--btn-left">&#10094;</button>
                                     <ul class="container-box-component--header--list">
 
-                                        <% desserts.forEach(product => { %>
+                                        <% dessert.forEach(product => { %>
                                             <li class="container-box-component--header--item">
                                                 <div class="song-thumbnail">
                                                     <a href="/products/<%= product.id %>">
-                                                        <img src="/images/<%= product.image %>" alt="<%= product.name %>"
+                                                        <img src="/assets/images/products/<%= product.image %>" alt="<%= product.name %>"
                                                             class="container-box-component--header--item--img" />
                                                     </a>
                                                     <a href="/products/<%= product.id %>">
@@ -250,13 +250,13 @@
                                                     </a>
                                                 </div>
                                                 <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
-                                                <span class="container-box-component--header--item--artist"><%= product.price $>Đ</span>
+                                                <span class="container-box-component--header--item--artist"><%= product.price %>Đ</span>
                                             </li>
                                         <% }) %>
                                     </ul>
                                     <button class="container-box-component--header--list--btn-right">&#10095;</button>
                                 <% } else { %>
-                                    <span class="container-box-component--header--text">Không có sản phẩm bánh ngọt nào</span>   
+                                    <span class="container-box-component--header--no-item">Không có sản phẩm bánh ngọt nào</span>   
                                 <% } %>
                             </div>
                         </div>
@@ -308,3 +308,4 @@
             </div>
         </div>
     </div>
+</div>

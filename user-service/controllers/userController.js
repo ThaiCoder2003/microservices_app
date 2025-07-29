@@ -4,6 +4,7 @@ const getAllUsers = require('../usecases/getAllUsers');
 const getProfile = require('../usecases/getProfile');
 const updateUser = require('../usecases/updateUser');
 const deleteUser = require('../usecases/deleteUser');
+const verifyUser = require('../usecases/verifyUser');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const secret = process.env.JWT_SECRET || 'your_jwt_secret';
@@ -120,6 +121,24 @@ module.exports = {
         } catch (err) {
             console.error(err);
             res.status(400).json({ error: err.message });
+        }
+    },
+    verify: async (req, res) => {
+        try {
+            const { userId } = req.params;
+            if (!userId) {
+                return res.status(400).json({ error: 'User ID is required' });
+            }
+
+            const user = await verifyUser(userId);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found or inactive' });
+            }
+
+            return res.status(200).json({ verified: true, userId: user.id });
+        } catch (err) {
+            console.error('User verification failed:', err);
+            return res.status(500).json({ error: 'Internal server error' });
         }
     }
 }

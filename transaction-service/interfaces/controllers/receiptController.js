@@ -3,25 +3,27 @@ const userServices = require('../../infrastructure/services/userServices')
 require('dotenv').config();
 const createReceipt = require('../../usecases/receipt/createReceipt')
 const getReceipts = require('../../usecases/receipt/getReceipts')    
-const userServices = require('../../infrastructure/services/userServices')
+
+const secret = process.env.JWT_SECRET;
 
 module.exports = {
     get: async (req, res) => {
         try {
-            const authToken = req.headers.authorization;
-            if (!authToken) {
+            const authHeader = req.headers.authorization;
+            if (!authHeader) {
                 return res.status(401).json({ error: 'Unauthorized' });
             }
 
-            const token = authToken.replace('Bearer ', '');
-            const decodedUserID = jwt.verify(token, process.env.JWT_SECRET).id;
+            const token = authHeader.replace('Bearer ', '');
+            const decoded = jwt.verify(token, secret);
+            const id = decoded.id
 
-            const user = await userServices.getUserById(decodedUserID);
+            const user = await userServices.getUserById(id);
             if (!user) {
                 return res.status(401).json({ error: 'Invalid user' });
             }
 
-            const receipts = await getReceipts(decodedUserID);
+            const receipts = await getReceipts(user.id);
             res.status(200).json(receipts);
         } catch (error) {
             console.error('Error getting receipt:', error);
@@ -31,20 +33,21 @@ module.exports = {
 
     purchase: async (req, res) => {
         try {
-            const authToken = req.headers.authorization;
-            if (!authToken) {
+            const authHeader = req.headers.authorization;
+            if (!authHeader) {
                 return res.status(401).json({ error: 'Unauthorized' });
             }
 
-            const token = authToken.replace('Bearer ', '');
-            const decodedUserID = jwt.verify(token, process.env.JWT_SECRET).id;
+            const token = authHeader.replace('Bearer ', '');
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const id = decoded.id
 
-            const user = await userServices.getUserById(decodedUserID);
+            const user = await userServices.getUserById(id);
             if (!user) {
                 return res.status(401).json({ error: 'Invalid user' });
             }
 
-            const purchaseResult = await createReceipt(decodedUserID);
+            const purchaseResult = await createReceipt(user.id);
 
             res.status(201).json({ message: 'Purchase Complete!', purchaseResult })
         } catch (error) {

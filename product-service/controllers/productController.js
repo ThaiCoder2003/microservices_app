@@ -70,12 +70,18 @@ module.exports = {
     },
 
     getByCategory: async (req, res) => {
-        const categories = ['coffee', 'tea', 'snack', 'other'];
+        const categoryMap = {
+            'Cà phê': 'coffee',
+            'Trà': 'tea',
+            'Bánh ngọt': 'dessert',
+            'Nước ép': 'juice'
+        };
+
         try {
             const results = {};
-            for (const category of categories) {
-            const products = await getAllProducts(category);
-            results[category] = products || [];
+            for (const [vn, en] of Object.entries(categoryMap)) {
+                const products = await getAllProducts(vn);
+                results[en] = products || [];
             }
             res.status(200).json(results);
         } catch (err) {

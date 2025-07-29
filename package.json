@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npm-run-all --parallel user product bff",
+    "dev": "npm-run-all --parallel user product transaction bff",
     "user": "cd user-service && npm start",
     "product": "cd product-service && npm start",
+    "transaction": "cd transaction-service && npm start",
     "bff": "cd bff && npm start"
   },
   "author": "",

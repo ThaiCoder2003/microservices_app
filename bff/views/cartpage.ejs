@@ -107,41 +107,75 @@
                 <div class="container-box-content-cart-page">
                     <h2 class="container-box-content-cart-page-hearder">Giỏ hàng của bạn</h2>
                     <div class="container-box-content-cart-items">
+                    <% if (items.length > 0) { %>
+                        <% items.forEach(item => { %>
                         <div class="container-box-content-cart-item">
                             <div class="container-box-content-cart-item-right">
-                                <img src="ava-1200x676-7.jpg" alt="Cà phê sữa"
-                                    class="container-box-content-cart-item-image">
-                                <div class="container-box-content-cart-item-right-info">
-                                    <span class="container-box-content-cart-page-name">Cà phê sữa</span>
-                                    <span class="container-box-content-cart-page-cost">Giá gốc: 25.000đ</span>
-                                </div>
-
+                            <img src="/assets/images/products/<%= item.image %>" alt="<%= item.name %>" class="container-box-content-cart-item-image">
+                            <div class="container-box-content-cart-item-right-info">
+                                <span class="container-box-content-cart-page-name"><%= item.name %></span>
+                                <span class="container-box-content-cart-page-cost">Giá gốc: <%= item.price %>đ</span>
                             </div>
-
+                            </div>
                             <div class="container-box-content-cart-item-details">
-
-                                <div class="container-box-content-cart-quantity">
-                                    <button class="container-box-content-cart-quantity-btn decrement">-</button>
-                                    <input type="number" value="1" min="1"
-                                        class="container-box-content-cart-quantity-input">
-                                    <button class="container-box-content-cart-quantity-btn increment">+</button>
-                                </div>
-                                <p class="container-box-content-cart-price">25.000đ</p>
-                                <button class="container-box-content-cart-remove">Xóa</button>
+                            <div class="container-box-content-cart-quantity">
+                                <button class="container-box-content-cart-quantity-btn decrement">-</button>
+                                <input type="number" value="<%= item.quantity %>" min="1" class="container-box-content-cart-quantity-input">
+                                <button class="container-box-content-cart-quantity-btn increment">+</button>
+                            </div>
+                            <p class="container-box-content-cart-price"><%= item.totalPrice %>đ</p>
+                            <button class="container-box-content-cart-remove cart-remover" data-id="<>">Xóa</button>
                             </div>
                         </div>
-                        <!-- lặp nhiều item -->
+                        <% }) %>
+                    <% } else { %>
+                        <p>Giỏ hàng trống.</p>
+                    <% } %>
                     </div>
 
                     <div class="container-box-content-cart-summary">
-                        <p>Tạm tính: <span>75.000đ</span></p>
-                        <p>Phí vận chuyển: <span>15.000đ</span></p>
-                        <hr>
-                        <p><strong>Tổng cộng: <span>90.000đ</span></strong></p>
-                        <button class="container-box-content-cart-checkout-btn">Tiến hành đặt hàng</button>
+                        <p><strong>Tổng cộng: <span><%= totalPrice %>đ</span></strong></p>
+                        <button class="container-box-content-cart-checkout-btn check-out">Tiến hành đặt hàng</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+  document.querySelectorAll('.cart-remover').forEach(button => {
+    button.addEventListener('click', async () => {
+      const productId = button.dataset.id;
+
+      try {
+        const res = await fetch(`/cart/delete/${productId}`, {
+          method: 'DELETE'
+        });
+
+        if (res.ok) {
+          location.reload(); // Refresh cart after successful removal
+        } else {
+          const error = await res.json();
+          alert('Xóa thất bại: ' + (error.message || 'Lỗi không xác định'));
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Không thể kết nối đến máy chủ.');
+      }
+    });
+  });
+
+  document.querySelectorAll('.check-out').forEach(button => {
+    button.addEventListener('click', async () => {
+        try{
+            const res = await fetch(`/purchase`, {
+                method: 'POST'
+            })
+
+        } catch (err) {
+            console.error(err);
+            alert('Không thể kết nối đến máy chủ.');
+        }
+    });
+  })
+</script>

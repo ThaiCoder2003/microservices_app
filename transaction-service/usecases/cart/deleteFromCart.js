@@ -1,13 +1,16 @@
 const cartRepository = require('../../domain/repositories/cartRepository');
+const cartEvents = require('../../domain/events/cartEvents');
+
+const { CartEventTypes, createCartEvent } = cartEvents;
 
 module.exports = async function DeleteFromCart(userId, productId) {
     try {
         // Create a new cart event for deletion
-        const event = {
-            userId,
-            type: 'CartItemDeleted',
-            payload: { productId }
-        };
+        const event = createCartEvent(
+            CartEventTypes.ITEM_ADDED, 
+            userId, 
+            { productId: productId }
+        )
         
         // Save the event to the database
         const savedEvent = await cartRepository.createEvent(event);

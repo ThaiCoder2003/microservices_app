@@ -1,27 +1,21 @@
 const receiptRepository = require('../../domain/repositories/receiptRepository');
-const cartRepository = require('../../domain/repositories/cartRepository')
 
 const receiptEvents = require('../../domain/events/receiptEvents')
-const getCart = require('../cart/getCart');
+const checkCart = require('../../utils/checkCart')
 
-const productService = require('../../infrastructure/services/productServices');
 const { ReceiptEventTypes, createReceiptEvent } = receiptEvents;
 
 module.exports = async function CreateReceipt(userId) {
     try {
         // Create a new receipt event
-        const events = await cartRepository.getEventsByUser(userId);
-        if (!events || events.length === 0){
-            throw new Error('No items in cart to purchase');
-        }
-
-        const cart = await getCart(userId);
-        if (cart.items.length == 0){
-            throw new Error('No items in cart to purchase');
-        }
-
+        const cart = await checkCart(userId);
         const items = cart.items;
-        const receiptEvent = createReceiptEvent(ReceiptEventTypes.PURCHASE_COMPLETED, userId, { items, totalPrice: cart.totalPrice }, Date.now());
+        const receiptEvent = createReceiptEvent(
+            ReceiptEventTypes.PURCHASE_COMPLETED, 
+            userId, 
+            { items, totalPrice: cart.totalPrice }, 
+            Date.now()
+        );
 
         // Save the event to the database
         const savedReceipt = await receiptRepository.createEvent(receiptEvent);

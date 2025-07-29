@@ -15,16 +15,14 @@ module.exports = async (userId) => {
             throw new Error('User ID is required');
         }
 
-        const user = await checkUser(id);
+        const user = await checkUser(userId);
 
         return {
             id: user._id,
             name: user.name,
             email: user.email,
-            createdAt: user.createdAt,
-            updatedAt: formatDate(user.updatedAt),
             profilePicture: user.profilePicture,
-            birthday: user.birthday,
+            birthday: formatDate(user.birthday),
             address: user.address,
             phone: user.phone
         };
