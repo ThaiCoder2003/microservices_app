@@ -8,7 +8,7 @@
 }
 
 /* ----- Sidebar ----- */
-.container-admin-sidebar {
+.sidebar {
   min-width: 220px;
   background: #2c3e50;
   color: #ecf0f1;
@@ -16,46 +16,46 @@
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
 }
 
-.container-admin-sidebarList {
+.sidebarList {
   list-style: none;
 }
-.container-admin-sidebarItem {
+.sidebarItem {
   padding: 12px 24px;
   cursor: pointer;
   transition: background 0.2s;
 }
-.container-admin-sidebarItem:hover,
-.container-admin-sidebarItem.active {
+.sidebarItem:hover,
+.sidebarItem.active {
   background: #34495e;
 }
 
 /* ----- Content ----- */
-.container-admin-content {
+.content {
   flex: 1;
   padding: 32px;
 }
-.container-admin-content-header {
+.admin-header {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 24px;
   font-weight: 600;
 }
-.container-admin-content-admin-box {
+.admin-box {
   max-width: 480px;
 }
 
-.container-admin-content-label-pane {
+.label-pane {
   display: block;
   margin: 16px 0 6px;
   font-weight: 600;
 }
-.container-admin-content-input-pane {
+.input-pane {
   width: 100%;
   padding: 10px 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-.container-admin-content-btn-admin {
+.btn-admin {
   margin-top: 24px;
   padding: 10px 16px;
   background: #3498db;
@@ -65,48 +65,48 @@
   font-weight: 600;
   cursor: pointer;
 }
-.container-admin-content-btn-primary:hover {
+.btn-primary:hover {
   background: #2980b9;
 }
-.container-admin-content-sidebarList {
+.sidebarList {
   padding: 0;
   margin: 0;
 }
-.container-admin-content-paneList {
+.paneList {
   padding: 0;
   margin: 0;
 }
-.container-admin-content-paneItem {
+.paneItem {
   display: flex;
   padding: 10px 0;
   align-items: center;
   border-bottom: 2px dashed #000;
 }
-.container-admin-content-pane-delete {
+.pane-delete {
   color: red;
   cursor: pointer;
 }
-.container-admin-content-pane-delete:hover {
+.pane-delete:hover {
   color: rgba(255, 0, 0, 0.474);
 }
-.container-admin-content-Number {
+.Number {
   margin-right: 30px;
 }
-.container-admin-content-pane-info {
+.pane-info {
   margin-right: 10px;
   display: block;
 }
-.container-admin-content-pane-boxcontent {
+.pane-boxcontent {
   flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 /* ----- Ẩn/hiện các pane ----- */
-.container-admin-content-pane {
+.pane {
   display: none;
 }
-.container-admin-content-pane.container-admin-content-active {
+.pane.active {
   display: flex; /* pane nào được active mới hiển thị */
   flex-direction: column;
 }
@@ -123,20 +123,20 @@
 }
 
 /* Tiêu đề chính */
-#pane-logout .container-admin-content-pane-header {
+#pane-logout h1 {
   margin-bottom: 24px;
   font-size: 28px;
   color: #2c3e50;
 }
 
 /* Nhóm nút */
-#pane-logout .container-admin-content-button {
+#pane-logout .button {
   display: flex;
   gap: 20px;
 }
 
 /* Nút Yes và No */
-#pane-logout .container-admin-content-button .container-admin-content-button-btn {
+#pane-logout .button button {
   padding: 10px 20px;
   font-size: 16px;
   border: none;
@@ -147,25 +147,25 @@
 }
 
 /* Nút Yes – màu xanh */
-#pane-logout .container-admin-content-button .container-admin-content-button-btn:first-child {
+#pane-logout .button button:first-child {
   background-color: #27ae60;
   color: #fff;
 }
-#pane-logout .container-admin-content-button .container-admin-content-button-btn:first-child:hover {
+#pane-logout .button button:first-child:hover {
   background-color: #1e8449;
 }
 
 /* Nút No – màu xám */
-#pane-logout .container-admin-content-button .container-admin-content-button-btn:last-child {
+#pane-logout .button button:last-child {
   background-color: #bdc3c7;
   color: #2c3e50;
 }
-#pane-logout .container-admin-content-button .container-admin-content-button-btn:last-child:hover {
+#pane-logout .button button:last-child:hover {
   background-color: #95a5a6;
 }
 
 /* ---- Nút chính của form ---- */
-.container-admin-content-btn-primary {
+.btn-primary {
   background: linear-gradient(135deg, #7f5af0 0%, #8644ff 100%);
   color: #fff;
 
@@ -182,19 +182,19 @@
   user-select: none;
 }
 /* Hover: nâng nhẹ & đổ bóng đậm hơn */
-.container-admin-content-btn-primary:hover {
+.btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 /* Active (khi bấm giữ): hạ xuống lại */
-.container-admin-content-btn-primary:active {
+.btn-primary:active {
   transform: translateY(0);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Disabled: xám & vô hiệu */
-.container-admin-content-btn-primary:disabled {
+.btn-primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

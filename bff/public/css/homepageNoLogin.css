@@ -71,6 +71,7 @@
 .header-left_search input::placeholder {
   color: #b0b0b0;
 }
+
 .container-sidebar_box-AddNewPlaylist--button {
   padding: 8px 16px;
   font-size: 13px;
@@ -506,6 +507,11 @@
 .container-box-component--header--text:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.container-box-component--header--no-item {
+  font-size: 15px;
+  font-weight: 200;
 }
 
 .container-box-component--header--showAll {
