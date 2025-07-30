@@ -4,6 +4,7 @@ const createProduct = require('../usecases/createProduct');
 const updateProduct = require('../usecases/updateProduct');
 const searchProducts = require('../usecases/searchProducts');
 const deleteProduct = require('../usecases/deleteProduct');
+const getCategory = require('../usecases/getCategory')
 
 module.exports = {
     list: async (req, res) => {
@@ -80,7 +81,7 @@ module.exports = {
         try {
             const results = {};
             for (const [vn, en] of Object.entries(categoryMap)) {
-                const products = await getAllProducts(vn);
+                const products = await getCategory(vn);
                 results[en] = products || [];
             }
             res.status(200).json(results);

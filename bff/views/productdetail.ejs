@@ -32,46 +32,47 @@
                 <button class="header-left_search--history-clear-button">Xoá các tìm kiếm gần đây</button>
             </div>
         </div>
-            <% if (user) { %>
-                <div class="header-right">
-                    <div class="header-right_menu">
-                        <ul class="header-right_menu--list">
-                            <li class="header-right_menu--item">Premium</li>
-                            <li class="header-right_menu--item">Hỗ trợ</li>
-                            <li class="header-right_menu--item">Tải xuống</li>
-                        </ul>
-                        <div class="header-right_menu_download">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                        </div>
-                    </div>
-                    <div class="header-right_User">
-                        <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
-                        <div class="header-right_User-box--avatar" id="avatarBtn">
-                            <span class="header-right_User--avatar">N</span>
-                        </div>
-                        <div class="dropdown-menu" id="dropdownMenu">
-                            <div class="dropdown-item">
-                                Tài khoản <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item selected">
-                                Hồ sơ
-                            </div>
-                            <div class="dropdown-item">
-                                Nâng cấp lên Premium <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item">
-                                Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item">
-                                Cài đặt
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <form action="/logout" class="dropdown-item logout" method="POST" style="display: inline;" id="logoutForm">
-                                <button type="submit" class="dropdown-item logout">Đăng xuất</button>
-                            </form>
-                        </div>
+        <% if (user) { %>
+            <div class="header-right">
+                <div class="header-right_menu">
+                    <ul class="header-right_menu--list">
+                        <li class="header-right_menu--item">Premium</li>
+                        <li class="header-right_menu--item">Hỗ trợ</li>
+                        <li class="header-right_menu--item">Tải xuống</li>
+                    </ul>
+                    <div class="header-right_menu_download">
+                        <i class="fa-solid fa-cart-shopping"></i>
                     </div>
                 </div>
+                <div class="header-right_User">
+                    <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
+                    <div class="header-right_User-box--avatar" id="avatarBtn">
+                        <span class="header-right_User--avatar">N</span>
+                    </div>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <div class="dropdown-item">
+                            Tài khoản <i class="fa-solid fa-up-right-from-square icon"></i>
+                        </div>
+                        <div class="dropdown-item selected">
+                            Hồ sơ
+                        </div>
+                        <div class="dropdown-item">
+                            Nâng cấp lên Premium <i class="fa-solid fa-up-right-from-square icon"></i>
+                        </div>
+                        <div class="dropdown-item">
+                            Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
+                        </div>
+                        <div class="dropdown-item">
+                            Cài đặt
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <form action="/logout" class="dropdown-item logout" method="POST" style="display: inline;"
+                            id="logoutForm">
+                            <button type="submit" class="dropdown-item logout">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <% } else { %>
                 <div class="header-right">
                     <div class="header-right_menu">
@@ -87,28 +88,39 @@
                     </div>
                     <div class="header-right_login">
                         <a class="header-right_login--signUp" href="/login">Đăng ký</a>
-                        <a class="header-right_login--signIn" href="/register"">Đăng nhập</a>
+                        <a class="header-right_login--signIn" href="/register">Đăng nhập</a>
                     </div>
                 </div>
-            <% }
+                <% } %>
     </div>
     <div class="container">
         <!-- size 1/4-->
         <div class="container-sidebar">
             <div class="container-sidebar-homepageNoLogin">
                 <ul class="container-sidebar-homepageNoLogin-playlist">
-                    <li class="container-sidebar-homepageNoLogin-playlist--item ">
+                    <li class="container-sidebar-homepageNoLogin-playlist--item selected"
+                        onclick="window.location.href='/'">
                         <div class="container-sidebar-homepageNoLogin-playlist-info">
                             <a href="/" class="container-sidebar-homepageNoLogin-playlist-title"
                                 style="text-decoration: none; color: inherit;">Homepage</a>
                         </div>
                     </li>
-                    <li class="container-sidebar-homepageNoLogin-playlist--item selected">
+                    <li class="container-sidebar-homepageNoLogin-playlist--item"
+                        onclick="window.location.href='/products'">
                         <div class="container-sidebar-homepageNoLogin-playlist-info">
                             <a href="/products" class="container-sidebar-homepageNoLogin-playlist-title"
                                 style="text-decoration: none; color: inherit;">Product</a>
                         </div>
                     </li>
+                    <% if (user) { %>
+                        <li class="container-sidebar-homepageNoLogin-playlist--item"
+                            onclick="window.location.href='/cart'">
+                            <div class="container-sidebar-homepageNoLogin-playlist-info">
+                                <a href="/products" class="container-sidebar-homepageNoLogin-playlist-title"
+                                    style="text-decoration: none; color: inherit;">Cart</a>
+                            </div>
+                        </li>
+                        <% } %>
                 </ul>
             </div>
         </div>
@@ -119,20 +131,29 @@
                 <div class="container-box-component">
                     <div class="container-box-component--header">
                         <div class="container-box-component--header--div">
-                            <span class="container-box-component--header--text"><%= product.name %></span>
+                            <span class="container-box-component--header--text">
+                                <%= product.name %>
+                            </span>
                         </div>
                         <div class="product-detail-container">
                             <div class="product-image-section">
-                                <img src="/assets/images/products/<%= product.image %>" alt="<%= product.name %>" class="product-image" />
+                                <img src="/assets/images/products/<%= product.image %>" alt="<%= product.name %>"
+                                    class="product-image" />
                             </div>
 
                             <div class="product-info-section">
-                                <h1 class="product-title"><%= product.name %></h1>
-                                <p class="product-price"><%= product.price %>Đ</p>
-                                
-                                
+                                <h1 class="product-title">
+                                    <%= product.name %>
+                                </h1>
+                                <p class="product-price">
+                                    <%= product.price %>Đ
+                                </p>
+
+
                                 <div class="product-description">
-                                    <p><%= product.description %></p>
+                                    <p>
+                                        <%= product.description %>
+                                    </p>
                                 </div>
 
                                 <p class="product-origin">
@@ -141,7 +162,7 @@
                                 <div class="product-actions">
                                     <label for="quantity">Số lượng:</label>
                                     <input type="number" id="quantity" min="1" value="1" />
-                                    
+
                                     <button class="add-to-cart-button" onclick="addToCart('<%= product.id %>')">
                                         <i class="fa-solid fa-cart-shopping"></i> Thêm vào giỏ
                                     </button>

@@ -184,13 +184,24 @@ app.get('/admin', auth(true), requireAdmin, async (req, res) => {
     if (req.user && req.user.username) {
         username = req.user.username;
     }
-    res.render('dashboardAdmin', { title: 'Products', products: products, users: users, username: username });  
+    res.render('dashboardAdmin', { title: 'Admin Dashboard', products: products, users: users, username: username });  
   } catch (err) {
     console.error(err);
 
     res.status(500).send('Error fetching data');
   }
 });
+
+app.get('/products', auth(false), async(req, res) => {
+  try {
+    const response = await axios.get(`${PRODUCT_SERVICE}/products`);
+    const products = response.data || [];
+
+    res.render('productpage', { title: 'Products', products })
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to get product' });
+  }
+})
 
 app.post('/products', auth(true), requireAdmin, upload.single('image'), async (req, res) => {
   try {
@@ -234,16 +245,16 @@ app.put('/products/:id', auth(true), requireAdmin, async (req, res) => {
   }
 });
 
-app.get('/products/:id', async (req, res) => {
-  try {
-    const response = await axios.get(`${PRODUCT_SERVICE}/products/${req.params.id}`);
-    res.render('productdetail', { title: 'Product Detail', product: response.data });
-  } catch (err) {
-    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to get product' });
-  }
-});
+// app.get('/products/:id', auth(false), async (req, res) => {
+//   try {
+//     const response = await axios.get(`${PRODUCT_SERVICE}/products/${req.params.id}`);
+//     res.render('productdetail', { title: 'Product Detail', product: response.data });
+//   } catch (err) {
+//     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to get product' });
+//   }
+// });
 
-app.delete('/products/:id', async (req, res) => {
+app.delete('/products/:id', auth(true), requireAdmin, async (req, res) => {
   try {
     const response = await axios.delete(`${PRODUCT_SERVICE}/products/${req.params.id}`);
     return res.json({ message: 'Product deleted' });
@@ -269,11 +280,12 @@ app.get('/cart', auth(true), async (req, res) => {
 app.post('/cart/add', auth(true), async (req, res) => {
   try {
     const { productId, quantity } = req.body;
-    await axios.post(`${TRANSACTION_SERVICE}/cart/add`, {
-      headers: { Authorization: `Bearer ${req.cookies.token}`, body: {
-        productId,
-        quantity
-      }}
+    await axios.post(`${TRANSACTION_SERVICE}/cart/add`, 
+    { productId, quantity }, 
+    {
+      headers: { 
+        Authorization: `Bearer ${req.cookies.token}`
+      }
     });
   } catch (err) {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to add to cart' });

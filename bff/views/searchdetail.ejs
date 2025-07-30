@@ -43,39 +43,63 @@
                     <i class="fa-solid fa-cart-shopping"></i>
                 </div>
             </div>
-            <div class="header-right_User">
-                <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
-                <div class="header-right_User-box--avatar" id="avatarBtn">
-                    <span class="header-right_User--avatar">N</span>
-                </div>
-                <div class="dropdown-menu" id="dropdownMenu">
-                    <div class="dropdown-item">
-                        Tài khoản <i class="fa-solid fa-up-right-from-square icon"></i>
+                <% if (user) { %>
+                    <div class="header-right_User">
+                        <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
+                        <div class="header-right_User-box--avatar" id="avatarBtn">
+                            <span class="header-right_User--avatar">N</span>
+                        </div>
+                        <div class="dropdown-menu" id="dropdownMenu">
+                            <div class="dropdown-item selected">
+                                Hồ sơ
+                            </div>
+                            <div class="dropdown-item">
+                                Hỗ trợ <i class="fa-solid fa-up-right-from-square icon"></i>
+                            </div>
+                            <div class="dropdown-item">
+                                Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
+                            </div>
+                            <div class="dropdown-item">
+                                Cài đặt
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-item logout">
+                                Đăng xuất
+                            </div>
+                        </div>
                     </div>
-                    <div class="dropdown-item selected">
-                        Hồ sơ
+                <% } else { %>
+                    <div class="header-right_login">
+                        <a href="/register" class="header-right_login--signUp">Đăng ký</a>
+                        <a href="/login" class="header-right_login--signIn">Đăng nhập</a>
                     </div>
-                    <div class="dropdown-item">
-                        Nâng cấp lên Premium <i class="fa-solid fa-up-right-from-square icon"></i>
-                    </div>
-                    <div class="dropdown-item">
-                        Hỗ trợ <i class="fa-solid fa-up-right-from-square icon"></i>
-                    </div>
-                    <div class="dropdown-item">
-                        Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
-                    </div>
-                    <div class="dropdown-item">
-                        Cài đặt
-                    </div>
-                    <div class="dropdown-divider"></div>
-                    <div class="dropdown-item logout">
-                        Đăng xuất
-                    </div>
-                </div>
-            </div>
+                <% } %>
         </div>
     </div>
     <div class="container container-detail">
+        <div class="container-sidebar">
+            <div class="container-sidebar_box4">
+                <ul class="container-sidebar_box4-playlist">
+                    <li class="container-sidebar_box4-playlist--item selected" onclick="window.location.href='/'">
+                        <div class="container-sidebar_box4-playlist-info">
+                            <div class="container-sidebar_box4-playlist-title">Homepage</div>
+                        </div>
+                    </li>
+                    <li class="container-sidebar_box4-playlist--item">
+                        <div class="container-sidebar_box4-playlist-info" onclick="window.location.href='/products'">
+                            <div class="container-sidebar_box4-playlist-title">Product</div>
+                        </div>
+                    </li>
+                    <% if (user) { %>
+                    <li class="container-sidebar_box4-playlist--item">
+                        <div class="container-sidebar_box4-playlist-info" onclick="window.location.href='/cart'">
+                            <div class="container-sidebar_box4-playlist-title">Cart</div>
+                        </div>
+                    </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
         <!-- size 3/4 -->
         <div class="container-box-content container-box-content-detail">
             <div class="container-box-content1">
