@@ -1,14 +1,24 @@
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+dotenv.config();
+
 const createProduct = require('../usecases/createProduct');
-const Products = require('../models/Products')
+const Products = require('../models/Products');
+
+// Kết nối MongoDB
+const mongoURI = process.env.DB_URL || 'mongodb://localhost:27017/productDB';
 
 const seedProducts = async () => {
-    // Reset the database
     try {
+        await mongoose.connect(mongoURI);
+        console.log('✅ MongoDB connected!');
+
         const count = await Products.countDocuments();
         if (count > 0) {
             console.log('⚠️ Products already exist. Skipping seeding.');
             return;
         }
+
         const demoProducts = [
             {
                 id: 'CF001',
@@ -83,16 +93,24 @@ const seedProducts = async () => {
                 image: 'nuoc-ep-dua-hau.jpeg',
             },
         ];
-    
+
         for (const product of demoProducts) {
-            await createProduct(product.id, product.name, product.price, product.image, product.description, product.origin, product.category);
+            await createProduct(
+                product.id,
+                product.name,
+                product.price,
+                product.image,
+                product.description,
+                product.origin,
+                product.category
+            );
             console.log(`✅ Seeded product: ${product.name}`);
         }
 
         console.log('✅ Products seeded!');
     } catch (error) {
         console.error('❌ Error seeding products:', error);
-    }
+    } 
 };
 
-module.exports = seedProducts;
+seedProducts();
