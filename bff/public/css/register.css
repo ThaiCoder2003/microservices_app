@@ -1,71 +1,116 @@
+/* Bố cục chính: căn giữa, nền nhẹ */
 .container-box-register {
   height: 100vh;
   display: flex;
-  justify-content: center; /* Căn giữa theo chiều ngang */
-  align-items: center; /* Căn giữa theo chiều dọc */
-  background-color: #f0f0f0;
-  font-family: Arial, sans-serif;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f3f2ff, #eaefff);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Khung đăng ký trắng, đổ bóng nhẹ */
 .center-box-register {
   background-color: white;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-.center-box a:hover {
-  color: rgb(136, 65, 202);
-}
-.container-box-register-header {
-  text-align: center;
-  font-size: 40px;
-  margin: 0 0 20px 0;
-}
-.container-box-register-form .container-box-register-form-label {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.container-box-register-form .container-box-register-form-input {
+  padding: 40px 36px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   width: 100%;
+  max-width: 480px;
   box-sizing: border-box;
-  height: 30px;
 }
 
-.container-box-register-here:hover {
-  color: #8644ff;
+/* Tiêu đề REGISTER */
+.register-header {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 24px;
 }
-/* ---- Nút chính của form ---- */
-.container-box-register-btn-primary {
+
+/* Cảnh báo lỗi */
+.center-box-register .error-message {
+  background-color: #f44336;
+  color: white;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+
+/* Form label và input */
+.form-register label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-register input[type="text"],
+.form-register input[type="email"],
+.form-register input[type="password"] {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 0.95rem;
+  transition: border 0.2s ease;
+}
+
+.form-register input:focus {
+  border-color: #7f5af0;
+  outline: none;
+}
+
+/* Nút Register – giữ class là .btn-primary */
+.btn-primary {
+  width: 100%;
   background: linear-gradient(135deg, #7f5af0 0%, #8644ff 100%);
   color: #fff;
-
-  padding: 10px 24px;
+  padding: 12px;
   font-size: 1rem;
   font-weight: 600;
-  line-height: 1;
   border: none;
   border-radius: 8px;
-
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   user-select: none;
 }
-/* Hover: nâng nhẹ & đổ bóng đậm hơn */
-.container-box-register-btn-primary:hover {
+
+.btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Active (khi bấm giữ): hạ xuống lại */
-.container-box-register-btn-primary:active {
+.btn-primary:active {
   transform: translateY(0);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Disabled: xám & vô hiệu */
-.container-box-register-btn-primary:disabled {
+.btn-primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Link "Login here" */
+.Register_here {
+  color: #7f5af0;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.Register_here:hover {
+  text-decoration: underline;
+  color: #8644ff;
+}
+
+/* Footer nhỏ bên dưới */
+.center-box-register p {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
 }

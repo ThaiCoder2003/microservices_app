@@ -1,61 +1,50 @@
 document.querySelectorAll(".slider-container").forEach((slider) => {
-  const btnLeft = slider.querySelector(
-    ".container-box-component--header--list--btn-left"
-  );
-  const btnRight = slider.querySelector(
-    ".container-box-component--header--list--btn-right"
-  );
+  const btnLeft = slider.querySelector(".container-box-component--header--list--btn-left");
+  const btnRight = slider.querySelector(".container-box-component--header--list--btn-right");
   const list = slider.querySelector(".container-box-component--header--list");
 
-  let scrollAmount = 0;
-  const scrollStep = 200; // hoặc tùy bạn
+  const scrollStep = 200;
 
-  btnLeft.addEventListener("click", () => {
-    list.scrollLeft -= scrollStep;
-  });
+  if (btnLeft && list) {
+    btnLeft.addEventListener("click", () => {
+      list.scrollLeft -= scrollStep;
+    });
+  }
 
-  btnRight.addEventListener("click", () => {
-    list.scrollLeft += scrollStep;
-  });
+  if (btnRight && list) {
+    btnRight.addEventListener("click", () => {
+      list.scrollLeft += scrollStep;
+    });
+  }
 });
 
 // Tắt hiện bảng history search
-const input = document.querySelector(".header-left_search input");
-const historyBox = document.querySelector(".header-left_search--history");
+document.addEventListener("DOMContentLoaded", function () {
+  const input = document.querySelector(".header-left_search input");
+  const historyBox = document.querySelector(".header-left_search--history");
 
-input.addEventListener("focus", () => {
-  if (input.value.trim() === "") {
-    historyBox.style.display = "block";
+  if (!input || !historyBox) {
+    console.warn("Không tìm thấy input hoặc history box trong DOM. Bỏ qua chức năng search history.");
+    return;
   }
-});
 
-input.addEventListener("input", () => {
-  historyBox.style.display = "none";
-});
+  input.addEventListener("focus", () => {
+    if (input.value.trim() === "") {
+      historyBox.style.setProperty("display", "block", "important");
+    }
+  });
 
-document.addEventListener("click", function (e) {
-  if (!document.querySelector(".header-left_search").contains(e.target)) {
+  input.addEventListener("input", () => {
     historyBox.style.display = "none";
-  }
+  });
+
+  document.addEventListener("click", function (e) {
+    const searchBox = document.querySelector(".header-left_search");
+    if (searchBox && !searchBox.contains(e.target)) {
+      historyBox.style.display = "none";
+    }
+  });
 });
 
-// Tắt hiện bảng hiển thị bắt buộc đăng nhập
-const buttonPlaylist = document.querySelector(".container-sidebar_box-AddNewPlaylist--button");
-const tooltip = document.querySelector(".tooltip-box");
 
-buttonPlaylist.addEventListener("focus", () => {
-  if (buttonPlaylist.value.trim() === "") {
-    tooltip.style.display = "block";
-  }
-});
 
-buttonPlaylist.addEventListener("input", () => {
-  tooltip.style.display = "none";
-});
-
-// Nếu muốn click ra ngoài thì ẩn luôn history
-document.addEventListener("click", function (e) {
-  if (!document.querySelector(".container-sidebar_box-AddNewPlaylist--button").contains(e.target)) {
-    tooltip.style.display = "none";
-  }
-});

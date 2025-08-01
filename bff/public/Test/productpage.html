@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="homepageLogin.css">
     <link rel="stylesheet" href="dashboardAdmin.css">
     <link rel="stylesheet" href="productdetail.css">
+    <link rel="stylesheet" href="productpage.css">
     <link rel="stylesheet" href="login.css">
 
 
@@ -118,27 +119,26 @@
             <div class="container-box-content">
                 <div class="container-box-content1">
                     <!-- Các loại cà phê -->
-                    <div class="container-box-component">
-                        <div class="container-box-component--header">
-                            <div class="container-box-component--header--div">
-                                <span class="container-box-component--header--text">Sản phẩm</span>
-                            </div>
-                            <div class="slider-container">
-                                <ul class="container-box-component--header--list container-box-component-product--header--list">
+                    <div class="product-detail">
+                        <img src="ava-1200x676-7.jpg" alt="Tên sản phẩm" class="product-image" />
 
-                                    <li class="container-box-component--header--item">
-                                        <div class="song-thumbnail">
-                                            <img src="imgSong.jpg" alt=""
-                                                class="container-box-component--header--item--img" />
-                                            <span class="container-box-component--header--item--icon-play">
-                                                <i class="fa-solid fa-cart-shopping"></i>
-                                            </span>
-                                        </div>
-                                        <span class="container-box-component--header--item--nameSong">Cà phê sữa</span>
-                                        <span class="container-box-component--header--item--artist">25.000Đ</span>
-                                    </li>
-                                    
-                                </ul>
+                        <div class="product-info">
+                            <h1 class="product-name">Cà phê sữa đá</h1>
+                            <p class="product-price">30.000đ</p>
+                            <p class="product-desc">
+                                Cà phê sữa đá được pha từ cà phê phin truyền thống Việt Nam kết hợp cùng sữa đặc, mang
+                                lại hương vị đậm đà, thơm ngon và sảng khoái.
+                            </p>
+
+                            <div class="product-meta">
+                                <p><strong>Loại:</strong> Cà Phê</p>
+                                <p><strong>Tình trạng:</strong> Còn hàng</p>
+                            </div>
+
+                            <div class="product-actions">
+                                <label for="quantity">Số lượng:</label>
+                                <input type="number" id="quantity" value="1" min="1" />
+                                <button class="add-to-cart">Thêm vào giỏ hàng</button>
                             </div>
                         </div>
                     </div>
@@ -187,39 +187,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="container-sidebar-right">
-                <!-- Danh mục -->
-                <div class="container-sidebar-right-filter">
-                    <h3 class="container-sidebar-right-filter-title">Danh mục</h3>
-                    <ul class="container-sidebar-right-filter-list" data-group="category">
-                        <li class="container-sidebar-right-filter-item">Cà Phê</li>
-                        <li class="container-sidebar-right-filter-item">Nước Ép</li>
-                        <li class="container-sidebar-right-filter-item">Trà</li>
-                        <li class="container-sidebar-right-filter-item">Bánh Ngọt</li>
-                    </ul>
-                </div>
-
-                <!-- Khoảng giá -->
-                <div class="container-sidebar-right-filter">
-                    <h3 class="container-sidebar-right-filter-title">Khoảng giá</h3>
-                    <ul class="container-sidebar-right-filter-list">
-                        <li class="container-sidebar-right-filter-item">Dưới 30.000đ</li>
-                        <li class="container-sidebar-right-filter-item">30.000đ - 50.000đ</li>
-                        <li class="container-sidebar-right-filter-item">Trên 50.000đ</li>
-                    </ul>
-                </div>
-
-                <!-- Sắp xếp theo giá -->
-                <div class="container-sidebar-right-filter">
-                    <h3 class="container-sidebar-right-filter-title">Sắp xếp theo giá</h3>
-                    <ul class="container-sidebar-right-filter-list">
-                        <li class="container-sidebar-right-filter-item">Thấp → Cao</li>
-                        <li class="container-sidebar-right-filter-item">Cao → Thấp</li>
-                    </ul>
-                </div>
-
-            </div>
+            </div>  
         </div>
     </div>
 
