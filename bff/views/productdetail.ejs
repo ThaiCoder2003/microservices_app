@@ -66,9 +66,11 @@
                             Cài đặt
                         </div>
                         <div class="dropdown-divider"></div>
-                        <form action="/logout" class="dropdown-item logout" method="POST" style="display: inline;"
+                        <form action="/logout" class="dropdown-item-form logout" method="POST" style="display: inline;"
                             id="logoutForm">
-                            <button type="submit" class="dropdown-item logout">Đăng xuất</button>
+                            <div class="dropdown-item logout">
+                                Đăng xuất <i class="fa-solid fa-arrow-right-from-bracket icon"></i>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -98,14 +100,13 @@
         <div class="container-sidebar">
             <div class="container-sidebar-homepageNoLogin">
                 <ul class="container-sidebar-homepageNoLogin-playlist">
-                    <li class="container-sidebar-homepageNoLogin-playlist--item selected"
-                        onclick="window.location.href='/'">
+                    <li class="container-sidebar-homepageNoLogin-playlist--item" onclick="window.location.href='/'">
                         <div class="container-sidebar-homepageNoLogin-playlist-info">
                             <a href="/" class="container-sidebar-homepageNoLogin-playlist-title"
                                 style="text-decoration: none; color: inherit;">Homepage</a>
                         </div>
                     </li>
-                    <li class="container-sidebar-homepageNoLogin-playlist--item"
+                    <li class="container-sidebar-homepageNoLogin-playlist--item selected"
                         onclick="window.location.href='/products'">
                         <div class="container-sidebar-homepageNoLogin-playlist-info">
                             <a href="/products" class="container-sidebar-homepageNoLogin-playlist-title"
@@ -126,51 +127,31 @@
         </div>
         <!-- size 3/4 -->
         <div class="container-box-content">
+
             <div class="container-box-content1">
                 <!-- Các loại cà phê -->
-                <div class="container-box-component">
-                    <div class="container-box-component--header">
-                        <div class="container-box-component--header--div">
-                            <span class="container-box-component--header--text">
-                                <%= product.name %>
-                            </span>
-                        </div>
-                        <div class="product-detail-container">
-                            <div class="product-image-section">
-                                <img src="/assets/images/products/<%= product.image %>" alt="<%= product.name %>"
-                                    class="product-image" />
+                <div class="product-detail">
+                        <img src="ava-1200x676-7.jpg" alt="Tên sản phẩm" class="product-image" />
+
+                        <div class="product-info">
+                            <h1 class="product-name">Cà phê sữa đá</h1>
+                            <p class="product-price">30.000đ</p>
+                            <p class="product-desc">
+                                Cà phê sữa đá được pha từ cà phê phin truyền thống Việt Nam kết hợp cùng sữa đặc, mang
+                                lại hương vị đậm đà, thơm ngon và sảng khoái.
+                            </p>
+
+                            <div class="product-meta">
+                                <p><strong>Loại:</strong> Cà Phê</p>
+                                <p><strong>Tình trạng:</strong> Còn hàng</p>
                             </div>
 
-                            <div class="product-info-section">
-                                <h1 class="product-title">
-                                    <%= product.name %>
-                                </h1>
-                                <p class="product-price">
-                                    <%= product.price %>Đ
-                                </p>
-
-
-                                <div class="product-description">
-                                    <p>
-                                        <%= product.description %>
-                                    </p>
-                                </div>
-
-                                <p class="product-origin">
-                                    <%= product.origin %>
-                                </p>
-                                <div class="product-actions">
-                                    <label for="quantity">Số lượng:</label>
-                                    <input type="number" id="quantity" min="1" value="1" />
-
-                                    <button class="add-to-cart-button" onclick="addToCart('<%= product.id %>')">
-                                        <i class="fa-solid fa-cart-shopping"></i> Thêm vào giỏ
-                                    </button>
-                                </div>
-
+                            <div class="product-actions">
+                                <label for="quantity">Số lượng:</label>
+                                <input type="number" id="quantity" value="1" min="1" />
+                                <button class="add-to-cart">Thêm vào giỏ hàng</button>
                             </div>
                         </div>
-                    </div>
                 </div>
 
                 <!-- Footer -->
@@ -252,34 +233,3 @@
         </div>
     </div>
 </div>
-<script>
-    async function addToCart(productId) {
-        const quantity = parseInt(document.getElementById('quantity').value);
-
-        if (quantity <= 0) {
-            alert('Số lượng phải lớn hơn 0');
-            return;
-        }
-
-        try {
-            const res = await fetch('/cart/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ productId, quantity })
-            });
-
-            if (res.ok) {
-                alert('Đã thêm vào giỏ hàng!');
-                window.location.href = '/cart';
-            } else {
-                const data = await response.json();
-                alert(data.error || 'Có lỗi xảy ra khi thêm vào giỏ hàng!');
-            }
-        } catch (err) {
-            console.error(err);
-            alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
-        }
-    }
-</script>

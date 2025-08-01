@@ -66,9 +66,11 @@
                             Cài đặt
                         </div>
                         <div class="dropdown-divider"></div>
-                        <form action="/logout" class="dropdown-item logout" method="POST" style="display: inline;"
+                        <form action="/logout" class="dropdown-item-form logout" method="POST" style="display: inline;"
                             id="logoutForm">
-                            <button type="submit" class="dropdown-item logout">Đăng xuất</button>
+                            <div class="dropdown-item logout">
+                                Đăng xuất <i class="fa-solid fa-arrow-right-from-bracket icon"></i>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -115,8 +117,8 @@
                         <li class="container-sidebar-homepageNoLogin-playlist--item"
                             onclick="window.location.href='/cart'">
                             <div class="container-sidebar-homepageNoLogin-playlist-info">
-                                <a href="/products" class="container-sidebar-homepageNoLogin-playlist-title"
-                                    style="text-decoration: none; color: inherit;">Cart</a>
+                                <a href="/cart" class="container-sidebar-homepageNoLogin-playlist-title"
+                                style="text-decoration: none; color: inherit;">Cart</a>
                             </div>
                         </li>
                         <% } %>

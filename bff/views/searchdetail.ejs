@@ -43,37 +43,40 @@
                     <i class="fa-solid fa-cart-shopping"></i>
                 </div>
             </div>
-                <% if (user) { %>
-                    <div class="header-right_User">
-                        <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
-                        <div class="header-right_User-box--avatar" id="avatarBtn">
-                            <span class="header-right_User--avatar">N</span>
-                        </div>
-                        <div class="dropdown-menu" id="dropdownMenu">
-                            <div class="dropdown-item selected">
-                                Hồ sơ
-                            </div>
-                            <div class="dropdown-item">
-                                Hỗ trợ <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item">
-                                Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item">
-                                Cài đặt
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <div class="dropdown-item logout">
-                                Đăng xuất
-                            </div>
-                        </div>
+            <% if (user) { %>
+                <div class="header-right_User">
+                    <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
+                    <div class="header-right_User-box--avatar" id="avatarBtn">
+                        <span class="header-right_User--avatar">N</span>
                     </div>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <div class="dropdown-item selected">
+                            Hồ sơ
+                        </div>
+                        <div class="dropdown-item">
+                            Hỗ trợ <i class="fa-solid fa-up-right-from-square icon"></i>
+                        </div>
+                        <div class="dropdown-item">
+                            Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
+                        </div>
+                        <div class="dropdown-item">
+                            Cài đặt
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <form action="/logout" class="dropdown-item-form logout" method="POST" style="display: inline;"
+                            id="logoutForm">
+                            <div class="dropdown-item logout">
+                                Đăng xuất <i class="fa-solid fa-arrow-right-from-bracket icon"></i>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 <% } else { %>
                     <div class="header-right_login">
                         <a href="/register" class="header-right_login--signUp">Đăng ký</a>
                         <a href="/login" class="header-right_login--signIn">Đăng nhập</a>
                     </div>
-                <% } %>
+                    <% } %>
         </div>
     </div>
     <div class="container container-detail">
@@ -91,12 +94,12 @@
                         </div>
                     </li>
                     <% if (user) { %>
-                    <li class="container-sidebar_box4-playlist--item">
-                        <div class="container-sidebar_box4-playlist-info" onclick="window.location.href='/cart'">
-                            <div class="container-sidebar_box4-playlist-title">Cart</div>
-                        </div>
-                    </li>
-                    <% } %>
+                        <li class="container-sidebar_box4-playlist--item">
+                            <div class="container-sidebar_box4-playlist-info" onclick="window.location.href='/cart'">
+                                <div class="container-sidebar_box4-playlist-title">Cart</div>
+                            </div>
+                        </li>
+                        <% } %>
                 </ul>
             </div>
         </div>
@@ -115,18 +118,22 @@
                             <ul
                                 class="container-box-component--header--list container-box-component-product--header--list">
                                 <% products.forEach(function(product) { %>
-                                <li class="container-box-component--header--item">
-                                    <a href="/products/<%= product.id %>" class="song-thumbnail">
-                                        <img src="/assets/images/products/<%= product.image %>" alt=""
-                                            class="container-box-component--header--item--img" />
-                                        <span class="container-box-component--header--item--icon-play">
-                                            <i class="fa-solid fa-cart-shopping"></i>
+                                    <li class="container-box-component--header--item">
+                                        <a href="/products/<%= product.id %>" class="song-thumbnail">
+                                            <img src="/assets/images/products/<%= product.image %>" alt=""
+                                                class="container-box-component--header--item--img" />
+                                            <span class="container-box-component--header--item--icon-play">
+                                                <i class="fa-solid fa-cart-shopping"></i>
+                                            </span>
+                                        </a>
+                                        <span class="container-box-component--header--item--nameSong">
+                                            <%= product.name %>
                                         </span>
-                                    </a>
-                                    <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
-                                    <span class="container-box-component--header--item--artist"><%= product.price %>Đ</span>
-                                </li>
-                                <% }); %>
+                                        <span class="container-box-component--header--item--artist">
+                                            <%= product.price %>Đ
+                                        </span>
+                                    </li>
+                                    <% }); %>
 
                             </ul>
                         </div>

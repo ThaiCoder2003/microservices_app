@@ -32,46 +32,49 @@
                 <button class="header-left_search--history-clear-button">Xoá các tìm kiếm gần đây</button>
             </div>
         </div>
-            <% if (user) { %>
-                <div class="header-right">
-                    <div class="header-right_menu">
-                        <ul class="header-right_menu--list">
-                            <li class="header-right_menu--item">Premium</li>
-                            <li class="header-right_menu--item">Hỗ trợ</li>
-                            <li class="header-right_menu--item">Tải xuống</li>
-                        </ul>
-                        <div class="header-right_menu_download">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                        </div>
-                    </div>
-                    <div class="header-right_User">
-                        <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
-                        <div class="header-right_User-box--avatar" id="avatarBtn">
-                            <span class="header-right_User--avatar">N</span>
-                        </div>
-                        <div class="dropdown-menu" id="dropdownMenu">
-                            <div class="dropdown-item">
-                                Tài khoản <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item selected">
-                                Hồ sơ
-                            </div>
-                            <div class="dropdown-item">
-                                Nâng cấp lên Premium <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item">
-                                Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item">
-                                Cài đặt
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <form action="/logout" class="dropdown-item logout" method="POST" style="display: inline;" id="logoutForm">
-                                <button type="submit" class="dropdown-item logout">Đăng xuất</button>
-                            </form>
-                        </div>
+        <% if (user) { %>
+            <div class="header-right">
+                <div class="header-right_menu">
+                    <ul class="header-right_menu--list">
+                        <li class="header-right_menu--item">Premium</li>
+                        <li class="header-right_menu--item">Hỗ trợ</li>
+                        <li class="header-right_menu--item">Tải xuống</li>
+                    </ul>
+                    <div class="header-right_menu_download">
+                        <i class="fa-solid fa-cart-shopping"></i>
                     </div>
                 </div>
+                <div class="header-right_User">
+                    <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
+                    <div class="header-right_User-box--avatar" id="avatarBtn">
+                        <span class="header-right_User--avatar">N</span>
+                    </div>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <div class="dropdown-item">
+                            Tài khoản <i class="fa-solid fa-up-right-from-square icon"></i>
+                        </div>
+                        <div class="dropdown-item selected">
+                            Hồ sơ
+                        </div>
+                        <div class="dropdown-item">
+                            Nâng cấp lên Premium <i class="fa-solid fa-up-right-from-square icon"></i>
+                        </div>
+                        <div class="dropdown-item">
+                            Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
+                        </div>
+                        <div class="dropdown-item">
+                            Cài đặt
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <form action="/logout" class="dropdown-item-form logout" method="POST" style="display: inline;"
+                            id="logoutForm">
+                            <div class="dropdown-item logout">
+                                Đăng xuất <i class="fa-solid fa-arrow-right-from-bracket icon"></i>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <% } else { %>
                 <div class="header-right">
                     <div class="header-right_menu">
@@ -90,7 +93,7 @@
                         <div class="header-right_login--signIn" onclick="window.location.href='/login'">Đăng nhập</div>
                     </div>
                 </div>
-            <% } %>
+                <% } %>
     </div>
     <div class="container">
         <!-- size 1/4-->
@@ -103,19 +106,22 @@
                                 style="text-decoration: none; color: inherit;">Homepage</a>
                         </div>
                     </li>
-                    <li class="container-sidebar-homepageNoLogin-playlist--item" onclick="window.location.href='/products'">
+                    <li class="container-sidebar-homepageNoLogin-playlist--item"
+                        onclick="window.location.href='/products'">
                         <div class="container-sidebar-homepageNoLogin-playlist-info">
                             <a href="/products" class="container-sidebar-homepageNoLogin-playlist-title"
                                 style="text-decoration: none; color: inherit;">Product</a>
                         </div>
                     </li>
                     <% if (user) { %>
-                    <li class="container-sidebar_box4-playlist--item">
-                        <div class="container-sidebar_box4-playlist-info" onclick="window.location.href='/cart'">
-                            <div class="container-sidebar_box4-playlist-title">Cart</div>
-                        </div>
-                    </li>
-                    <% } %>
+                        <li class="container-sidebar-homepageNoLogin-playlist--item selected">
+                            <div class="container-sidebar-homepageNoLogin-playlist-info"
+                                onclick="window.location.href='/cart'">
+                                <a href="/cart" class="container-sidebar-homepageNoLogin-playlist-title"
+                                    style="text-decoration: none; color: inherit;">Cart</a>
+                            </div>
+                        </li>
+                        <% } %>
                 </ul>
             </div>
         </div>
@@ -125,35 +131,46 @@
                 <div class="container-box-content-cart-page">
                     <h2 class="container-box-content-cart-page-hearder">Giỏ hàng của bạn</h2>
                     <div class="container-box-content-cart-items">
-                    <% if (items.length > 0) { %>
-                        <% items.forEach(item => { %>
-                        <div class="container-box-content-cart-item">
-                            <div class="container-box-content-cart-item-right">
-                            <img src="/assets/images/products/<%= item.image %>" alt="<%= item.name %>" class="container-box-content-cart-item-image">
-                            <div class="container-box-content-cart-item-right-info">
-                                <span class="container-box-content-cart-page-name"><%= item.name %></span>
-                                <span class="container-box-content-cart-page-cost">Giá gốc: <%= item.price %>đ</span>
-                            </div>
-                            </div>
-                            <div class="container-box-content-cart-item-details">
-                            <div class="container-box-content-cart-quantity">
-                                <button class="container-box-content-cart-quantity-btn decrement">-</button>
-                                <input type="number" value="<%= item.quantity %>" min="1" class="container-box-content-cart-quantity-input">
-                                <button class="container-box-content-cart-quantity-btn increment">+</button>
-                            </div>
-                            <p class="container-box-content-cart-price"><%= item.totalPrice %>đ</p>
-                            <button class="container-box-content-cart-remove cart-remover" data-id="<>">Xóa</button>
-                            </div>
-                        </div>
+                        <% if (items.length> 0) { %>
+                            <% items.forEach(item=> { %>
+                                <div class="container-box-content-cart-item">
+                                    <div class="container-box-content-cart-item-right">
+                                        <img src="/assets/images/products/<%= item.image %>" alt="<%= item.name %>"
+                                            class="container-box-content-cart-item-image">
+                                        <div class="container-box-content-cart-item-right-info">
+                                            <span class="container-box-content-cart-page-name">
+                                                <%= item.name %>
+                                            </span>
+                                            <span class="container-box-content-cart-page-cost">Giá gốc: <%= item.price
+                                                    %>đ</span>
+                                        </div>
+                                    </div>
+                                    <div class="container-box-content-cart-item-details">
+                                        <div class="container-box-content-cart-quantity">
+                                            <button class="container-box-content-cart-quantity-btn decrement">-</button>
+                                            <input type="number" value="<%= item.quantity %>" min="1"
+                                                class="container-box-content-cart-quantity-input">
+                                            <button class="container-box-content-cart-quantity-btn increment">+</button>
+                                        </div>
+                                        <p class="container-box-content-cart-price">
+                                            <%= item.totalPrice %>đ
+                                        </p>
+                                        <button class="container-box-content-cart-remove cart-remover"
+                                            data-id="<>">Xóa</button>
+                                    </div>
+                                </div>
 
-                        <div class="container-box-content-cart-summary">
-                            <p><strong>Tổng cộng: <span><%= totalPrice %>đ</span></strong></p>
-                            <button class="container-box-content-cart-checkout-btn check-out">Tiến hành đặt hàng</button>
-                        </div>
-                        <% }) %>
-                    <% } else { %>
-                        <p>Giỏ hàng trống.</p>
-                    <% } %>
+                                <div class="container-box-content-cart-summary">
+                                    <p><strong>Tổng cộng: <span>
+                                                <%= totalPrice %>đ
+                                            </span></strong></p>
+                                    <button class="container-box-content-cart-checkout-btn check-out">Tiến hành đặt
+                                        hàng</button>
+                                </div>
+                                <% }) %>
+                                    <% } else { %>
+                                        <p>Giỏ hàng trống.</p>
+                                        <% } %>
                     </div>
 
 
@@ -163,39 +180,39 @@
     </div>
 </div>
 <script>
-  document.querySelectorAll('.cart-remover').forEach(button => {
-    button.addEventListener('click', async () => {
-      const productId = button.dataset.id;
+    document.querySelectorAll('.cart-remover').forEach(button => {
+        button.addEventListener('click', async () => {
+            const productId = button.dataset.id;
 
-      try {
-        const res = await fetch(`/cart/delete/${productId}`, {
-          method: 'DELETE'
+            try {
+                const res = await fetch(`/cart/delete/${productId}`, {
+                    method: 'DELETE'
+                });
+
+                if (res.ok) {
+                    location.reload(); // Refresh cart after successful removal
+                } else {
+                    const error = await res.json();
+                    alert('Xóa thất bại: ' + (error.message || 'Lỗi không xác định'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Không thể kết nối đến máy chủ.');
+            }
         });
-
-        if (res.ok) {
-          location.reload(); // Refresh cart after successful removal
-        } else {
-          const error = await res.json();
-          alert('Xóa thất bại: ' + (error.message || 'Lỗi không xác định'));
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Không thể kết nối đến máy chủ.');
-      }
     });
-  });
 
-  document.querySelectorAll('.check-out').forEach(button => {
-    button.addEventListener('click', async () => {
-        try{
-            const res = await fetch(`/purchase`, {
-                method: 'POST'
-            })
+    document.querySelectorAll('.check-out').forEach(button => {
+        button.addEventListener('click', async () => {
+            try {
+                const res = await fetch(`/purchase`, {
+                    method: 'POST'
+                })
 
-        } catch (err) {
-            console.error(err);
-            alert('Không thể kết nối đến máy chủ.');
-        }
-    });
-  })
+            } catch (err) {
+                console.error(err);
+                alert('Không thể kết nối đến máy chủ.');
+            }
+        });
+    })
 </script>
