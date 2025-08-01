@@ -1,52 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="test.css">
-    <link rel="stylesheet" href="base.css">
-    <link rel="stylesheet" href="dashboardAdmin.css">
-    <link rel="stylesheet" href="homepageLogin.css">
-    <link rel="stylesheet" href="homepageNoLogin.css">
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="login.css">
-    <link rel="stylesheet" href="register.css">
-    <link rel="stylesheet" href="assets/font/fontawesome-free-6.5.1-web/fontawesome-free-6.5.1-web/css/all.min.css">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hồ sơ người dùng</title>
+  <link rel="stylesheet" href="userpage.css" />
 </head>
 
 <body>
-    <div class="cart-page">
-  <h2>Giỏ hàng của bạn</h2>
-  <div class="cart-items">
-    <div class="cart-item">
-      <img src="product.jpg" alt="Cà phê sữa" class="cart-item-image">
-      <div class="cart-item-details">
-        <h4>Cà phê sữa</h4>
-        <div class="quantity">
-          <button>-</button>
-          <input type="number" value="1" min="1">
-          <button>+</button>
+  <div class="profile-container">
+    <div class="profile-card">
+      <img src="avatar.png" alt="Avatar" class="avatar" />
+
+      <h2 class="name">Nguyễn Văn A</h2>
+      <p class="email">nguyenvana@example.com</p>
+      <p class="joined-date">Tham gia từ: 01/01/2024</p>
+
+      <div class="info-group">
+        <p><strong>Số điện thoại:</strong> 0901 234 567</p>
+        <p><strong>Địa chỉ:</strong> 123 Đường ABC, TP.HCM</p>
+        <p><strong>Trạng thái:</strong> Tài khoản thường</p>
+      </div>
+      <div class="toggle-history-wrapper">
+        <button id="toggleHistoryBtn" class="btn history-toggle">Xem lịch sử đặt hàng</button>
+      </div>
+      <div class="order-history" id="orderHistory" style="display: none;">
+      <h3>Lịch sử đặt hàng</h3>
+      <div class="order-table">
+        <div class="order-row header">
+          <span>Mã đơn</span>
+          <span>Ngày đặt</span>
+          <span>Sản phẩm</span>
+          <span>Tổng tiền</span>
+          <span>Trạng thái</span>
         </div>
-        <p class="price">25.000đ</p>
-        <button class="remove">Xóa</button>
+
+        <div class="order-row">
+          <span>#DH001</span>
+          <span>01/07/2025</span>
+          <span>Trà đào cam sả, Tiramisu</span>
+          <span>85.000đ</span>
+          <span class="status completed">Hoàn tất</span>
+        </div>
+
+        <div class="order-row">
+          <span>#DH002</span>
+          <span>28/06/2025</span>
+          <span>Cà phê đen nóng</span>
+          <span>25.000đ</span>
+          <span class="status cancelled">Đã hủy</span>
+        </div>
+
+        <div class="order-row">
+          <span>#DH003</span>
+          <span>25/06/2025</span>
+          <span>Nước ép cam</span>
+          <span>35.000đ</span>
+          <span class="status pending">Đang xử lý
+            <button class="cancel-request-btn">Yêu cầu hủy</button>
+          </span>
+        </div>
       </div>
     </div>
-    <!-- lặp nhiều item -->
+      <div class="action-buttons">
+        <button class="btn edit">Chỉnh sửa</button>
+        <button class="btn logout">Đăng xuất</button>
+      </div>
+    </div>
+
+    
+
   </div>
-
-  <div class="cart-summary">
-    <p>Tạm tính: <span>75.000đ</span></p>
-    <p>Phí vận chuyển: <span>15.000đ</span></p>
-    <hr>
-    <p><strong>Tổng cộng: <span>90.000đ</span></strong></p>
-    <button class="checkout-btn">Tiến hành đặt hàng</button>
-  </div>
-</div>
-
-
 </body>
-<script src="test.js"></script>
+<script>
+  const toggleBtn = document.getElementById("toggleHistoryBtn");
+  const orderHistory = document.getElementById("orderHistory");
 
+  toggleBtn.addEventListener("click", () => {
+    const isVisible = orderHistory.style.display === "block";
+    orderHistory.style.display = isVisible ? "none" : "block";
+    toggleBtn.textContent = isVisible ? "Xem lịch sử đặt hàng" : "Ẩn lịch sử đặt hàng";
+  });
+</script>
 </html>
