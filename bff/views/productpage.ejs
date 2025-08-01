@@ -19,14 +19,14 @@
                     <img src="ST.jpg" alt="st-MTP" class="header-left_search--history-icon">
                     <div class="header-left_search--history-texts">
                         <div class="header-left_search--history-title">Cà phê sữa</div>
-                        <div class="header-left_search--history-subtitle">Thức uống</div>
+                        <div class="header-left_search--history-subtitle">25.000Đ</div>
                     </div>
                 </div>
                 <div class="header-left_search--history-item">
                     <img src="ST.jpg" alt="st-MTP" class="header-left_search--history-icon">
                     <div class="header-left_search--history-texts">
                         <div class="header-left_search--history-title">Cà phê sữa</div>
-                        <div class="header-left_search--history-subtitle">Thức uống</div>
+                        <div class="header-left_search--history-subtitle">25.000Đ</div>
                     </div>
                 </div>
                 <button class="header-left_search--history-clear-button">Xoá các tìm kiếm gần đây</button>
@@ -66,10 +66,9 @@
                             Cài đặt
                         </div>
                         <div class="dropdown-divider"></div>
-                        <form action="/logout" class="dropdown-item logout" method="POST" style="display: inline;"
-                            id="logoutForm">
-                            <button type="submit" class="dropdown-item logout">Đăng xuất</button>
-                        </form>
+                        <div class="dropdown-item logout">
+                            Đăng xuất
+                        </div>
                     </div>
                 </div>
             </div>
@@ -129,7 +128,7 @@
             <div class="container-box-content1">
                 <!-- Các loại cà phê -->
                 <div class="container-box-component">
-                    <div class="container-box-component--header">
+                    <div class="container-box-component--header" id="product-result-container">
                         <div class="container-box-component--header--div">
                             <span class="container-box-component--header--text">Sản phẩm</span>
                         </div>
@@ -210,29 +209,29 @@
             <div class="container-sidebar-right-filter">
                 <h3 class="container-sidebar-right-filter-title">Danh mục</h3>
                 <ul class="container-sidebar-right-filter-list" data-group="category">
-                    <li class="container-sidebar-right-filter-item">Cà Phê</li>
-                    <li class="container-sidebar-right-filter-item">Nước Ép</li>
-                    <li class="container-sidebar-right-filter-item">Trà</li>
-                    <li class="container-sidebar-right-filter-item">Bánh Ngọt</li>
+                    <li class="container-sidebar-right-filter-item" data-value="Cà phê">Cà Phê</li>
+                    <li class="container-sidebar-right-filter-item" data-value="Nước ép">Nước Ép</li>
+                    <li class="container-sidebar-right-filter-item" data-value="Trà">Trà</li>
+                    <li class="container-sidebar-right-filter-item" data-value="Bánh ngọt">Bánh Ngọt</li>
                 </ul>
             </div>
 
             <!-- Khoảng giá -->
             <div class="container-sidebar-right-filter">
                 <h3 class="container-sidebar-right-filter-title">Khoảng giá</h3>
-                <ul class="container-sidebar-right-filter-list">
-                    <li class="container-sidebar-right-filter-item">Dưới 30.000đ</li>
-                    <li class="container-sidebar-right-filter-item">30.000đ - 50.000đ</li>
-                    <li class="container-sidebar-right-filter-item">Trên 50.000đ</li>
+                <ul class="container-sidebar-right-filter-list" data-group="price">
+                    <li class="container-sidebar-right-filter-item" data-value="<30000">Dưới 30.000đ</li>
+                    <li class="container-sidebar-right-filter-item" data-value=">=30000 & <=50000">30.000đ - 50.000đ</li>
+                    <li class="container-sidebar-right-filter-item" data-value=">50000">Trên 50.000đ</li>
                 </ul>
             </div>
 
             <!-- Sắp xếp theo giá -->
             <div class="container-sidebar-right-filter">
                 <h3 class="container-sidebar-right-filter-title">Sắp xếp theo giá</h3>
-                <ul class="container-sidebar-right-filter-list">
-                    <li class="container-sidebar-right-filter-item">Thấp → Cao</li>
-                    <li class="container-sidebar-right-filter-item">Cao → Thấp</li>
+                <ul class="container-sidebar-right-filter-list" data-group="sort">
+                    <li class="container-sidebar-right-filter-item" data-value="asc">Thấp → Cao</li>
+                    <li class="container-sidebar-right-filter-item" data-value="desc">Cao → Thấp</li>
                 </ul>
             </div>
 
@@ -240,33 +239,87 @@
     </div>
 </div>
 <script>
-    async function addToCart(productId) {
-        const quantity = parseInt(document.getElementById('quantity').value);
+const filterState = {
+  category: null,
+  price: null,
+  sort: null
+};
 
-        if (quantity <= 0) {
-            alert('Số lượng phải lớn hơn 0');
-            return;
-        }
+// ✅ Assign event listeners to filter items
+document.querySelectorAll('.container-sidebar-right-filter-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const group = item.closest('[data-group]')?.dataset.group;
+        const value = item.dataset.value;
 
-        try {
-            const res = await fetch('/cart/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ productId, quantity })
-            });
+        filterState[group] = filterState[group] === value ? null : value;
 
-            if (res.ok) {
-                alert('Đã thêm vào giỏ hàng!');
-                window.location.href = '/cart';
-            } else {
-                const data = await response.json();
-                alert(data.error || 'Có lỗi xảy ra khi thêm vào giỏ hàng!');
-            }
-        } catch (err) {
-            console.error(err);
-            alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+        fetchFilteredProducts(); // 🔁 Now calls correctly
+    });
+});
+
+// ✅ Fetch filtered products from backend
+function fetchFilteredProducts() {
+    const cleanParams = {};
+    for (const key in filterState) {
+        if (filterState[key] !== null) {
+        cleanParams[key] = filterState[key];
         }
     }
+    const query = new URLSearchParams(cleanParams).toString();
+
+    fetch(`/products/json?${query}`)
+        .then(res => res.json())
+        .then(products => {
+            renderProducts(products);
+        })
+        .catch(err => {
+            console.error('Failed to fetch products', err);
+        });
+}
+
+// ✅ Render products or show empty message
+function renderProducts(products) {
+    const container = document.getElementById('product-result-container');
+
+    // Remove all children after the first one (keep the header)
+    while (container.children.length > 1) {
+        container.removeChild(container.lastChild);
+    }
+
+    if (!products.length) {
+        const noItem = document.createElement('span');
+        noItem.className = 'container-box-component--header--no-item';
+        noItem.textContent = 'Không có sản phẩm nào';
+        container.appendChild(noItem);
+        return;
+    }
+
+    const sliderContainer = document.createElement('div');
+    sliderContainer.className = 'slider-container';
+
+    const ul = document.createElement('ul');
+    ul.className = 'container-box-component--header--list container-box-component-product--header--list';
+
+    products.forEach(product => {
+        const li = document.createElement('li');
+        li.className = 'container-box-component--header--item';
+
+        li.innerHTML = `
+            <div class="song-thumbnail">
+                <img src="/assets/images/products/${product.image}" alt="${product.name}"
+                     class="container-box-component--header--item--img" />
+                <span class="container-box-component--header--item--icon-play">
+                  <i class="fa-solid fa-cart-shopping"></i>
+                </span>
+            </div>
+            <span class="container-box-component--header--item--nameSong">${product.name}</span>
+            <span class="container-box-component--header--item--artist">${product.price}Đ</span>
+        `;
+
+        ul.appendChild(li);
+    });
+
+    sliderContainer.appendChild(ul);
+    container.appendChild(sliderContainer);
+}
 </script>

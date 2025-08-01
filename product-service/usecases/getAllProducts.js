@@ -9,6 +9,7 @@ module.exports = async () => {
             price: product.price,
             image: product.image,
             createdAt: product.createdAt,
+            category: product.category
         }));
     } catch (err) {
         console.error(err);

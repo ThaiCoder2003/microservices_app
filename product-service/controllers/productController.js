@@ -9,7 +9,36 @@ const getCategory = require('../usecases/getCategory')
 module.exports = {
     list: async (req, res) => {
         try {
-            const products = await getAllProducts();
+            const category = req.query.category || null;
+            const price = req.query.price || null;
+            const sort = req.query.sort || null;
+            
+            let products = await getAllProducts();
+
+            if (category) {
+                products = products.filter(p => p.category == category);
+            }
+
+            if (price == '<30000') {
+                products = products.filter(p => p.price < 30000)
+            }
+
+            else if (price == '>=30000 & <=50000') {
+                products = products.filter(p => p.price >= 30000 && p.price <= 50000)
+            }
+
+            else if (price == '>50000') {
+                products = products.filter(p => p.price > 50000)
+            }
+
+            if (sort == 'asc') {
+                products = products.sort((a, b) => a.price - b.price)
+            }
+
+            else if (sort == 'desc') {
+                products = products.sort((a, b) => b.price - a.price)
+            }
+
             res.status(200).json(products);
         } catch (err) {
             console.error(err);

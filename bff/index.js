@@ -96,7 +96,7 @@ app.post('/login', auth(false), async (req, res) => {
 });
 
 
-app.post('/logout', (req, res) => {
+app.post('/logout', auth(true), (req, res) => {
   if (!req.user) {
     // If user is not logged in, redirect to login page
     return res.redirect('/');
@@ -203,6 +203,22 @@ app.get('/products', auth(false), async(req, res) => {
   }
 })
 
+app.get('/products/json', auth(false), async(req, res) => {
+  try {
+    const { category, price, sort } = req.query;
+    console.log(category)
+    const response = await axios.get(`${PRODUCT_SERVICE}/products`, {
+      params: { category, price, sort }
+    });
+
+    
+    const products = response.data || [];
+    res.json(products); // 👈 return JSON
+  } catch (err) {
+    res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to get product' });
+  }
+})
+
 app.post('/products', auth(true), requireAdmin, upload.single('image'), async (req, res) => {
   try {
     const { id, name, price, description, origin, category } = req.body;
@@ -225,11 +241,12 @@ app.post('/products', auth(true), requireAdmin, upload.single('image'), async (r
 
 app.get('/search', auth(false), async (req, res) => {
   const query = req.query.q;
+  const { category, price, sort } = req.query;
   try {
     const response = await axios.get(`${PRODUCT_SERVICE}/search`, { params: { query }
     });
     res.render('searchPage', { title: 'Search Results', products: response.data,
-      query: query });
+      query, category, price, sort });
   } catch (err) {
     console.error(err);
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to search products' });

@@ -40,7 +40,7 @@
                     <li class="header-right_menu--item">Tải xuống</li>
                 </ul>
                 <div class="header-right_menu_download">
-                    <i class="fa-solid fa-cart-shopping"></i>
+                    <i class="fa-solid fa-cart-shopping" onclick="window.location.href='/cart'"></i>
                 </div>
             </div>
                 <% if (user) { %>
@@ -111,25 +111,30 @@
                                 class="container-box-component--header--text container-box-component--header--text1">Tìm
                                 kiếm cho <%= query %></span>
                         </div>
-                        <div class="slider-container">
-                            <ul
-                                class="container-box-component--header--list container-box-component-product--header--list">
-                                <% products.forEach(function(product) { %>
-                                <li class="container-box-component--header--item">
-                                    <a href="/products/<%= product.id %>" class="song-thumbnail">
-                                        <img src="/assets/images/products/<%= product.image %>" alt=""
-                                            class="container-box-component--header--item--img" />
-                                        <span class="container-box-component--header--item--icon-play">
-                                            <i class="fa-solid fa-cart-shopping"></i>
-                                        </span>
-                                    </a>
-                                    <span class="container-box-component--header--item--nameSong"><%= product.name %></span>
-                                    <span class="container-box-component--header--item--artist"><%= product.price %>Đ</span>
-                                </li>
-                                <% }); %>
+                        <% if (products.length) { %>
+                            <div class="slider-container">
+                                <ul
+                                    class="container-box-component--header--list container-box-component-product--header--list">
+                                    <% products.forEach(product=> { %>
+                                        <li class="container-box-component--header--item">
+                                            <div class="song-thumbnail">
+                                                <img src="/assets/images/products/<%= product.image %>" alt="<%= product.name %>"
+                                                    class="container-box-component--header--item--img" />
+                                                <span class="container-box-component--header--item--icon-play">
+                                                    <i class="fa-solid fa-cart-shopping"></i>
+                                                </span>
+                                            </div>
+                                            <span class="container-box-component--header--item--nameSong"> <%= product.name %></span>
+                                            <span class="container-box-component--header--item--artist"><%= product.price %>Đ</span>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                            </div>
 
-                            </ul>
-                        </div>
+                        <% } else { %>
+                        <span class="container-box-component--header--no-item">Không có sản phẩm
+                            nào</span>
+                        <% } %>
                     </div>
                 </div>
 
