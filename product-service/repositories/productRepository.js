@@ -1,5 +1,5 @@
 const { get } = require('mongoose');
-const Product = require('../models/Products');
+const Product = require('../infrastructure/models/Products');
 
 module.exports = {
     findById: (id) => Product.findOne({id: id}),

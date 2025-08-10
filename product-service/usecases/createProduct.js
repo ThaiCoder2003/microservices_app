@@ -1,25 +1,18 @@
-const productRepository = require('../repositories/productRepository');
-
-module.exports = async (id, name, price, image, description, origin, category ) => {
+const { sendProductEvent } = require('../infrastructure/kafka/product.producer')
+const { v4: uuidv4 } = require('uuid');
+module.exports = async (data) => {
     try {
-        if (!id || !name || !price) {
-            throw new Error('Missing required fields: id, name, or price');
-        }
-
-        const data = {
-            id,
-            name,
-            price,
-            image, // Default image
-            createdAt: new Date(),
-            description,
-            origin,
-            category
+        const eventId = uuidv4();
+        await sendProductEvent(eventId, 'created', {
+            product: data 
+        });
+        return { 
+            status: 202,
+            message: 'Adding request sent!',
+            eventId
         };
-        await productRepository.create(data);
-        return { message: 'Product created successfully' };
     } catch (err) {
         console.error(err);
-        throw new Error('Failed to retrieve products');
+        throw new Error('Failed to create products');
     }
 }

@@ -1,5 +1,6 @@
-const userRepository = require('../repositories/userRepository');
 const checkUser = require('../utils/checkUser')
+const { sendUserEvent } = require('../infrastructure/kafka/user.producer');
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = async ({ id }) => {
     try {
@@ -9,12 +10,15 @@ module.exports = async ({ id }) => {
 
         const user = await checkUser(id);
 
-        await userRepository.deleteById(user._id);
+        const eventId = uuidv4();
+        await sendUserEvent(eventId, 'deleted', { userId: user._id })
         return {
-            message: 'Delete complete!'
+            status: 202,
+            message: 'Request has been sent!',
+            eventId
         };
     } catch (err) {
         console.error(err);
-        throw new Error('Login failed');
+        throw new Error('Delete process failed!');
     }
 };

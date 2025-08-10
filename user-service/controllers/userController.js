@@ -5,6 +5,9 @@ const getProfile = require('../usecases/getProfile');
 const updateUser = require('../usecases/updateUser');
 const deleteUser = require('../usecases/deleteUser');
 const verifyUser = require('../usecases/verifyUser');
+
+const Status = require('../infrastructure/models/status.model')
+
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const secret = process.env.JWT_SECRET || 'your_jwt_secret';
@@ -13,8 +16,8 @@ module.exports = {
     register: async (req, res) => {
         const { name, email, password, confirmPassword } = req.body;
         try {
-            const user = await registerUser({ name, email, password, confirmPassword });
-            res.status(201).json(user);
+            const result = await registerUser({ name, email, password, confirmPassword });
+            res.status(result.status).json({ message: result.message, eventId: result.eventId });
         } catch (err) {
             console.error(err);
             res.status(400).json({ error: err.message });
@@ -85,14 +88,11 @@ module.exports = {
                 if (err) return res.status(401).json({ error: 'Invalid token' });
                 const userId = decoded.id;
                 const email = decoded.email;
-                if (!userId || !email) {
-                    return res.status(400).json({ error: 'User ID and Email are required' });
-                }
 
-                const { name, profilePicture, address, phone, birthday } = req.body;
+                const { name, profilePicture, address, phone } = req.body;
 
-                await updateUser({ userId, email, name, profilePicture, address, phone });
-                res.status(200).json({ message: 'User updated successfully' });
+                const result = await updateUser({ userId, email, name, profilePicture, address, phone });
+                res.status(result.status).json({ message: result.message, eventId: result.eventId });
             });
         } catch (err) {
             console.error(err);
@@ -116,7 +116,7 @@ module.exports = {
                 const { id } = req.params;
                 
                 const result = await deleteUser(id);
-                res.status(200).json({ message: result.message })
+                res.status(result.eventId).json({ message: result.message, eventId: result.eventId })
             });
         } catch (err) {
             console.error(err);
@@ -139,6 +139,18 @@ module.exports = {
         } catch (err) {
             console.error('User verification failed:', err);
             return res.status(500).json({ error: 'Internal server error' });
+        }
+    }, 
+
+    getStatus: async (req, res) => {
+        try {
+            const { eventId } = req.params;
+            if (!eventId)
+                return res.status(404).json({ error: "There's no event Id to check!" })
+            const getStatus = await Status.findOne({ eventId });
+            return res.json(getStatus)
+        } catch (err) {
+            return res.status(500).json({ error: 'Cannot retrieve status' });
         }
     }
 }

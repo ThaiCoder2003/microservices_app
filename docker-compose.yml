@@ -5,6 +5,9 @@ services:
   product-service:
     build: ./product-service
 
+  transaction-service:
+    build: ./transaction-service
+
   bff:
     build: ./bff
     ports:
@@ -12,3 +15,4 @@ services:
     depends_on:
       - user-service
       - product-service
+      - transaction-service

@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const receiptController = require('../controllers/receiptController');
+const checkoutController = require('../controllers/checkoutController');
 
-router.get('/', receiptController.get);
-router.post('/', receiptController.purchase);
+router.get('/', checkoutController.get);
+router.post('/', checkoutController.purchase);
+router.get('/status/:eventId', checkoutController.getStatus);
 
 module.exports = router;

@@ -6,6 +6,7 @@ const searchProducts = require('../usecases/searchProducts');
 const deleteProduct = require('../usecases/deleteProduct');
 const getCategory = require('../usecases/getCategory')
 
+const Status = require('../infrastructure/models/status.model')
 module.exports = {
     list: async (req, res) => {
         try {
@@ -58,19 +59,48 @@ module.exports = {
 
     create: async (req, res) => {
         try {
-            const product = await createProduct(req.body);
-            res.status(201).json(product);
+            let data = {}
+            const { id, name, image, price, origin, description, category } = req.body;
+            if (!id || !name || !price) {
+                res.status(404).json('Id, name and price must be included!');
+            }
+
+            data.id = id;
+            data.name = name;
+            data.price = price;
+            if (image) data.image = image;
+            if (origin) data.origin = origin;
+            if (description) data.description = description
+            if (category) data.category = category
+            const result = await createProduct(data);
+            res.status(result.status).json({ eventId: result.eventId, message: result.message });
         } catch (err) {
             console.error(err);
-            res.status(400).json({ error: 'Failed to create product' });
+            res.status(400).json({ error: err });
         }
     },
 
     update: async (req, res) => {
         const { id } = req.params;
+        if (!id) {
+            return res.status(404).json({ error: 'No product id!' })
+        }
+        const { name, image, price, origin, description, category } = req.body;
+        if (!name && !image && !price && !origin && !description && !category) {
+            return res.status(404).json({ error: 'At least 1 field must be filled!' })
+        }
+
+        const updateData = {}
+        if (name) updateData.name = name;
+        if (image) updateData.image = image;
+        if (price) updateData.price = price;
+        if (origin) updateData.origin = origin;
+        if (description) updateData.description = description;
+        if (category) updateData.category = category;
         try {
-            const updatedProduct = await updateProduct(id, req.body);
-            res.status(200).json(updatedProduct);
+            
+            const updatedResult = await updateProduct(id, updateData);
+            res.status(updatedResult.status).json({ eventId: updatedResult.eventId, message: updatedResult.message });
         } catch (err) {
             console.error(err);
             res.status(404).json({ error: 'Product not found or failed to update' });
@@ -91,8 +121,8 @@ module.exports = {
     delete: async (req, res) => {
         const { id } = req.params;
         try {
-            await deleteProduct(id);
-            res.status(204).send(); // No content
+            const deleteResult = await deleteProduct(id);
+            res.status(deleteResult.status).send({ eventId: deleteResult.eventId, message: deleteResult.message }); // No content
         } catch (err) {
             console.error(err);
             res.status(404).json({ error: 'Product not found or failed to delete' });
@@ -117,6 +147,18 @@ module.exports = {
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: 'Failed to retrieve products by categories' });
+        }
+    },
+
+    getStatus: async (req, res) => {
+        try {
+            const { eventId } = req.params;
+            if (!eventId)
+                return res.status(404).json({ error: "There's no event Id to check!" })
+            const getStatus = await Status.findOne({ eventId });
+            return res.json({ status: getStatus.status })
+        } catch (err) {
+            return res.status(500).json({ error: 'Cannot retrieve status' });
         }
     }
 }

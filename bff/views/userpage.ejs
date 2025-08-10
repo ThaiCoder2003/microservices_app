@@ -32,68 +32,45 @@
                     <button class="header-left_search--history-clear-button">Xoá các tìm kiếm gần đây</button>
                 </div>
             </div>
-            <% if (user) { %>
-                <div class="header-right">
-                    <div class="header-right_menu">
-                        <ul class="header-right_menu--list">
-                            <li class="header-right_menu--item">Premium</li>
-                            <li class="header-right_menu--item">Hỗ trợ</li>
-                            <li class="header-right_menu--item">Tải xuống</li>
-                        </ul>
-                        <div class="header-right_menu_download">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                        </div>
+            <div class="header-right">
+                <div class="header-right_menu">
+                    <ul class="header-right_menu--list">
+                        <li class="header-right_menu--item">Premium</li>
+                        <li class="header-right_menu--item">Hỗ trợ</li>
+                        <li class="header-right_menu--item">Tải xuống</li>
+                    </ul>
+                    <div class="header-right_menu_download">
+                        <i class="fa-solid fa-cart-shopping"></i>
                     </div>
-                    <div class="header-right_User">
-                        <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
-                        <div class="header-right_User-box--avatar" id="avatarBtn">
-                            <span class="header-right_User--avatar">N</span>
+                </div>
+                <div class="header-right_User">
+                    <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
+                    <div class="header-right_User-box--avatar" id="avatarBtn">
+                        <span class="header-right_User--avatar">N</span>
+                    </div>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <div class="dropdown-item">
+                            Tài khoản <i class="fa-solid fa-up-right-from-square icon"></i>
                         </div>
-                        <div class="dropdown-menu" id="dropdownMenu">
-                            <div class="dropdown-item">
-                                Tài khoản <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item selected">
-                                Hồ sơ
-                            </div>
-                            <div class="dropdown-item">
-                                Nâng cấp lên Premium <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item">
-                                Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
-                            </div>
-                            <div class="dropdown-item">
-                                Cài đặt
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <form action="/logout" class="dropdown-item-form logout" method="POST"
-                                style="display: inline;" id="logoutForm">
-                                <div class="dropdown-item logout">
-                                    Đăng xuất <i class="fa-solid fa-arrow-right-from-bracket icon"></i>
-                                </div>
-                            </form>
+                        <div class="dropdown-item selected">
+                            Hồ sơ
+                        </div>
+                        <div class="dropdown-item">
+                            Nâng cấp lên Premium <i class="fa-solid fa-up-right-from-square icon"></i>
+                        </div>
+                        <div class="dropdown-item">
+                            Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
+                        </div>
+                        <div class="dropdown-item">
+                            Cài đặt
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item logout">
+                            Đăng xuất
                         </div>
                     </div>
                 </div>
-                <% } else { %>
-                    <div class="header-right">
-                        <div class="header-right_menu">
-                            <ul class="header-right_menu--list">
-                                <li class="header-right_menu--item">Thông tin</li>
-                                <li class="header-right_menu--item">Liên hệ</li>
-                                <li class="header-right_menu--item">Tải xuống</li>
-                            </ul>
-                            <div class="header-right_menu_download">
-                                <i class="fa-solid fa-right-to-bracket"></i>
-                                <span class="header-right_menu_download--text">Đăng nhập cho Admin</span>
-                            </div>
-                        </div>
-                        <div class="header-right_login">
-                            <a class="header-right_login--signUp" href="/register">Đăng ký</a>
-                            <a class="header-right_login--signIn" href="/login">Đăng nhập</a>
-                        </div>
-                    </div>
-                    <% } %>
+            </div>
         </div>
         <div class="container">
             <!-- size 1/4-->
@@ -131,14 +108,14 @@
                 <div class="container-box-content1">
                     <div class="profile-container-userPage">
                         <div class="profile-card-userPage">
-                            <img src="ava-1200x676-7.jpg" alt="Avatar" class="avatar-userPage" />
+                            <img src="/assets/images/avatars/<%= user.profileImage %>" alt="Avatar" class="avatar-userPage" />
 
-                            <h2 class="name-userPage">Nguyễn Văn A</h2>
-                            <p class="email-userPage">nguyenvana@example.com</p>
+                            <h2 class="name-userPage"></h2>
+                            <p class="email-userPage"><%= user.email %></p>
                             <p class="joined-date-userPage">Tham gia từ: 01/01/2024</p>
 
                             <div class="info-group-userPage">
-                                <p><strong>Số điện thoại:</strong> 0901 234 567</p>
+                                <p><strong>Số điện thoại:</strong> </p>
                                 <p><strong>Địa chỉ:</strong> 123 Đường ABC, TP.HCM</p>
                                 <p><strong>Trạng thái:</strong> Tài khoản thường</p>
                             </div>

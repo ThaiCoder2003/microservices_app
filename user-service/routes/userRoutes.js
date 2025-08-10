@@ -10,6 +10,7 @@ router.post('/login', userController.login); // Route to login a user
 router.put('/update', userController.update); // Route to update user profile
 router.delete('/users/:id', userController.delete);
 router.get('/verify/:userId', userController.verify);
+router.get('/status/:eventId', userController.getStatus)
 // Route to register a new use
 
 module.exports = router;

@@ -33,64 +33,64 @@
             </div>
         </div>
         <% if (user) { %>
-            <div class="header-right">
-                <div class="header-right_menu">
-                    <ul class="header-right_menu--list">
-                        <li class="header-right_menu--item">Premium</li>
-                        <li class="header-right_menu--item">Hỗ trợ</li>
-                        <li class="header-right_menu--item">Tải xuống</li>
-                    </ul>
-                    <div class="header-right_menu_download">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                    </div>
+        <div class="header-right">
+            <div class="header-right_menu">
+                <ul class="header-right_menu--list">
+                    <li class="header-right_menu--item">Premium</li>
+                    <li class="header-right_menu--item">Hỗ trợ</li>
+                    <li class="header-right_menu--item">Tải xuống</li>
+                </ul>
+                <div class="header-right_menu_download">
+                    <i class="fa-solid fa-cart-shopping"></i>
                 </div>
-                <div class="header-right_User">
-                    <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
-                    <div class="header-right_User-box--avatar" id="avatarBtn">
-                        <span class="header-right_User--avatar">N</span>
+            </div>
+            <div class="header-right_User">
+                <span class="header-right_User--noti"><i class="fa-solid fa-bell"></i></span>
+                <div class="header-right_User-box--avatar" id="avatarBtn">
+                    <span class="header-right_User--avatar">N</span>
+                </div>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <div class="dropdown-item">
+                        Tài khoản <i class="fa-solid fa-up-right-from-square icon"></i>
                     </div>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <div class="dropdown-item">
-                            Tài khoản <i class="fa-solid fa-up-right-from-square icon"></i>
-                        </div>
-                        <div class="dropdown-item selected">
-                            Hồ sơ
-                        </div>
-                        <div class="dropdown-item">
-                            Nâng cấp lên Premium <i class="fa-solid fa-up-right-from-square icon"></i>
-                        </div>
-                        <div class="dropdown-item">
-                            Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
-                        </div>
-                        <div class="dropdown-item">
-                            Cài đặt
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-item logout">
-                            Đăng xuất
-                        </div>
+                    <div class="dropdown-item selected">
+                        Hồ sơ
+                    </div>
+                    <div class="dropdown-item">
+                        Nâng cấp lên Premium <i class="fa-solid fa-up-right-from-square icon"></i>
+                    </div>
+                    <div class="dropdown-item">
+                        Tải xuống <i class="fa-solid fa-up-right-from-square icon"></i>
+                    </div>
+                    <div class="dropdown-item">
+                        Cài đặt
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item logout">
+                        Đăng xuất
                     </div>
                 </div>
             </div>
-            <% } else { %>
-                <div class="header-right">
-                    <div class="header-right_menu">
-                        <ul class="header-right_menu--list">
-                            <li class="header-right_menu--item">Thông tin</li>
-                            <li class="header-right_menu--item">Liên hệ</li>
-                            <li class="header-right_menu--item">Tải xuống</li>
-                        </ul>
-                        <div class="header-right_menu_download">
-                            <i class="fa-solid fa-right-to-bracket"></i>
-                            <span class="header-right_menu_download--text">Đăng nhập cho Admin</span>
-                        </div>
-                    </div>
-                    <div class="header-right_login">
-                        <a class="header-right_login--signUp" href="/register">Đăng ký</a>
-                        <a class="header-right_login--signIn" href="/login">Đăng nhập</a>
-                    </div>
+        </div>
+        <% } else { %>
+        <div class="header-right">
+            <div class="header-right_menu">
+                <ul class="header-right_menu--list">
+                    <li class="header-right_menu--item">Thông tin</li>
+                    <li class="header-right_menu--item">Liên hệ</li>
+                    <li class="header-right_menu--item">Tải xuống</li>
+                </ul>
+                <div class="header-right_menu_download">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span class="header-right_menu_download--text">Đăng nhập cho Admin</span>
                 </div>
-                <% } %>
+            </div>
+            <div class="header-right_login">
+                <span class="header-right_login--signUp" onclick="window.location.href='/register'">Đăng ký</span>
+                <span class="header-right_login--signIn" onclick="window.location.href='/login'">Đăng nhập</span>
+            </div>
+        </div>
+        <% } %>
     </div>
     <div class="container">
         <!-- size 1/4-->
@@ -138,7 +138,7 @@
                                 <button class="container-box-component--header--list--btn-left">&#10094;</button>
                                 <ul class="container-box-component--header--list">
                                     <% coffee.forEach(product=> { %>
-                                        <li class="container-box-component--header--item">
+                                        <li class="container-box-component--header--item" onclick="window.location.href='/products/<%= product.id %>'">
                                             <div class="song-thumbnail">
                                                 <a href="/products/<%= product.id %>">
                                                     <img src="/assets/images/products/<%= product.image %>"
@@ -180,7 +180,7 @@
                                 <button class="container-box-component--header--list--btn-left">&#10094;</button>
                                 <ul class="container-box-component--header--list">
                                     <% juice.forEach(product=> { %>
-                                        <li class="container-box-component--header--item">
+                                        <li class="container-box-component--header--item" onclick="window.location.href='/products/<%= product.id %>'">
                                             <div class="song-thumbnail">
                                                 <a href="/products/<%= product.id %>">
                                                     <img src="/assets/images/products/<%= product.image %>"
@@ -223,7 +223,7 @@
                                 <ul class="container-box-component--header--list">
 
                                     <% tea.forEach(product=> { %>
-                                        <li class="container-box-component--header--item">
+                                        <li class="container-box-component--header--item" onclick="window.location.href='/products/<%= product.id %>'">
                                             <div class="song-thumbnail">
                                                 <a href="/products/<%= product.id %>">
                                                     <img src="/assets/images/products/<%= product.image %>"
@@ -266,7 +266,7 @@
                                 <ul class="container-box-component--header--list">
 
                                     <% dessert.forEach(product=> { %>
-                                        <li class="container-box-component--header--item">
+                                        <li class="container-box-component--header--item" onclick="window.location.href='/products/<%= product.id %>'">
                                             <div class="song-thumbnail">
                                                 <a href="/products/<%= product.id %>">
                                                     <img src="/assets/images/products/<%= product.image %>"
@@ -342,5 +342,4 @@
             </div>
         </div>
     </div>
-</div>
 </div>

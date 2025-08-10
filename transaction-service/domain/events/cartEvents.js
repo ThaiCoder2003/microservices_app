@@ -13,7 +13,7 @@ function createCartEvent(type, userId, payload) {
     userId,
     type,
     payload,
-    timestamp: Date.now()
+    timestamp: new Date()
   };
 }
 

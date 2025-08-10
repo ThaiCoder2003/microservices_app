@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../infrastructure/models/User');
 
 module.exports = {
     findByEmail: (email) => User.findOne({ email: email }),

@@ -24,3 +24,53 @@
     <p>Already have an account? <a href="/login" class="Register_here tag-index">Login here</a>.</p>
   </div>
 </div>
+<script>
+
+  document.getElementById('form-register').addEventListener('submit', async (e) => {
+    e.preventDefault(); // prevent default form submit
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+    const res = await fetch(`/register`, {
+        method: 'POSY',
+        body: formData
+    });
+
+
+    if (!res.ok) {
+        const error = await res.json();
+        alert(`Error: ${error.error}`);
+        return;
+    }
+
+    // Expect backend to return { eventId }
+    const { eventId } = await res.json();
+
+    let retries = 3;
+    while (retries-- > 0) {
+        const statusRes = await fetch(`/status/user-service/${eventId}`);
+        const statusData = await statusRes.json();
+
+        if (statusData.status === 'completed') {
+            alert('Đăng ký thành công!');
+            window.location.href = '/login?registered=success'
+            return;
+        }
+
+        if (statusData.status === 'failed') {
+            alert('Đăng ký thất bại!');
+            return;
+        }
+
+        await new Promise(r => setTimeout(r, 2000)); // wait before retry
+    }
+
+    document.getElementById(`user-${userId}`).remove();
+} catch (err) {
+    console.error(err);
+    alert('Đã có lỗi xảy ra! Xin thử lại sau~');
+}
+  })
+</script>

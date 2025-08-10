@@ -1,26 +1,27 @@
-const cartRepository = require('../../domain/repositories/cartRepository');
 const cartEvents = require('../../domain/events/cartEvents');
-
+const { sendTransactionEvent } = require('../../infrastructure/kafka/transaction.producer')
+const { v4: uuidv4 } = require('uuid');
 const { CartEventTypes, createCartEvent } = cartEvents;
 
 module.exports = async function DeleteFromCart(userId, productId) {
     try {
         // Create a new cart event for deletion
-        const event = createCartEvent(
-            CartEventTypes.ITEM_ADDED, 
+        const cartEvent = createCartEvent(
+            CartEventTypes.ITEM_REMOVED, 
             userId, 
             { productId: productId }
         )
         
         // Save the event to the database
-        const savedEvent = await cartRepository.createEvent(event);
-        
-        return {
-            id: savedEvent._id,
-            userId: savedEvent.userId,
-            type: savedEvent.type,
-            payload: savedEvent.payload,
-            timestamp: savedEvent.timestamp
+        const eventId = uuidv4();
+            // Save the event to the database
+        await sendTransactionEvent(eventId, 'cart.deleted', {
+            cartEvent
+        })
+        return { 
+            status: 202,
+            message: 'Request sent!',
+            eventId
         };
     } catch (err) {
         console.error(err);

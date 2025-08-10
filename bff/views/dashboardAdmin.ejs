@@ -16,24 +16,24 @@
             <!-- giữ nguyên form Add New Product của bạn -->
             <h1>Thêm sản phẩm mới</h1>
 
-            <form action="/products" method="POST">
+            <form id="add-product-form" action="/products" method="POST">
                 <label for="name" class="label-pane">ID sản phẩm:</label>
                 <input type="text" name="id" class="input-pane" placeholder="Product ID" required>
 
                 <label for="name" class="label-pane">Tên sản phẩm</label>:</label>
                 <input type="text" name="name" class="input-pane" placeholder="Product Name" required>
 
-                <label for="name" class="label-pane">Giá:</label>
+                <label for="price" class="label-pane">Giá:</label>
                 <input type="number" name="price" class="input-pane" placeholder="Product Price" required>
 
-                <label for="name" class="label-pane">Xuất xứ:</label>
+                <label for="origin" class="label-pane">Xuất xứ:</label>
                 <input type="text" name="origin" class="input-pane" placeholder="Xuất xứ">
 
-                <label for="image" class="label-pane">Mô tả:</label>
+                <label for="description" class="label-pane">Mô tả:</label>
                 <textarea name="description" class="input-pane" placeholder="Mô tả sản phẩm"></textarea>
 
                 <label for="image" class="label-pane">Ảnh sản phẩm:</label>
-                <input type="file" name="image" class="input-pane" accept="image/*" required>
+                <input type="file" name="product" class="input-pane" accept="image/*" required>
 
                 <label for="category" class="label-pane">Loại:</label>
                 <select name="category" class="input-pane" required>
@@ -117,19 +117,19 @@
     </div>
 </div>
 <script>
-    document.querySelectorAll('.delete-product').forEach(button => {
-        button.addEventListener('click', async (e) => {
-        const productId = button.dataset.id;
+    const paneList = document.querySelector('#pane-products .paneList');
 
-        const confirmed = confirm('Bạn có chắc muốn xóa sản phẩm này?');
-        if (!confirmed) return;
+    
+    document.querySelectorAll('.product-delete').forEach(button => {
+        button.addEventListener('click', async () => {
+            const productId = button.dataset.id;
+            const confirmed = confirm('Bạn có chắc muốn xóa sản phẩm này?');
+            if (!confirmed) return;
 
-        try {
+            try {
             const res = await fetch(`/products/${productId}`, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json'
-            }
+                method: 'DELETE',
+                headers: { 'Accept': 'application/json' }
             });
 
             if (!res.ok) {
@@ -138,41 +138,191 @@
                 return;
             }
 
-            document.getElementById(`product-${productId}`).remove();
+            // Expect backend to return { eventId }
+            const { eventId } = await res.json();
+
+            // Poll for completion
+            let retries = 3;
+            let statusData;
+            while (retries-- > 0) {
+                const statusRes = await fetch(`/status/product-service/${eventId}`);
+
+                if (statusData.status === 'completed') {
+                    alert('Xóa sản phẩm thành công!');
+                    document.getElementById(`product-${productId}`).remove();
+                    return;
+                }
+
+                if (statusData.status === 'failed') {
+                    alert('Xóa sản phẩm thất bại!');
+                    return;
+                }
+
+                await new Promise(r => setTimeout(r, 2000)); // wait before retry
+            }
+
+            alert('Quá thời gian xử lý! Xin thử lại sau.');
+
+            } catch (err) {
+                console.error(err);
+                alert('Đã có lỗi xảy ra! Xin thử lại sau~');
+            }
+        });
+    });
+
+    document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+        e.preventDefault(); // prevent default form submit
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        try {
+            const res = await fetch('/products', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                alert(`Error: ${error.error}`);
+                return;
+            }
+
+            const { eventId } = await res.json();
+
+            let retries = 3;
+            while (retries-- > 0) {
+                const statusRes = await fetch(`/status/product-service/${eventId}`);
+                const statusData = await statusRes.json();
+
+                if (statusData.status === 'completed') {
+                    form.reset();
+                    break;
+                }
+
+                if (statusData.status === 'failed') {
+                    alert('Thêm sản phẩm thất bại!');
+                    return;
+                }
+
+                await new Promise(r => setTimeout(r, 2000)); // wait 2s before retry
+            }
+
+
+            if (statusData.status !== 'completed') {
+                alert('Quá thời gian xử lý! Xin thử lại sau.');
+                return;
+            }
+
+            alert('Thêm sản phẩm thành công!');
+                const product = statusData.payload.product; // assuming your backend includes new product data here
+
+            if (product) {
+            // Create a new product item <li> as in your EJS
+            const newItem = document.createElement('li');
+            newItem.id = `product-${product.id}`;
+            newItem.classList.add('paneItem');
+
+            const index = paneList.children.length + 1;
+            newItem.innerHTML = `
+                <span class="Number">${index.toString().padStart(2, '0')}</span>
+                <div class="pane-boxcontent">
+                <div>
+                    <img src="${product.image}" alt="Ảnh sản phẩm" class="pane-product-image" style="width:60px;height:60px;object-fit:cover;margin-right:10px;">
+                </div>
+                <div>
+                    <span class="pane-info">Mã SP: #${product.id}</span>
+                    <span class="pane-info">Tên: ${product.name}</span>
+                    <span class="pane-info">Giá: ${product.price}đ</span>
+                    <span class="pane-info">Xuất xứ: ${product.origin}</span>
+                    <span class="pane-info">Loại: ${product.category}</span>
+                    <span class="pane-info">Ngày cập nhật: ${new Date(product.updatedAt).toLocaleString()}</span>
+                    <span class="pane-info">Mô tả: ${product.description}</span>
+                </div>
+                <span class="pane-delete product-delete" data-id="${product.id}">Xóa</span>
+                </div>
+            `;
+
+            paneList.appendChild(newItem);
+
+            // Add event listener to the new delete button
+            newItem.querySelector('.product-delete').addEventListener('click', async (e) => {
+                const confirmed = confirm('Bạn có chắc muốn xóa sản phẩm này?');
+                if (!confirmed) return;
+
+                try {
+                const res = await fetch(`/products/${product.id}`, { method: 'DELETE', headers: { 'Accept': 'application/json' } });
+                if (!res.ok) {
+                    const error = await res.json();
+                    alert(`Error: ${error.error}`);
+                    return;
+                }
+                    alert('Xóa sản phẩm thành công!');
+                    newItem.remove();
+                } catch (err) {
+                    console.error(err);
+                    alert('Đã có lỗi xảy ra! Xin thử lại sau~');
+                }
+            });
+
+            // Reset form after success
+            form.reset();
+            }            
         } catch (err) {
             console.error(err);
             alert('Đã có lỗi xảy ra! Xin thử lại sau~');
         }
-        });
     })
-    
 
     document.querySelectorAll('.delete-user').forEach(button => {
-    button.addEventListener('click', async (e) => {
-      const userId = button.dataset.id;
+        button.addEventListener('click', async (e) => {
+            const userId = button.dataset.id;
 
-      const confirmed = confirm('Bạn có chắc muốn xóa người dùng này?');
-      if (!confirmed) return;
+            const confirmed = confirm('Bạn có chắc muốn xóa người dùng này?');
+            if (!confirmed) return;
 
-      try {
-        const res = await fetch(`/delete/${userId}`, {
-          method: 'DELETE',
-          headers: {
-            'Accept': 'application/json'
-          }
+            try {
+                const res = await fetch(`/delete/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+
+                if (!res.ok) {
+                    const error = await res.json();
+                    alert(`Error: ${error.error}`);
+                    return;
+                }
+
+                // Expect backend to return { eventId }
+                const { eventId } = await res.json();
+
+                let retries = 3;
+                while (retries-- > 0) {
+                    const statusRes = await fetch(`/status/user-service/${eventId}`);
+                    const statusData = await statusRes.json();
+
+                    if (statusData.status === 'completed') {
+                        alert('Xóa người thành công!');
+                        document.getElementById(`user-${productId}`).remove();
+                        return;
+                    }
+
+                    if (statusData.status === 'failed') {
+                        alert('Xóa sản phẩm thất bại!');
+                        return;
+                    }
+
+                    await new Promise(r => setTimeout(r, 2000)); // wait before retry
+                }
+
+                document.getElementById(`user-${userId}`).remove();
+            } catch (err) {
+                console.error(err);
+                alert('Đã có lỗi xảy ra! Xin thử lại sau~');
+            }
         });
-
-        if (!res.ok) {
-          const error = await res.json();
-          alert(`Error: ${error.error}`);
-          return;
-        }
-
-        document.getElementById(`user-${userId}`).remove();
-      } catch (err) {
-        console.error(err);
-        alert('Đã có lỗi xảy ra! Xin thử lại sau~');
-      }
     });
-  });
 </script>

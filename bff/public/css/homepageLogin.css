@@ -236,6 +236,16 @@
   padding: 8px;
   border-radius: 50%;
 }
+
+.header-right_User-box--avatar img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  overflow: hidden;
+}
+
 .header-right_User-box--avatar:hover {
   background-color: #212121;
   transform: scale(1.05);

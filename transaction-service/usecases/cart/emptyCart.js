@@ -1,7 +1,7 @@
-const cartRepository = require('../../domain/repositories/cartRepository');
 const cartEvents = require('../../domain/events/cartEvents');
 const checkCart = require('../../utils/checkCart')
-
+const { v4: uuidv4 } = require('uuid');
+const { sendTransactionEvent } = require('../../infrastructure/kafka/transaction.producer')
 const { CartEventTypes, createCartEvent } = cartEvents;
 
 module.exports = async function EmptyCart(userId) {
@@ -9,15 +9,20 @@ module.exports = async function EmptyCart(userId) {
         // Retrieve all cart events for the user
         await checkCart(userId);
         // Optionally, clear the cart after purchase
-        const clearCartEvent = createCartEvent(
+        const cartEvent = createCartEvent(
             CartEventTypes.CART_CLEARED, 
             userId, 
             {}
         );
-        await cartRepository.createEvent(clearCartEvent);
-
-        return {
-            message: "Cart successfully emptied"
+        const eventId = uuidv4();
+            // Save the event to the database
+        await sendTransactionEvent(eventId, 'cart.cleared', {
+            cartEvent
+        })
+        return { 
+            status: 202,
+            message: 'Request sent!',
+            eventId
         };
     } catch (err) {
         console.error(err);

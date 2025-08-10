@@ -1,9 +1,14 @@
 <div class="container-box-login">
   <div class="center-box-login">
     <h3 class="log_in-header">LOG IN</h3>
-    <% if (message) { %>
+    <% if (error) { %>
     <div style="background-color: #f44336; color: white; padding: 12px; margin-bottom: 16px; border-radius: 6px;">
-      <strong>⚠️ Error:</strong> <%= message %>
+      <strong>⚠️ Error:</strong> <%= error %>
+    </div>
+    <% } %>
+    <% if (message) { %>
+    <div style="background-color: #00fd15; color: white; padding: 12px; margin-bottom: 16px; border-radius: 6px;">
+      <strong>✔️ Success:</strong> <%= message %>
     </div>
     <% } %>
     <form method="POST" action="/login" class="form-login">

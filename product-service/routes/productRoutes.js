@@ -10,5 +10,6 @@ router.put('/products/:id', productController.update); // Route to update a prod
 router.delete('/products/:id', productController.delete); // Route to delete a product
 router.get('/search', productController.search); // Route to search products
 router.get('/category', productController.getByCategory); // Route to get products by category
+router.get('/status/:eventId', productController.getStatus);
 
 module.exports = router;

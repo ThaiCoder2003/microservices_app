@@ -1,3 +1,4 @@
+const { CartEventTypes } = require('../events/cartEvents')
 class Cart {
     constructor(userId) {
         this.items = [];
@@ -11,8 +12,9 @@ class Cart {
     }
 
     apply(event) {
+        if (!event.payload || !event.payload.productId) return;
         switch (event.type) {
-            case 'CartItemAdded': {
+            case CartEventTypes.ITEM_ADDED: {
                 const existingItem = this.items.find(item => item.productId === event.payload.productId);
                 if (existingItem) {
                     existingItem.quantity += event.payload.quantity;
@@ -25,11 +27,11 @@ class Cart {
 
                 break;
             }
-            case 'CartItemRemoved': {
+            case CartEventTypes.ITEM_REMOVED: {
                 this.items = this.items.filter(item => item.productId !== event.payload.productId);
                 break;
             }
-            case 'CartCleared': {
+            case CartEventTypes.CART_CLEARED: {
                 this.items = [];
                 break;
             }

@@ -1,6 +1,6 @@
-const cartRepository = require('../../domain/repositories/cartRepository');
 const cartEvents = require('../../domain/events/cartEvents');
-
+const { sendTransactionEvent } = require('../../infrastructure/kafka/transaction.producer')
+const { v4: uuidv4 } = require('uuid');
 const { CartEventTypes, createCartEvent } = cartEvents;
 
 module.exports = async function AddToCart(userId, productId, quantity) {
@@ -14,16 +14,16 @@ module.exports = async function AddToCart(userId, productId, quantity) {
                 quantity
             }
         );
-        
+        const eventId = uuidv4();
         // Save the event to the database
-        const savedEvent = await cartRepository.createEvent(cartEvent);
+        await sendTransactionEvent(eventId, 'cart.added', {
+            cartEvent
+        })
         
-        return {
-            id: savedEvent._id,
-            userId: savedEvent.userId,
-            type: savedEvent.type,
-            payload: savedEvent.payload,
-            timestamp: savedEvent.timestamp
+        return { 
+            status: 202,
+            message: 'Request sent!',
+            eventId
         };
     } catch (err) {
         console.error(err);

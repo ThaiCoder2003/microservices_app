@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const userServices = require('../../infrastructure/services/userServices')
+const Status = require('../../infrastructure/models/status.model')
 require('dotenv').config();
 const getCart = require('../../usecases/cart/getCart');
 const addToCart = require('../../usecases/cart/addToCart');
@@ -42,8 +43,8 @@ module.exports = {
         return res.status(400).json({ error: 'Product ID and quantity are required' });
       }
 
-      const updatedCart = await addToCart(user.id, productId, quantity);
-      res.status(200).json(updatedCart);
+      const updatedResult = await addToCart(user.id, productId, quantity);
+      res.status(updatedResult.status).json({ message: updatedResult.message, eventId: updatedResult.eventId, service: 'transaction-service' });
     } catch (error) {
       console.error('Error adding to cart:', error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -71,8 +72,8 @@ module.exports = {
         return res.status(400).json({ error: 'Product not found in cart' });
       }
 
-      const updatedCart = await removeFromCart(user.id, productId);
-      res.status(200).json({ message: 'Product removed', cart: updatedCart });
+      const updatedResult = await removeFromCart(user.id, productId);
+      res.status(updatedResult.status).json({ message: updatedResult.message, eventId: updatedResult.eventId, service: 'transaction-service' });
     } catch (error) {
       console.error('Error removing from cart:', error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -90,10 +91,22 @@ module.exports = {
       if (!user) return res.status(404).json({ error: 'User not found' });
 
       const emptyResult = await emptyCart(user.id);
-      res.status(200).json(emptyResult);
+      res.status(emptyResult.status).json({ message: emptyResult.message, eventId: emptyResult.eventId, service: 'transaction-service' });
     } catch (error) {
       console.error('Error emptying cart:', error);
       res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+
+  getStatus: async (req, res) => {
+    try {
+        const { eventId } = req.params;
+        if (!eventId)
+            return res.status(404).json({ error: "There's no event Id to check!" })
+        const getStatus = await Status.findOne({ eventId });
+        return res.json({ status: getStatus.status })
+    } catch (err) {
+        return res.status(500).json({ error: 'Cannot retrieve status' });
     }
   }
 };

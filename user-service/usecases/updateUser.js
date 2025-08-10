@@ -1,8 +1,10 @@
-const userRepository = require('../repositories/userRepository');
 const checkUser = require('../utils/checkUser')
+const { sendUserEvent } = require('../infrastructure/kafka/user.producer');
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = async ({ userId, email, name, profilePicture, address, phone }) => {
     try {
-        const data = {};
+        const updateData = {};
         if (!userId || !email) {
             throw new Error('User ID and Email are required');
         }
@@ -11,39 +13,30 @@ module.exports = async ({ userId, email, name, profilePicture, address, phone })
             throw new Error('At least one field must be provided for update');
         }
 
-        const user = await checkUser(userId);
+        await checkUser(userId);
 
-        if (name) {
-            data.name = name;
-        }        
+        if (name) updateData.name = name;
         
-        if (profilePicture) {
-            data.profilePicture = profilePicture;
-        }
+        if (profilePicture) updateData.profilePicture = profilePicture;
 
-        if (address) {
-            data.address = address;
-        }
+        if (address) updateData.address = address;
 
-        if (phone) {
-            data.phone = phone;
-        }
+        if (phone) updateData.phone = phone;
 
-        data.updatedAt = Date.now();
-
-        await userRepository.update(userId, data);
+        updateData.updatedAt = new Date();
+        const eventId = uuidv4();
+        await sendUserEvent(eventId, 'updated', {
+            userId,
+            updateData
+        })
 
         return {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            profilePicture: user.profilePicture,
-            address: user.address,
-            phone: user.phone,
-            updatedAt: Date.now(),
+            status: 202,
+            message: 'Request has been sent!',
+            eventId
         };
     } catch (err) {
         console.error(err);
-        throw new Error('Failed to update user');
+        throw new Error('Update process failed!')
     }
 }

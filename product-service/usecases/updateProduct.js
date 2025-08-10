@@ -1,19 +1,22 @@
-const productRepository = require('../repositories/productRepository');
-
+const { sendProductEvent } = require('../infrastructure/kafka/product.producer')
+const productRepository = require('../repositories/productRepository'); 
+const { v4: uuidv4 } = require('uuid');
 module.exports = async (id, updateData) => {
     try {
-        const updatedProduct = await productRepository.updateById(id, updateData);
-        if (!updatedProduct) {
+        const existingProduct = await productRepository.findById(id);
+        if (!existingProduct) {
             throw new Error('Product not found');
         }
-        return {
-            id: updatedProduct.id,
-            name: updatedProduct.name,
-            price: updatedProduct.price,
-            image: updatedProduct.image,
-            origin: updatedProduct.origin,
-            description: updatedProduct.description,
-            createdAt: updatedProduct.createdAt,
+
+        const eventId = uuidv4();
+        await sendProductEvent(eventId, 'updated', {
+            id,
+            updateData,
+        })
+        return { 
+            status: 202,
+            message: 'Update request sent!',
+            eventId
         };
     } catch (err) {
         console.error(err);
