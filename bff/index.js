@@ -328,13 +328,19 @@ app.get('/status/product-service/:eventId', async (req, res) => {
 })
 
 app.get('/cart', auth(true), async (req, res) => {
+
   try {
+      const { added } = req.query;
+      let message = null;
+      if (added == 'success') {
+        message = 'Added new Item!'
+      }
       const response = await axios.get(`${TRANSACTION_SERVICE}/cart`, {
         headers: { Authorization: `Bearer ${req.cookies.token}` }
       });
 
       const { items, totalPrice } = response.data;
-      return res.render('cartpage', { title: 'Cart', items, totalPrice })
+      return res.render('cartpage', { title: 'Cart', items, totalPrice, message, error: null })
   }
   catch (err) {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to get cart' });
@@ -388,6 +394,18 @@ app.post('/purchase', auth(true), async (req, res) => {
       res.status(500).json({ error: 'Failed to purchase' });
   }
 })
+
+app.get('/status/cart/:eventId', async (req, res) => {
+  try{
+    const { eventId } = req.params; 
+    const result = await axios.get(`${transaction}/cart/status/${eventId}`);
+    res.status(200).json(result.data);
+  } catch (err) {
+    console.error("Error fetching status from user service:", err.message);
+    res.status(500).json({ error: "Failed to fetch status" });
+  }
+})
+
 
 app.listen(port, () => {
   console.log(`BFF running on port ${port}`);

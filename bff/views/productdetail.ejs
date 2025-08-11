@@ -145,7 +145,7 @@
                             <div class="product-actions">
                                 <label for="quantity">Số lượng:</label>
                                 <input type="number" id="quantity" value="1" min="1" />
-                                <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                                <button class="add-to-cart" data-id="<%= product.id %>">Thêm vào giỏ hàng</button>
                             </div>
                         </div>
                 </div>
@@ -229,3 +229,57 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const addToCartBtn = document.querySelector(".add-to-cart");
+        const quantityInput = document.getElementById("quantity");
+
+        if (addToCartBtn) {
+            addToCartBtn.addEventListener("click", async function() {
+                const quantity = parseInt(quantityInput.value, 10) || 1;
+                const productId = this.dataset.id;
+                
+                const res = await fetch('/cart/add', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ productId, quantity }) // default quantity 1
+                });
+                
+                if (!res.ok) {
+                    alert('Thêm sản phẩm thất bại!');
+                    return;
+                }
+
+                const { eventId } = await res.json();
+
+                // Poll for completion
+                let retries = 3;
+                let statusData;
+                while (retries-- > 0) {
+                    const statusRes = await fetch(`/status/cart/${eventId}`);
+
+                    if (statusData.status === 'completed') {
+                        break;
+                    }
+
+                    if (statusData.status === 'failed') {
+                        alert('Thêm vào giỏ thất bại!');
+                        return;
+                    }
+
+                    await new Promise(r => setTimeout(r, 2000)); // wait before retry
+                }
+
+                if (statusData.status !== 'completed') {
+                    alert('Quá thời gian xử lý! Xin thử lại sau.');
+                    return;
+                }
+
+                window.location.href = '/cart?added=success';
+            })
+        }
+    })
+</script>

@@ -67,7 +67,7 @@
         await new Promise(r => setTimeout(r, 2000)); // wait before retry
     }
 
-    document.getElementById(`user-${userId}`).remove();
+    alert('Quá thời gian đăng ký! Xin thử lại!')
 } catch (err) {
     console.error(err);
     alert('Đã có lỗi xảy ra! Xin thử lại sau~');

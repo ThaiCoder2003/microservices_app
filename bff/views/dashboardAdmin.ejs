@@ -148,9 +148,7 @@
                 const statusRes = await fetch(`/status/product-service/${eventId}`);
 
                 if (statusData.status === 'completed') {
-                    alert('Xóa sản phẩm thành công!');
-                    document.getElementById(`product-${productId}`).remove();
-                    return;
+                    break;
                 }
 
                 if (statusData.status === 'failed') {
@@ -161,7 +159,13 @@
                 await new Promise(r => setTimeout(r, 2000)); // wait before retry
             }
 
-            alert('Quá thời gian xử lý! Xin thử lại sau.');
+            if (statusData.status !== 'completed') {
+                alert('Quá thời gian xử lý! Xin thử lại sau.');
+                return;
+            }
+
+            alert('Xóa sản phẩm thành công!');
+            document.getElementById(`product-${productId}`).remove();
 
             } catch (err) {
                 console.error(err);
@@ -190,13 +194,13 @@
 
             const { eventId } = await res.json();
 
+            let statusData;
             let retries = 3;
             while (retries-- > 0) {
                 const statusRes = await fetch(`/status/product-service/${eventId}`);
-                const statusData = await statusRes.json();
+                statusData = await statusRes.json();
 
                 if (statusData.status === 'completed') {
-                    form.reset();
                     break;
                 }
 
@@ -219,54 +223,86 @@
 
             if (product) {
             // Create a new product item <li> as in your EJS
-            const newItem = document.createElement('li');
-            newItem.id = `product-${product.id}`;
-            newItem.classList.add('paneItem');
+                const newItem = document.createElement('li');
+                newItem.id = `product-${product.id}`;
+                newItem.classList.add('paneItem');
 
-            const index = paneList.children.length + 1;
-            newItem.innerHTML = `
-                <span class="Number">${index.toString().padStart(2, '0')}</span>
-                <div class="pane-boxcontent">
-                <div>
-                    <img src="${product.image}" alt="Ảnh sản phẩm" class="pane-product-image" style="width:60px;height:60px;object-fit:cover;margin-right:10px;">
-                </div>
-                <div>
-                    <span class="pane-info">Mã SP: #${product.id}</span>
-                    <span class="pane-info">Tên: ${product.name}</span>
-                    <span class="pane-info">Giá: ${product.price}đ</span>
-                    <span class="pane-info">Xuất xứ: ${product.origin}</span>
-                    <span class="pane-info">Loại: ${product.category}</span>
-                    <span class="pane-info">Ngày cập nhật: ${new Date(product.updatedAt).toLocaleString()}</span>
-                    <span class="pane-info">Mô tả: ${product.description}</span>
-                </div>
-                <span class="pane-delete product-delete" data-id="${product.id}">Xóa</span>
-                </div>
-            `;
+                const index = paneList.children.length + 1;
+                newItem.innerHTML = `
+                    <span class="Number">${index.toString().padStart(2, '0')}</span>
+                    <div class="pane-boxcontent">
+                    <div>
+                        <img src="${product.image}" alt="Ảnh sản phẩm" class="pane-product-image" style="width:60px;height:60px;object-fit:cover;margin-right:10px;">
+                    </div>
+                    <div>
+                        <span class="pane-info">Mã SP: #${product.id}</span>
+                        <span class="pane-info">Tên: ${product.name}</span>
+                        <span class="pane-info">Giá: ${product.price}đ</span>
+                        <span class="pane-info">Xuất xứ: ${product.origin}</span>
+                        <span class="pane-info">Loại: ${product.category}</span>
+                        <span class="pane-info">Ngày cập nhật: ${new Date(product.updatedAt).toLocaleString()}</span>
+                        <span class="pane-info">Mô tả: ${product.description}</span>
+                    </div>
+                    <span class="pane-delete product-delete" data-id="${product.id}">Xóa</span>
+                    </div>
+                `;
 
-            paneList.appendChild(newItem);
+                paneList.appendChild(newItem);
 
-            // Add event listener to the new delete button
-            newItem.querySelector('.product-delete').addEventListener('click', async (e) => {
-                const confirmed = confirm('Bạn có chắc muốn xóa sản phẩm này?');
-                if (!confirmed) return;
+                // Add event listener to the new delete button
+                newItem.querySelector('.product-delete').addEventListener('click', async (e) => {
+                    const confirmed = confirm('Bạn có chắc muốn xóa sản phẩm này?');
+                    if (!confirmed) return;
 
-                try {
-                const res = await fetch(`/products/${product.id}`, { method: 'DELETE', headers: { 'Accept': 'application/json' } });
-                if (!res.ok) {
-                    const error = await res.json();
-                    alert(`Error: ${error.error}`);
-                    return;
-                }
+                    try {
+                    const res = await fetch(`/products/${product.id}`, {
+                        method: 'DELETE',
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (!res.ok) {
+                        const error = await res.json();
+                        alert(`Error: ${error.error}`);
+                        return;
+                    }
+
+                    // Expect backend to return { eventId }
+                    const { eventId } = await res.json();
+
+                    // Poll for completion
+                    let retries = 3;
+                    let statusData;
+                    while (retries-- > 0) {
+                        const statusRes = await fetch(`/status/product-service/${eventId}`);
+
+                        if (statusData.status === 'completed') {
+                            break;
+                        }
+
+                        if (statusData.status === 'failed') {
+                            alert('Xóa sản phẩm thất bại!');
+                            return;
+                        }
+
+                        await new Promise(r => setTimeout(r, 2000)); // wait before retry
+                    }
+
+                    if (statusData.status !== 'completed') {
+                        alert('Quá thời gian xử lý! Xin thử lại sau.');
+                        return;
+                    }
+
                     alert('Xóa sản phẩm thành công!');
-                    newItem.remove();
-                } catch (err) {
-                    console.error(err);
-                    alert('Đã có lỗi xảy ra! Xin thử lại sau~');
-                }
-            });
+                    document.getElementById(`product-${productId}`).remove();
 
-            // Reset form after success
-            form.reset();
+                    } catch (err) {
+                        console.error(err);
+                        alert('Đã có lỗi xảy ra! Xin thử lại sau~');
+                    }
+                });
+
+                // Reset form after success
+                form.reset();
             }            
         } catch (err) {
             console.error(err);
@@ -300,14 +336,13 @@
                 const { eventId } = await res.json();
 
                 let retries = 3;
+                let statusData
                 while (retries-- > 0) {
                     const statusRes = await fetch(`/status/user-service/${eventId}`);
-                    const statusData = await statusRes.json();
+                    statusData = await statusRes.json();
 
                     if (statusData.status === 'completed') {
-                        alert('Xóa người thành công!');
-                        document.getElementById(`user-${productId}`).remove();
-                        return;
+                        break;
                     }
 
                     if (statusData.status === 'failed') {
@@ -318,6 +353,12 @@
                     await new Promise(r => setTimeout(r, 2000)); // wait before retry
                 }
 
+                if (statusData.status !== 'completed') {
+                    alert('Quá thời gian xử lý! Xin thử lại sau.');
+                    return;
+                }
+
+                alert('Xóa người thành công!');
                 document.getElementById(`user-${userId}`).remove();
             } catch (err) {
                 console.error(err);

@@ -96,6 +96,16 @@
                 <% } %>
     </div>
     <div class="container">
+        <% if (error) { %>
+            <div style="background-color: #f44336; color: white; padding: 12px; margin-bottom: 16px; border-radius: 6px;">
+                <strong>⚠️ Error:</strong> <%= error %>
+            </div>
+        <% } %>
+        <% if (message) { %>
+            <div style="background-color: #00fd15; color: white; padding: 12px; margin-bottom: 16px; border-radius: 6px;">
+                <strong>✔️ Success:</strong> <%= message %>
+            </div>
+        <% } %>
         <!-- size 1/4-->
         <div class="container-sidebar">
             <div class="container-sidebar-homepageNoLogin">
@@ -133,7 +143,7 @@
                     <div class="container-box-content-cart-items">
                         <% if (items.length> 0) { %>
                             <% items.forEach(item=> { %>
-                                <div class="container-box-content-cart-item">
+                                <div class="container-box-content-cart-item" id="<%= item.id %>">
                                     <div class="container-box-content-cart-item-right">
                                         <img src="/assets/images/products/<%= item.image %>" alt="<%= item.name %>"
                                             class="container-box-content-cart-item-image">
@@ -141,8 +151,9 @@
                                             <span class="container-box-content-cart-page-name">
                                                 <%= item.name %>
                                             </span>
-                                            <span class="container-box-content-cart-page-cost">Giá gốc: <%= item.price
-                                                    %>đ</span>
+                                            <span class="container-box-content-cart-page-cost">
+                                                Giá gốc: <%= item.price %>đ
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="container-box-content-cart-item-details">
@@ -156,7 +167,7 @@
                                             <%= item.totalPrice %>đ
                                         </p>
                                         <button class="container-box-content-cart-remove cart-remover"
-                                            data-id="<>">Xóa</button>
+                                            data-id="<%= item.id %>">Xóa</button>
                                     </div>
                                 </div>
 
@@ -189,12 +200,35 @@
                     method: 'DELETE'
                 });
 
-                if (res.ok) {
-                    location.reload(); // Refresh cart after successful removal
-                } else {
+                if (!res.ok) {
                     const error = await res.json();
                     alert('Xóa thất bại: ' + (error.message || 'Lỗi không xác định'));
                 }
+                const { eventId } = await res.json();
+
+                                let retries = 3;
+                let statusData;
+                while (retries-- > 0) {
+                    const statusRes = await fetch(`/status/cart/${eventId}`);
+
+                    if (statusData.status === 'completed') {
+                        break;
+                    }
+
+                    if (statusData.status === 'failed') {
+                        alert('Thêm vào giỏ thất bại!');
+                        return;
+                    }
+
+                    await new Promise(r => setTimeout(r, 2000)); // wait before retry
+                }
+
+                if (statusData.status !== 'completed') {
+                    alert('Quá thời gian xử lý! Xin thử lại sau.');
+                    return;
+                }
+
+                document.getElementById(`${productId}`).remove();
             } catch (err) {
                 console.error(err);
                 alert('Không thể kết nối đến máy chủ.');
