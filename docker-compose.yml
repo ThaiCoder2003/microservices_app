@@ -1,6 +1,7 @@
 version: "3.8"
 
 services:
+<<<<<<< HEAD
   mongo:
     image: mongo:6
     container_name: mongo
@@ -11,6 +12,8 @@ services:
     networks:
       - micro_net
 
+=======
+>>>>>>> 7a78ef7ee8898a54ffeb7383b6213dff36b66ad6
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper
@@ -21,11 +24,14 @@ services:
       - "2181:2181"
     networks:
       - micro_net
+<<<<<<< HEAD
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "2181"]
       interval: 10s
       timeout: 5s
       retries: 5
+=======
+>>>>>>> 7a78ef7ee8898a54ffeb7383b6213dff36b66ad6
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
@@ -47,6 +53,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - micro_net
 
   bff:
     build:
@@ -79,10 +93,15 @@ services:
       - DB_URL=mongodb://mongo:27017/productDB
       - KAFKA_BROKER=kafka:9092
     depends_on:
+<<<<<<< HEAD
       mongo:
         condition: service_started
       kafka:
         condition: service_healthy
+=======
+      - mongo
+      - kafka
+>>>>>>> 7a78ef7ee8898a54ffeb7383b6213dff36b66ad6
     networks:
       - micro_net
 
@@ -99,10 +118,15 @@ services:
       - JWT_SECRET=user_secret_key
       - KAFKA_BROKER=kafka:9092
     depends_on:
+<<<<<<< HEAD
       mongo:
         condition: service_started
       kafka:
         condition: service_healthy
+=======
+      - mongo
+      - kafka
+>>>>>>> 7a78ef7ee8898a54ffeb7383b6213dff36b66ad6
     networks:
       - micro_net
 
@@ -119,6 +143,7 @@ services:
       - KAFKA_BROKER=kafka:9092
       - DB_URL=mongodb://mongo:27017/userDB
     depends_on:
+<<<<<<< HEAD
       mongo:
         condition: service_started
       kafka:
@@ -132,3 +157,13 @@ volumes:
 networks:
   micro_net:
     driver: bridge
+=======
+      - mongo
+      - kafka
+    networks:
+      - micro_net
+
+networks:
+  micro_net:
+    driver: bridge
+>>>>>>> 7a78ef7ee8898a54ffeb7383b6213dff36b66ad6
