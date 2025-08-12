@@ -1,4 +1,4 @@
-const kafka = require('../../../kafka-wrapper/index')
+const kafka = require('../../kafka-wrapper')
 const cartRepository = require('../../domain/repositories/cartRepository');
 const receiptRepository = require('../../domain/repositories/receiptRepository');
 const Status = require('../models/status.model');

@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
     "dev": "npm-run-all --parallel user product transaction bff",
     "user": "cd user-service && npm start",
     "product": "cd product-service && npm start",

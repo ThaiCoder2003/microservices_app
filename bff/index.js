@@ -23,7 +23,7 @@ const productStorage = multer.diskStorage({
 });
 
 const productUpload = multer({
-  storage,
+  productStorage,
   fileFilter: (req, file, cb) => {
     if (!file.mimetype.startsWith('image/')) {
       return cb(new Error('Only image files are allowed'), false);
@@ -34,6 +34,30 @@ const productUpload = multer({
     fileSize: 2 * 1024 * 1024 // 2MB
   }
 });
+
+const userStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'public/assets/images/avatars')); // Ensure it saves inside /public/images
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = new Date() + path.extname(file.originalname);
+    cb(null, uniqueSuffix);
+  }
+});
+
+const userUpload = multer({
+  userStorage,
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith('image/')) {
+      return cb(new Error('Only image files are allowed'), false);
+    }
+    cb(null, true);
+  },
+  limits: {
+    fileSize: 2 * 1024 * 1024 // 2MB
+  }
+});
+
 
 app.use(cookieParser());
 app.set('view engine', 'ejs');
@@ -131,7 +155,7 @@ app.post('/login', auth(false), async (req, res) => {
 
 // Register
 app.get('/register', async (req, res) => {
-  res.render('register', { title: 'Register', error: null}); 
+  res.render('register', { title: 'Register', message: null}); 
 }); 
 
 app.post('/register', async (req, res) => {
@@ -144,7 +168,7 @@ app.post('/register', async (req, res) => {
     console.error(err);
 
     const message = err.response?.data?.error || 'Registration failed';
-    res.render('register', { title: 'Register', error: message });
+    res.render('register', { title: 'Register', message: message });
   }
 });
 

@@ -1,29 +1,16 @@
-
-version: "3.8"
-
 services:
-  mongo:
-    image: mongo:6
-    container_name: mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-    networks:
-      - micro_net
-
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.5.0
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
-    networks:
-      - micro_net
 
   kafka:
-    image: confluentinc/cp-kafka:7.5.0
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
@@ -31,74 +18,71 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    networks:
-      - micro_net
-
-  bff:
-    build:
-      context: .
-      dockerfile: bff/Dockerfile
-    ports:
-      - "5000:5000"
-    env_file:
-      - ./bff/.env
-    depends_on:
-      - user-service
-      - product-service
-      - transaction-service
-    networks:
-      - micro_net
-
-  product-service:
-    build:
-      context: .
-      dockerfile: product-service/Dockerfile
-    ports:
-      - "5002:5002"
-    environment:
-      - PORT=5002
-      - DB_URL=mongodb://mongo:27017/productDB
-    depends_on:
-      - mongo
-    networks:
-      - micro_net
-
-  transaction-service:
-    build:
-      context: .
-      dockerfile: transaction-service/Dockerfile
-    ports:
-      - "5003:5003"
-    environment:
-      - PORT=5003
-      - DB_URL=mongodb://mongo:27017/transactionDB
-      - JWT_SECRET=user_secret_key
-    depends_on:
-      - mongo
-    networks:
-      - micro_net
+      KAFKA_PROCESS_ROLES: 'broker' # <--- ADD THIS LINE
 
   user-service:
     build:
       context: .
-      dockerfile: user-service/Dockerfile
+      dockerfile: ./user-service/Dockerfile
+    container_name: user-service
     ports:
       - "5001:5001"
-    environment:
-      - PORT=5001
-      - JWT_SECRET=user_secret_key
-      - KAFKA_BROKER=kafka:9092
     depends_on:
-      - mongo
       - kafka
-    networks:
-      - micro_net
+    environment:
+      KAFKA_BROKERS: kafka:29092
+    volumes:
+      - ./user-service:/app
+      - ./kafka-wrapper:/app/kafka-wrapper
 
-volumes:
-  mongo_data:
+  product-service:
+    build:
+      context: .
+      dockerfile: ./product-service/Dockerfile
+    container_name: product-service
+    ports:
+      - "5002:5002"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKERS: kafka:29092
+    volumes:
+      - ./product-service:/app
+      - ./kafka-wrapper:/app/kafka-wrapper
 
-networks:
-  micro_net:
-    driver: bridge
+  transaction-service:
+    build:
+      context: .
+      dockerfile: ./transaction-service/Dockerfile
+    container_name: transaction-service
+    ports:
+      - "5003:5003"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKERS: kafka:29092
+    volumes:
+      - ./transaction-service:/app
+      - ./kafka-wrapper:/app/kafka-wrapper
+
+  bff:
+    build:
+      context: .
+      dockerfile: ./bff/Dockerfile
+    container_name: bff
+    ports:
+      - "5000:5000"
+    depends_on:
+      - user-service
+      - product-service
+      - transaction-service
+      - kafka
+    environment:
+      KAFKA_BROKERS: kafka:29092
+    volumes:
+      - ./bff:/app
+      - ./kafka-wrapper:/app/kafka-wrapper

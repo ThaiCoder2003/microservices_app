@@ -1,5 +1,7 @@
+# transaction-service/Dockerfile
 FROM node:20
 
+# Thiết lập thư mục làm việc
 WORKDIR /app
 
 # Copy shared Kafka Wrapper first, since it changes less often
@@ -15,5 +17,8 @@ RUN npm install
 # Copy the rest of the application's code into the container
 COPY . .
 
+# Khai báo port service lắng nghe
 EXPOSE 5003
-CMD ["npm", "start"]
+
+# Lệnh khởi động service
+CMD ["node", "index.js"]
