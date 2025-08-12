@@ -16,6 +16,8 @@
     "express": "^5.1.0",
     "mongoose": "^8.16.0",
     "uuid": "^11.1.0",
-    "uuidv4": "^6.2.13"
+    "uuidv4": "^6.2.13",
+    "@myorg/kafka-wrapper": "file:../kafka-wrapper",
+    "dotenv": "^17.0.1"
   }
 }

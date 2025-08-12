@@ -1,12 +1,13 @@
-# user-service/Dockerfile
+# Cấu hình Dockerfile cho user-service
 FROM node:20
 
 # Thiết lập thư mục làm việc
 WORKDIR /app
 
-# Copy shared Kafka Wrapper first, since it changes less often
-# The '..' is a relative path to the parent directory on the host machine
-COPY ../kafka-wrapper ./kafka-wrapper
+# Sao chép các file package và thư mục kafka-wrapper
+COPY user-service/package*.json ./
+COPY package*.json ./
+COPY kafka-wrapper ./kafka-wrapper
 
 # Copy package.json and package-lock.json to leverage Docker's build cache
 COPY package*.json ./
@@ -14,11 +15,8 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the application's code into the container
-COPY . .
+COPY user-service/. .
 
 # Khai báo port service lắng nghe
 EXPOSE 5001
-
-# Lệnh khởi động service
-CMD ["node", "index.js"]
+CMD ["npm", "start"]

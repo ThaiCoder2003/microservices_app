@@ -1,24 +1,25 @@
-# Use the official Node.js 20 image as the base
+# Cấu hình Dockerfile cho product-service
+# Bắt đầu với Node.js image
 FROM node:20
 
-# Set the working directory inside the container
+# Đặt thư mục làm việc trong container là /app
 WORKDIR /app
 
-# Copy shared Kafka Wrapper first, since it changes less often
-# The '..' is a relative path to the parent directory on the host machine
-COPY ../kafka-wrapper ./kafka-wrapper
-
-# Copy package.json and package-lock.json to leverage Docker's build cache
+# Sao chép file package.json gốc và package.json của service
 COPY package*.json ./
+COPY product-service/package*.json ./
 
-# Install dependencies
+# Sao chép thư mục kafka-wrapper dùng chung
+COPY kafka-wrapper ./kafka-wrapper
+
+# Cài đặt dependencies
 RUN npm install
 
-# Copy the rest of the application's code into the container
-COPY . .
+# Sao chép toàn bộ mã nguồn của service vào thư mục làm việc
+COPY product-service/ .
 
-# Expose the port the service will listen on
+# Mở port cho ứng dụng
 EXPOSE 5002
 
-# The command to start the service
-CMD ["node", "index.js"]
+# Lệnh chạy ứng dụng
+CMD ["npm", "start"]

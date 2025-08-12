@@ -4,7 +4,8 @@ module.exports = async (category) => {
     try {
         const products = await productRepository.getByCategory(category);
         if (!products || products.length === 0) {
-            throw new Error('No products found in this category');
+            // Sửa lỗi: Trả về một mảng rỗng thay vì throw lỗi
+            return [];
         }
         return products.map(product => ({
             id: product.id,
@@ -15,6 +16,7 @@ module.exports = async (category) => {
         }));
     } catch (err) {
         console.error(err);
+        // Có thể trả về lỗi hoặc mảng rỗng tùy theo business logic
         throw new Error('Failed to retrieve products by category');
     }
 }

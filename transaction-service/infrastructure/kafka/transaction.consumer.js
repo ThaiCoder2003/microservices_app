@@ -1,15 +1,17 @@
-const kafka = require('../../kafka-wrapper')
+// const kafka = require('../../kafka-wrapper'); // Trước đó
+const { consumer } = require('../../kafka-wrapper'); // Sửa lại: chỉ lấy đối tượng consumer
+
 const cartRepository = require('../../domain/repositories/cartRepository');
 const receiptRepository = require('../../domain/repositories/receiptRepository');
 const Status = require('../models/status.model');
 
-const consumer = kafka.consumer({ groupId: 'user-service-group' });
+// const consumer = kafka.consumer({ groupId: 'user-service-group' }); // Xóa dòng này đi
 
 async function handleCartEvent(cartEvent, successMsg) {
     try {
         await cartRepository.createEvent(cartEvent);
         console.log(`[Kafka] ${successMsg}`); 
-    }  catch (err) {
+    }   catch (err) {
         console.error('[Kafka] Error adding product to cart:', err.message);
     }
 }
@@ -62,7 +64,7 @@ async function startKafkaConsumer() {
                 console.log(`[Kafka] Successfully processed event ${eventId} (${topic})`);
             } catch (error) {
                 console.error(`[Kafka] Failed to process event ${eventId}:`, error.message);
-    
+        
                 await Status.findOneAndUpdate(
                     { eventId },
                     { status: 'failed', error: error.message }

@@ -1,40 +1,38 @@
-require('dotenv').config(); // Load environment variables from .env file
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 5002;
 
-const connectDB = require('./config/db'); // Assuming you have a db.js file for MongoDB connection
-const productRoutes =  require('./routes/productRoutes'); // Assuming you have a productController.js file
-
-const startKafkaConsumer =  require('./infrastructure/kafka/product.consumer');
+const connectDB = require('./config/db');
+const productRoutes = require('./routes/productRoutes');
+const startKafkaConsumer = require('./infrastructure/kafka/product.consumer');
 const { startProducer } = require('./infrastructure/kafka/product.producer');
+const { seedProducts } = require('./utils/seed'); // Sửa lại: chỉ import hàm seedProducts
 
-connectDB();
-
-
-// Register product routes
-// Lấy danh sách user
 const startServer = async () => {
-  try {
-    const app = express();
-    app.use(express.json());
-// Đăng ký
-    app.use('/', productRoutes); ; 
-    await connectDB();
-    console.log('[MongoDB] Connected');
-    require('./utils/seed');
+    try {
+        await connectDB();
+        console.log('[MongoDB] Connected');
 
-    await startProducer();
-    await startKafkaConsumer();
-    console.log('[Kafka] Producer and Consumer started');
+        // Chạy seeding sau khi đã kết nối MongoDB
+        await seedProducts();
+        
+        // Khởi động Kafka
+        await startProducer();
+        await startKafkaConsumer();
+        console.log('[Kafka] Producer and Consumer started');
 
-    app.listen(port, () => {
-      console.log(`Product Service running on port ${port}`);
-    });
-  } catch (err) {
-    console.error('[Startup Error]', err);
-    process.exit(1); // Exit if critical infra fails
-  }
+        // Cấu hình Express
+        app.use(express.json());
+        app.use('/', productRoutes);
+        
+        app.listen(port, () => {
+            console.log(`Product Service running on port ${port}`);
+        });
+    } catch (err) {
+        console.error('[Startup Error]', err);
+        process.exit(1);
+    }
 }
 
 startServer();

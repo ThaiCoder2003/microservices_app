@@ -23,11 +23,9 @@ module.exports = {
             if (price == '<30000') {
                 products = products.filter(p => p.price < 30000)
             }
-
             else if (price == '>=30000 & <=50000') {
                 products = products.filter(p => p.price >= 30000 && p.price <= 50000)
             }
-
             else if (price == '>50000') {
                 products = products.filter(p => p.price > 50000)
             }
@@ -35,7 +33,6 @@ module.exports = {
             if (sort == 'asc') {
                 products = products.sort((a, b) => a.price - b.price)
             }
-
             else if (sort == 'desc') {
                 products = products.sort((a, b) => b.price - a.price)
             }
@@ -162,4 +159,3 @@ module.exports = {
         }
     }
 }
-
