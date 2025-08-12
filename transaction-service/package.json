@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+<<<<<<< Updated upstream
     "axios": "^1.10.0",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
@@ -20,4 +21,14 @@
     "uuid": "^11.1.0",
     "uuidv4": "^6.2.13"
   }
+=======
+  "axios": "^1.10.0",
+  "dotenv": "^17.2.0",
+  "express": "^5.1.0",
+  "jsonwebtoken": "^9.0.2",
+  "mongoose": "^8.16.4",
+  "@myorg/kafka-wrapper": "file:../kafka-wrapper"
+}
+
+>>>>>>> Stashed changes
 }

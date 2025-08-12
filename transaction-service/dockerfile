@@ -1,18 +1,17 @@
-# transaction-service/Dockerfile
 FROM node:20
 
-# Thiết lập thư mục làm việc
 WORKDIR /app
 
-# Copy package.json & package-lock.json (nếu có), rồi cài dependencies
+# Copy package.json + kafka-wrapper
 COPY package*.json ./
+COPY ../kafka-wrapper ./kafka-wrapper
+COPY ../kafka-wrapper/package*.json ./kafka-wrapper/
+
+# Cài dependencies (bao gồm kafka-wrapper)
 RUN npm install
 
-# Copy toàn bộ code vào container
+# Copy toàn bộ code service
 COPY . .
 
-# Khai báo port service lắng nghe
 EXPOSE 5003
-
-# Lệnh khởi động service
-CMD ["node", "index.js"]
+CMD ["npm", "start"]

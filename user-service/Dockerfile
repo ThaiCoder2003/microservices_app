@@ -1,8 +1,14 @@
-# user-service/Dockerfile
 FROM node:20
+
 WORKDIR /app
+
 COPY package*.json ./
+COPY ../kafka-wrapper ./kafka-wrapper
+COPY ../kafka-wrapper/package*.json ./kafka-wrapper/
+
 RUN npm install
+
 COPY . .
+
 EXPOSE 5001
-CMD ["node", "index.js"]
+CMD ["npm", "start"]
