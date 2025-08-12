@@ -1,8 +1,9 @@
 const Products = require('../infrastructure/models/Products');
-const connectDB = require('./connectDB');
+const connectDB = require('../config/db');
 
 const seedProducts = async () => {
     try {
+        await connectDB();
         const count = await Products.countDocuments();
         if (count > 0) {
             console.log('⚠️ Products already exist. Skipping seeding.');
