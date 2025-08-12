@@ -1,4 +1,4 @@
-const kafka = require('../../../kafka-wrapper/index')
+const kafka = require('../../kafka-wrapper')
 const productRepository = require('../../repositories/productRepository');
 const Status = require('../models/status.model');
 const consumer = kafka.consumer({ groupId: 'user-service-group' });

@@ -1,18 +1,24 @@
-# product-service/Dockerfile
+# Use the official Node.js 20 image as the base
 FROM node:20
 
-# Thiết lập thư mục làm việc
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json & package-lock.json (nếu có), rồi cài dependencies
+# Copy shared Kafka Wrapper first, since it changes less often
+# The '..' is a relative path to the parent directory on the host machine
+COPY ../kafka-wrapper ./kafka-wrapper
+
+# Copy package.json and package-lock.json to leverage Docker's build cache
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
-# Copy toàn bộ code vào container
+# Copy the rest of the application's code into the container
 COPY . .
 
-# Khai báo port service lắng nghe
+# Expose the port the service will listen on
 EXPOSE 5002
 
-# Lệnh khởi động service
+# The command to start the service
 CMD ["node", "index.js"]

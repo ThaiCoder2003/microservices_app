@@ -1,4 +1,4 @@
-const kafka  = require('../../../kafka-wrapper/index')
+const kafka  = require('../../kafka-wrapper')
 const Status = require('../models/status.model');
 const { v4: uuidv4 } = require('uuid');
 const producer = kafka.producer();
