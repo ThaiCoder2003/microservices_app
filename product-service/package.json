@@ -1,21 +1,19 @@
 {
-  "name": "product-service",
+  "name": "transaction-service",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "dotenv": "^17.0.1",
     "express": "^5.1.0",
+<<<<<<< Updated upstream
     "mongoose": "^8.16.0",
     "uuid": "^11.1.0",
     "uuidv4": "^6.2.13"
+=======
+    "@myorg/kafka-wrapper": "file:../kafka-wrapper"
+>>>>>>> Stashed changes
   }
 }
