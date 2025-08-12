@@ -1,14 +1,16 @@
-const kafka  = require('../../../kafka-wrapper/index')
+// const kafka = require('../../kafka-wrapper'); // Trước đó
+const { producer } = require('../../kafka-wrapper'); // Sửa lại: chỉ lấy đối tượng producer
+
 const Status = require('../models/status.model');
 const { v4: uuidv4 } = require('uuid');
-const producer = kafka.producer();
+// const producer = kafka.producer(); // Xóa dòng này đi
 
 async function startProducer() {
     await producer.connect();
 }
 
 async function sendTransactionEvent(eventId, action, payload) {
-  // Save status to MongoDB
+    // Save status to MongoDB
     await Status.create({
         eventId,
         action,

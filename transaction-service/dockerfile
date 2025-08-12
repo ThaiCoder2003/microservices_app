@@ -1,17 +1,18 @@
+# Cấu hình Dockerfile cho transaction-service
 FROM node:20
 
 WORKDIR /app
 
-# Copy package.json + kafka-wrapper
+# Sao chép các file package và thư mục kafka-wrapper
+COPY transaction-service/package*.json ./
 COPY package*.json ./
-COPY ../kafka-wrapper ./kafka-wrapper
-COPY ../kafka-wrapper/package*.json ./kafka-wrapper/
+COPY kafka-wrapper ./kafka-wrapper
 
-# Cài dependencies (bao gồm kafka-wrapper)
+# Cài đặt dependencies (bao gồm cả child-process sau khi đã chỉnh sửa package.json)
 RUN npm install
 
-# Copy toàn bộ code service
-COPY . .
+# Sao chép toàn bộ mã nguồn service
+COPY transaction-service/. .
 
 EXPOSE 5003
 CMD ["npm", "start"]

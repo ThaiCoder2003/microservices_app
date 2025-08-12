@@ -23,7 +23,7 @@ const productStorage = multer.diskStorage({
 });
 
 const productUpload = multer({
-  storage,
+  storage: productStorage,
   fileFilter: (req, file, cb) => {
     if (!file.mimetype.startsWith('image/')) {
       return cb(new Error('Only image files are allowed'), false);
@@ -46,27 +46,28 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const USER_SERVICE = 'http://localhost:5001';
-const PRODUCT_SERVICE = 'http://localhost:5002';
-const TRANSACTION_SERVICE = 'http://localhost:5003';
+// Sửa lỗi ở đây: Thay localhost bằng tên service trong docker-compose.yml
+const USER_SERVICE = 'http://user-service:5001';
+const PRODUCT_SERVICE = 'http://product-service:5002';
+const TRANSACTION_SERVICE = 'http://transaction-service:5003';
 
 // Main Pages
 // Homepage
 app.get('/', auth(false), async (req, res) => {
   try {
-  const response = await axios.get(`${PRODUCT_SERVICE}/category`);
-  const { coffee = [], tea = [], juice = [], dessert = [] } = response.data || {};
-  res.render('homepage', {
-    title: 'Home',
-    coffee: coffee || [],
-    tea: tea || [],
-    juice: juice || [],
-    dessert: dessert || [],
-  });
+    const response = await axios.get(`${PRODUCT_SERVICE}/category`);
+    const { coffee = [], tea = [], juice = [], dessert = [] } = response.data || {};
+    res.render('homepage', {
+      title: 'Home',
+      coffee: coffee || [],
+      tea: tea || [],
+      juice: juice || [],
+      dessert: dessert || [],
+    });
   } catch (err) {
-  console.error('EJS render error:', err);
-  res.status(500).send('Template render failed.');
-}
+    console.error('EJS render error:', err);
+    res.status(500).send('Template render failed.');
+  }
 });
 
 // Admin Page
@@ -75,19 +76,19 @@ app.get('/admin', auth(true), requireAdmin, async (req, res) => {
     const product_response = await axios.get(`${PRODUCT_SERVICE}/products`);
     let products = [];
     if (product_response) {
-        products = product_response.data;
+      products = product_response.data;
     }
     const user_response = await axios.get(`${USER_SERVICE}/users`);
     let users = [];
     if (user_response) {
-        users = user_response.data;
+      users = user_response.data;
     }
 
     let username = 'Admin';
     if (req.user && req.user.username) {
-        username = req.user.username;
+      username = req.user.username;
     }
-    res.render('dashboardAdmin', { title: 'Admin Dashboard', products: products, users: users, username: username });  
+    res.render('dashboardAdmin', { title: 'Admin Dashboard', products: products, users: users, username: username });   
   } catch (err) {
     console.error(err);
 
@@ -95,12 +96,9 @@ app.get('/admin', auth(true), requireAdmin, async (req, res) => {
   }
 });
 
-
 // Login
-
 app.get('/login', auth(false), (req, res) => {
   if (req.user) {
-    // If user is already logged in, redirect to homepage
     return res.redirect('/');
   }
   const registered = req.query.registered === 'success';
@@ -112,7 +110,6 @@ app.get('/login', auth(false), (req, res) => {
 app.post('/login', auth(false), async (req, res) => {
   try {
     if (req.user) {
-    // If user is already logged in, redirect to homepage
       return res.redirect('/');
     }
     const response = await axios.post(`${USER_SERVICE}/login`, req.body);
@@ -122,8 +119,6 @@ app.post('/login', auth(false), async (req, res) => {
     res.redirect('/');
   } catch (err) {
     console.error(err);
-
-    // If login fails, render the login page with an error message
     const error = err.response?.data?.error || 'Login failed';
     res.render('login', { title: 'Login', error, message: null });
   }
@@ -139,20 +134,16 @@ app.post('/register', async (req, res) => {
     const result = await axios.post(`${USER_SERVICE}/register`, req.body);
     const data = result.data;
     res.status(202).json(data);
-    // If not 201, treat it as failure
   } catch (err) {
     console.error(err);
-
     const message = err.response?.data?.error || 'Registration failed';
     res.render('register', { title: 'Register', error: message });
   }
 });
 
 // Logout
-
 app.post('/logout', auth(true), (req, res) => {
   if (!req.user) {
-    // If user is not logged in, redirect to login page
     return res.redirect('/');
   }
   res.clearCookie('token');
@@ -192,7 +183,6 @@ app.delete('/delete/:id', auth(true), requireAdmin, async (req, res) => {
     const response = await axios.delete(`${USER_SERVICE}/users/${req.params.id}`, {
       headers: { Authorization: `Bearer ${req.cookies.token}` }
     })
-
     const data = response.data
     return res.status(202).json(data);
   }
@@ -220,7 +210,6 @@ app.get('/products', auth(false), async(req, res) => {
   try {
     const response = await axios.get(`${PRODUCT_SERVICE}/products`);
     const products = response.data || [];
-
     res.render('productpage', { title: 'Products', products })
   } catch (err) {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to get product' });
@@ -234,7 +223,6 @@ app.get('/products/json', auth(false), async(req, res) => {
     const response = await axios.get(`${PRODUCT_SERVICE}/products`, {
       params: { category, price, sort }
     });
-
     
     const products = response.data || [];
     res.json(products); // 👈 return JSON
@@ -257,7 +245,6 @@ app.get('/search', auth(false), async (req, res) => {
 });
 
 // Individual Product
-
 app.get('/products/:id', auth(false), async (req, res) => {
   try {
     const response = await axios.get(`${PRODUCT_SERVICE}/products/${req.params.id}`);
@@ -269,7 +256,6 @@ app.get('/products/:id', auth(false), async (req, res) => {
 
 // Admin side here
 // Add Product
-
 app.post('/products', auth(true), requireAdmin, productUpload.single('product'), async (req, res) => {
   try {
     const { id, name, price, description, origin, category } = req.body;
@@ -292,7 +278,6 @@ app.post('/products', auth(true), requireAdmin, productUpload.single('product'),
 });
 
 // Update Product
-
 app.put('/products/:id', auth(true), requireAdmin, productUpload.single('product'), async (req, res) => {
   try {
     const response = await axios.put(`${PRODUCT_SERVICE}/products/${req.params.id}`, req.body);
@@ -304,7 +289,6 @@ app.put('/products/:id', auth(true), requireAdmin, productUpload.single('product
 });
 
 // Delete Product
-
 app.delete('/products/:id', auth(true), requireAdmin, async (req, res) => {
   try {
     const response = await axios.delete(`${PRODUCT_SERVICE}/products/${req.params.id}`);
@@ -328,19 +312,18 @@ app.get('/status/product-service/:eventId', async (req, res) => {
 })
 
 app.get('/cart', auth(true), async (req, res) => {
-
   try {
-      const { added } = req.query;
-      let message = null;
-      if (added == 'success') {
-        message = 'Added new Item!'
-      }
-      const response = await axios.get(`${TRANSACTION_SERVICE}/cart`, {
-        headers: { Authorization: `Bearer ${req.cookies.token}` }
-      });
+    const { added } = req.query;
+    let message = null;
+    if (added == 'success') {
+      message = 'Added new Item!'
+    }
+    const response = await axios.get(`${TRANSACTION_SERVICE}/cart`, {
+      headers: { Authorization: `Bearer ${req.cookies.token}` }
+    });
 
-      const { items, totalPrice } = response.data;
-      return res.render('cartpage', { title: 'Cart', items, totalPrice, message, error: null })
+    const { items, totalPrice } = response.data;
+    return res.render('cartpage', { title: 'Cart', items, totalPrice, message, error: null })
   }
   catch (err) {
     res.status(err.response?.status || 500).json(err.response?.data || { error: 'Failed to get cart' });
@@ -366,7 +349,7 @@ app.post('/cart/add', auth(true), async (req, res) => {
   }
 })
 
-app.delete('cart/delete/:productId', auth(true), async (req, res) => {
+app.delete('/cart/delete/:productId', auth(true), async (req, res) => {
   try {
     const productId = req.params.productId;
     const response = await axios.delete(`${TRANSACTION_SERVICE}/cart/delete/${productId}`, {
@@ -376,8 +359,8 @@ app.delete('cart/delete/:productId', auth(true), async (req, res) => {
 
     res.status(202).json(data);
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to delete product from cart' });
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete product from cart' });
   }
 })
 
@@ -390,15 +373,15 @@ app.post('/purchase', auth(true), async (req, res) => {
 
     res.status(202).json(data);
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to purchase' });
+    console.error(err);
+    res.status(500).json({ error: 'Failed to purchase' });
   }
 })
 
 app.get('/status/cart/:eventId', async (req, res) => {
   try{
     const { eventId } = req.params; 
-    const result = await axios.get(`${transaction}/cart/status/${eventId}`);
+    const result = await axios.get(`${TRANSACTION_SERVICE}/cart/status/${eventId}`);
     res.status(200).json(result.data);
   } catch (err) {
     console.error("Error fetching status from user service:", err.message);

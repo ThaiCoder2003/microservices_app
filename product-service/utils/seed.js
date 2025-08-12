@@ -1,18 +1,8 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-dotenv.config();
-
+const Products = require('../infrastructure/models/Products');
 const createProduct = require('../usecases/createProduct');
-const Products = require('../models/Products');
-
-// Kết nối MongoDB
-const mongoURI = process.env.DB_URL || 'mongodb://localhost:27017/productDB';
 
 const seedProducts = async () => {
     try {
-        await mongoose.connect(mongoURI);
-        console.log('✅ MongoDB connected!');
-
         const count = await Products.countDocuments();
         if (count > 0) {
             console.log('⚠️ Products already exist. Skipping seeding.');
@@ -113,4 +103,5 @@ const seedProducts = async () => {
     } 
 };
 
-seedProducts();
+// Export hàm seedProducts thay vì gọi nó trực tiếp
+module.exports = { seedProducts };

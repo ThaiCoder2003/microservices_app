@@ -1,4 +1,3 @@
-
 version: "3.8"
 
 services:
@@ -14,6 +13,7 @@ services:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -24,6 +24,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
@@ -40,6 +41,7 @@ services:
     build:
       context: .
       dockerfile: bff/Dockerfile
+    container_name: bff
     ports:
       - "5000:5000"
     env_file:
@@ -55,11 +57,13 @@ services:
     build:
       context: .
       dockerfile: product-service/Dockerfile
+    container_name: product-service
     ports:
       - "5002:5002"
     environment:
       - PORT=5002
       - DB_URL=mongodb://mongo:27017/productDB
+      - KAFKA_BROKER=kafka:9092
     depends_on:
       - mongo
     networks:
@@ -69,12 +73,14 @@ services:
     build:
       context: .
       dockerfile: transaction-service/Dockerfile
+    container_name: transaction-service
     ports:
       - "5003:5003"
     environment:
       - PORT=5003
       - DB_URL=mongodb://mongo:27017/transactionDB
       - JWT_SECRET=user_secret_key
+      - KAFKA_BROKER=kafka:9092
     depends_on:
       - mongo
     networks:
@@ -84,12 +90,14 @@ services:
     build:
       context: .
       dockerfile: user-service/Dockerfile
+    container_name: user-service
     ports:
       - "5001:5001"
     environment:
       - PORT=5001
       - JWT_SECRET=user_secret_key
       - KAFKA_BROKER=kafka:9092
+      - DB_URL=mongodb://mongo:27017/userDB
     depends_on:
       - mongo
       - kafka
