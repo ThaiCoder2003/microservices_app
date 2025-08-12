@@ -1,5 +1,5 @@
 const Products = require('../infrastructure/models/Products');
-const createProduct = require('../usecases/createProduct');
+const connectDB = require('./connectDB');
 
 const seedProducts = async () => {
     try {
@@ -85,15 +85,15 @@ const seedProducts = async () => {
         ];
 
         for (const product of demoProducts) {
-            await createProduct(
-                product.id,
-                product.name,
-                product.price,
-                product.image,
-                product.description,
-                product.origin,
-                product.category
-            );
+            await Products.create({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                description: product.description,
+                origin: product.origin,
+                product: product.category
+            });
             console.log(`✅ Seeded product: ${product.name}`);
         }
 
@@ -102,6 +102,5 @@ const seedProducts = async () => {
         console.error('❌ Error seeding products:', error);
     } 
 };
-
 // Export hàm seedProducts thay vì gọi nó trực tiếp
-module.exports = { seedProducts };
+seedProducts();

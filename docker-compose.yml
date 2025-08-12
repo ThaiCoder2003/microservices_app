@@ -1,24 +1,16 @@
 version: "3.8"
 
 services:
-  mongodb:
-    image: mongo:latest
-    container_name: product-mongodb
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: examplepassword
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
+    networks:
+      - micro_net
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
@@ -34,6 +26,14 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - micro_net
+
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    ports:
+      - "27017:27017"
     networks:
       - micro_net
 
@@ -66,6 +66,7 @@ services:
       - KAFKA_BROKER=kafka:9092
     depends_on:
       - mongo
+      - kafka
     networks:
       - micro_net
 
@@ -83,6 +84,7 @@ services:
       - KAFKA_BROKER=kafka:9092
     depends_on:
       - mongo
+      - kafka
     networks:
       - micro_net
 
@@ -99,7 +101,11 @@ services:
       - KAFKA_BROKER=kafka:9092
       - DB_URL=mongodb://mongo:27017/userDB
     depends_on:
+      - mongo
       - kafka
-    volumes:
-      - ./user-service:/app
-      - ./kafka-wrapper:/app/kafka-wrapper
+    networks:
+      - micro_net
+
+networks:
+  micro_net:
+    driver: bridge

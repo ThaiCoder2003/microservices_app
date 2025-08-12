@@ -2,7 +2,6 @@
 const { producer } = require('../../kafka-wrapper'); // Sửa lại: chỉ lấy đối tượng producer
 
 const Status = require('../models/status.model');
-const { v4: uuidv4 } = require('uuid');
 // const producer = kafka.producer(); // Xóa dòng này đi
 
 async function startProducer() {

@@ -1,7 +1,7 @@
 const { Kafka } = require('kafkajs');
 
 // Lấy địa chỉ Kafka từ biến môi trường, mặc định là 'localhost:9092' nếu không có
-const BROKERS = process.env.KAFKA_BROKER ? [process.env.KAFKA_BROKER] : ['localhost:9092'];
+const BROKERS = process.env.KAFKA_BROKER ? [process.env.KAFKA_BROKER] : ['kafka:9092'];
 
 const kafka = new Kafka({
   clientId: 'coffe-am',
