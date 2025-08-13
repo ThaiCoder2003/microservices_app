@@ -1,9 +1,7 @@
 const Products = require('../infrastructure/models/Products');
-const connectDB = require('../config/db');
 
 const seedProducts = async () => {
     try {
-        await connectDB();
         const count = await Products.countDocuments();
         if (count > 0) {
             console.log('⚠️ Products already exist. Skipping seeding.');
@@ -93,7 +91,7 @@ const seedProducts = async () => {
                 image: product.image,
                 description: product.description,
                 origin: product.origin,
-                product: product.category
+                category: product.category
             });
             console.log(`✅ Seeded product: ${product.name}`);
         }
@@ -104,4 +102,4 @@ const seedProducts = async () => {
     } 
 };
 // Export hàm seedProducts thay vì gọi nó trực tiếp
-seedProducts();
+module.exports = seedProducts

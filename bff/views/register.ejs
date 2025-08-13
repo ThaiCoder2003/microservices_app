@@ -6,7 +6,7 @@
         <strong>⚠️ Error:</strong> <%= message %>
       </div>
     <% } %>
-    <form method="POST" action="/register" class="form-register">
+    <form method="POST" action="/register" id="form-register" class="form-register">
       <label for="name">Name:</label>
       <input type="text" name="name" id="name" required>
       <br><br>
@@ -16,7 +16,7 @@
       <label for="password">Password:</label>
       <input type="password" name="password" id="password" required>
       <br><br>
-      <label for="password">Confirm Password:</label>
+      <label for="confirmPassword">Confirm Password:</label>
       <input type="password" name="confirmPassword" id="confirmPassword" required>
       <br><br>
       <button type="submit" class="btn-primary">Register</button>
@@ -32,45 +32,55 @@
     const form = e.target;
     const formData = new FormData(form);
 
+    const data = Object.fromEntries(formData.entries());
     try {
-    const res = await fetch(`/register`, {
-        method: 'POSY',
-        body: formData
-    });
+      const res = await fetch(`/register`, {
+          method: 'POST',
+          // 👇 ADD THIS HEADERS OBJECT
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+      });
 
+      if (!res.ok) {
+          const error = await res.json();
+          alert(`Error: ${error.error}`);
+          return;
+      }
 
-    if (!res.ok) {
-        const error = await res.json();
-        alert(`Error: ${error.error}`);
-        return;
-    }
+      // Expect backend to return { eventId }
+      const { eventId } = await res.json();
 
-    // Expect backend to return { eventId }
-    const { eventId } = await res.json();
-
-    let retries = 3;
-    while (retries-- > 0) {
-        const statusRes = await fetch(`/status/user-service/${eventId}`);
-        const statusData = await statusRes.json();
-
-        if (statusData.status === 'completed') {
-            alert('Đăng ký thành công!');
-            window.location.href = '/login?registered=success'
+      let retries = 3;
+      while (retries-- > 0) {
+          const statusRes = await fetch(`/status/user-service/${eventId}`);
+          if (!statusRes) {
+            alert('Đăng ký thất bại');
             return;
-        }
+          }
+          
+          const statusData = await statusRes.json();
 
-        if (statusData.status === 'failed') {
-            alert('Đăng ký thất bại!');
-            return;
-        }
+          if (statusData.status === 'completed') {
+              window.location.href = '/login?registered=success'
+              return;
+          }
 
-        await new Promise(r => setTimeout(r, 2000)); // wait before retry
+          if (statusData.status === 'failed') {
+              alert('Đăng ký thất bại!');
+              return;
+          }
+
+          await new Promise(r => setTimeout(r, 2000)); // wait before retry
+      }
+
+
+      alert('Quá thời gian đăng ký! Xin thử lại!')
+      
+    } catch (err) {
+        console.error(err);
+        alert('Đã có lỗi xảy ra! Xin thử lại sau~');
     }
-
-    alert('Quá thời gian đăng ký! Xin thử lại!')
-} catch (err) {
-    console.error(err);
-    alert('Đã có lỗi xảy ra! Xin thử lại sau~');
-}
   })
 </script>

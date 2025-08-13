@@ -22,4 +22,4 @@ COPY product-service/ .
 EXPOSE 5002
 
 # Lệnh chạy ứng dụng
-CMD ["sh", "-c", "npm run seed && npm start"]
+CMD ["npm", "start"]

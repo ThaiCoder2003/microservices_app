@@ -7,7 +7,7 @@ const connectDB = require('./config/db');
 const productRoutes = require('./routes/productRoutes');
 const startKafkaConsumer = require('./infrastructure/kafka/product.consumer');
 const { startProducer } = require('./infrastructure/kafka/product.producer');
-const { seedProducts } = require('./utils/seed'); // Sửa lại: chỉ import hàm seedProducts
+const seedProducts = require('./utils/seed'); // Sửa lại: chỉ import hàm seedProducts
 
 const startServer = async () => {
     try {

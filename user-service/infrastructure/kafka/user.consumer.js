@@ -8,7 +8,6 @@ const userRepository = require('../../repositories/userRepository');
 async function startKafkaConsumer() {
     await consumer.connect();
 
-    // Subscribe to both events
     await consumer.subscribe({ topic: 'user.registered', fromBeginning: false });
     await consumer.subscribe({ topic: 'user.updated', fromBeginning: false });
     await consumer.subscribe({ topic: 'user.deleted', fromBeginning: false });
@@ -16,52 +15,44 @@ async function startKafkaConsumer() {
     await consumer.run({
         eachMessage: async ({ topic, message }) => {
             const { eventId, data } = JSON.parse(message.value.toString());
+            
             try {
-                switch (topic){
-                    case 'user.registered': 
-                        try {
-                            const user = await userRepository.create(data);
-                            console.log(`[Kafka] User registered and saved: ${user._id}`)
-                        } catch (err) {
-                            console.error('[Kafka] Error saving user:', err.message);
-                        }
+                // The outer try block is all you need.
+                switch (topic) {
+                    case 'user.registered':
+                        // No inner try/catch here. If this fails, the outer catch will handle it.
+                        const user = await userRepository.create(data);
+                        console.log(`[Kafka] User registered and saved: ${user._id}`);
                         break;
-    
+
                     case 'user.updated':
-                        try {
-                            const updatedUser = await userRepository.updateById(data.userId, data.updateData);
-                            console.log(`[Kafka] User updated: ${updatedUser._id}`)
-                        } catch (err) {
-                            console.error('[Kafka] Error updating user:', err.message);
-                        }
+                        const updatedUser = await userRepository.updateById(data.userId, data.updateData);
+                        console.log(`[Kafka] User updated: ${updatedUser._id}`);
                         break;
-    
+
                     case 'user.deleted':
-                        try {
-                            await userRepository.deleteById(data.userId);
-                            console.log(`[Kafka] User deleted successfully!`)
-                        } catch (err) {
-                            console.error('[Kafka] Error deleting user:', err.message);
-                        }
+                        await userRepository.deleteById(data.userId);
+                        console.log(`[Kafka] User deleted successfully!`);
                         break;
                 }
-    
+
+                // This code only runs if the switch case completes WITHOUT errors.
                 await Status.findOneAndUpdate(
                     { eventId },
                     { status: 'completed', updatedAt: new Date() }
                 );
-    
                 console.log(`[Kafka] Successfully processed event ${eventId} (${topic})`);
-            } catch (error) {
-                console.error(`[Kafka] Failed to process event ${eventId}:`, err.message);
 
+            } catch (error) {
+                // This single catch block will now handle ALL errors (database, etc.).
+                console.error(`[Kafka] Failed to process event ${eventId}:`, error.message);
+                
                 await Status.findOneAndUpdate(
                     { eventId },
-                    { status: 'failed', error: err.message, updatedAt: new Date() }
+                    { status: 'failed', error: error.message, updatedAt: new Date() }
                 );
             }
         }
-    })
+    });
 }
-
 module.exports = startKafkaConsumer

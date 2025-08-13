@@ -9,7 +9,7 @@ module.exports = {
 
             return response.data && response.data.verified ? { id: response.data.userId } : null;
         } catch (error) {
-            console.error(`Error fetching user with token ${token}:`, error);
+            console.error(`Error fetching user with user ${userId}:`, error);
             throw new Error('Failed to fetch user');
         }
     }

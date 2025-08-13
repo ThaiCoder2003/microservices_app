@@ -4,6 +4,7 @@ const axios = require('axios');
 const path = require('path');
 const app = express();
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const expressLayouts = require('express-ejs-layouts');
 const port = process.env.PORT || 5000;
 
@@ -58,7 +59,7 @@ const userUpload = multer({
   }
 });
 
-
+app.use(bodyParser.json());
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -155,7 +156,15 @@ app.get('/register', async (req, res) => {
 
 app.post('/register', async (req, res) => {
   try {
-    const result = await axios.post(`${USER_SERVICE}/register`, req.body);
+    const result = await axios.post(
+      `${USER_SERVICE}/register`, 
+      req.body, 
+      {
+        headers: {
+          'Content-Type': 'application/json' // Explicitly set the Content-Type
+        }
+      }
+    );
     const data = result.data;
     res.status(202).json(data);
   } catch (err) {
