@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const PRODUCT_SERVICE = 'http://localhost:5002';
+const PRODUCT_SERVICE = process.env.PRODUCT_SERVICE_URL;
 
 module.exports = {
     async getProductById(productId) {

@@ -257,12 +257,14 @@
 
                 // Poll for completion
                 let retries = 3;
-                let statusData;
                 while (retries-- > 0) {
                     const statusRes = await fetch(`/status/cart/${eventId}`);
 
+                    const statusData = await statusRes.json();
+
                     if (statusData.status === 'completed') {
-                        break;
+                        window.location.href = '/cart?added=success';
+                        return;
                     }
 
                     if (statusData.status === 'failed') {
@@ -272,13 +274,8 @@
 
                     await new Promise(r => setTimeout(r, 2000)); // wait before retry
                 }
-
-                if (statusData.status !== 'completed') {
-                    alert('Quá thời gian xử lý! Xin thử lại sau.');
-                    return;
-                }
-
-                window.location.href = '/cart?added=success';
+                alert('Quá thời gian xử lý! Xin thử lại sau.');
+                return;
             })
         }
     })

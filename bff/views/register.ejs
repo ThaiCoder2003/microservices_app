@@ -55,11 +55,12 @@
       let retries = 3;
       while (retries-- > 0) {
           const statusRes = await fetch(`/status/user-service/${eventId}`);
+          
           if (!statusRes) {
             alert('Đăng ký thất bại');
             return;
           }
-          
+
           const statusData = await statusRes.json();
 
           if (statusData.status === 'completed') {

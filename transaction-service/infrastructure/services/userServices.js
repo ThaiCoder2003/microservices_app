@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const USER_SERVICE = 'http://localhost:5001';
+const USER_SERVICE = process.env.USER_SERVICE_URL;
 
 module.exports = {
     async getUserById(userId) {
